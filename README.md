@@ -59,17 +59,88 @@ Here's why:
 This section gives a clear and detailed overview of which parts of the original game I planned to make.
 
 ### The minimum I will most certainly develop:
-* Random Level generation
-* Player that can move around
-* 
+- [ ] Level generation
+	- [ ] 4x4 rooms
+	- [ ] 100% goal path (step 1 of book)
+	- [ ] Individual rooms (step 2 of book)
+	- [ ] Obstacles in rooms (step 3 of book)
+	- [ ] Items and enemy placement
+- [ ] World
+	- [ ] All "objects" need to have physics.
+	- [ ] All "items/monsters" need to be able to be picked up.
+	- [ ] All "items/monsters" need to be able to be thrown.
+	- [ ] Spiderwebs (slow down any object)
+	- [ ] Pots
+	- [ ] Level destruction.
+	- [ ] Arrow traps.
+	- [ ] Spikes (If landed on instant death. Can be walked through)
+	- [ ] Exit door
+	- [ ] Light system
+	- [ ] Tiles that can snap together.
+- [ ] Physics:
+	- [ ] Gravity, velocity, acceleration
+	- [ ] Impact damage
+	- [ ] Destroyed item if impact too large.
+	- [ ] Objects need to rotate when in air.
+	- [ ] Collision.
+	- [ ] Reaction on collision.
+	- [ ] If object hit with enough impact it will get stunned.
+- [ ] Player
+	- [ ] Animated spritesheet
+	- [ ] Jumping
+	- [ ] Moving left right
+	- [ ] Failing
+	- [ ] Fall damage
+	- [ ] Sprinting
+	- [ ] Crouching
+	- [ ] Crouch walking
+	- [ ] Hanging off ledges 
+	- [ ] Pickup objects / holding objects.
+	- [ ] Throw object.
+	- [ ] Put object back on floor.
+	- [ ] Whip (Can damage Objects)
+	- [ ] Jump on top of monsters.
+	- [ ] Ropes that can be thrown up.
+	- [ ] Climbing on ropes and ladders. 
+	- [ ] Bombs.
+	- [ ] Player invisible frames if gets hit.
+- [ ] UI
+	- [ ] Money counter
+	- [ ] Health, bombs, rope.
+	- [ ] Death screen
+- [ ] Particles
+	- [ ] Blood particles when something gets hit.
+	- [ ] Explosion
+- [ ] Monsters:
+	- [ ] AI system thats used by all monsters.
+	- [ ] Damsel (Can be picked up and will run around if not picked up). 
+	- [ ] Snake (Moves left and right if found edge or wall)
+	- [ ] Bat (When its above the player and close enough it will fly towards the player)
+	- [ ] Some monsters damages the player if get hit.
 
 ### What I will probably make as well:
-* 
-*  
+- [ ] UI
+	- [ ] Start up animation (The walls are shifting)
+	- [ ] Level text.
+	- [ ] Money gets added animation
+- [ ] Player
+	- [ ] Rope moving past effect.
+- [ ] Particles
+	- [ ] Player lands smoke.
+	- [ ] Skeleton head/pot breaks.
+	- [ ] Gold pickup particles
+
 
 ### What I plan to create if I have enough time left:
-* .. 
-* .. 
+- [ ] World
+	- [ ] Light system
+	- [ ] Shop
+- [ ] Monsters:
+	-  [ ]Shop keeper (Will shoot the player if he steals something or his shop breaks).
+	- [ ] Small spider (Drops down onto the player)
+- [ ] Extra
+	- [ ] Web browser support
+
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -139,72 +210,6 @@ Explain where you applied inheritance (mandatory).
 - [ ] week 09 topics applied (optional)
 - [ ] week 10 topics applied (optional)
 
-
-### Features
-- [ ] Level genration
-	- [ ] 4x4 rooms
-	- [ ] 100% goal path (step 1 of book)
-	- [ ] Induvatue rooms (step 2 of book)
-	- [ ] Obstacles in rooms (step 3 of book) 
-	- [ ] Items and enemie placement (unknow for now)
-- [ ] World
-	- [ ] All "objects" need to have physics.
-	- [ ] All "items/monsters" need to be able to be picked up.
-	- [ ] All "items/monsters" need to be able to be thrown.
-	- [ ] Spiderwebs (slow down any object)
-	- [ ] Pots
-	- [ ] Level destruction.
-	- [ ] Damzels (Can be picked up and used as body shield. When let alone will run away).
-	- [ ] Arrow traps(Will shoot an arrow if anything moving is in front of it).
-	- [ ] Spikes (If landed on instant death. Can be walked through )
-	- [ ] Exit door
-	- [ ] Light system
-	- [ ] SpriteSheet that connect with each other
-- [ ] Physics:
-	- [ ] Gravity
-	- [ ] Impact damage
-	- [ ] Destoryed if impact too large.
-	- [ ] Need to rotate when in air.
-	- [ ] Collision.
-	- [ ] Reaction on collision.
-	- [ ] If object hit with enough impact it will get stuned if it can be.
-- [ ] Player
-	- [ ] Animated spritesheet
-	- [ ] Jumping
-	- [ ] Moving left right
-	- [ ] Failing
-	- [ ] Fall damage
-	- [ ] Spriting
-	- [ ] Crouching
-	- [ ] Crouch walking
-	- [ ] Hanging off legeds
-	- [ ] Pickup objects. / holding objects
-	- [ ] Throw object.
-	- [ ] Put object back on floor.
-	- [ ] Whip (Can damage Objects)
-	- [ ] Jump on top of monsters
-	- [ ] Ropes that can be thrown up.
-	- [ ] Climbing ropes and ladders. 
-	- [ ] Rope moving past effect.
-	- [ ] Bom's (explode and destory the level after some time)
-	- [ ] Player inv's frames if gets hit
-- [ ] UI
-	- [ ] Start up animation (The walls are shifting)
-	- [ ] Money counter
-	- [ ] Health, bom's, rope.
-	- [ ] Level text.
-	- [ ] Death screen
-	- [ ] Money gets added animation
-- [ ] Particles
-	- [ ] Player lands smoke.
-	- [ ] Blood particles when something gets hit.
-	- [ ] Skeleton head/pot breaks.
-	- [ ] Gold pickup particles
-	- [ ] Explosion
-- [ ] Monsters:
-	- [ ] Snake (Moves left and right if found edge or wall)
-	- [ ] Bat (When its above the player and close enough it will fly towards the player)
-	- [ ] Monsters damages the player if get hit.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
