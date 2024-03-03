@@ -138,14 +138,14 @@ This section gives a clear and detailed overview of which parts of the original 
 	- [ ] Light system
 	- [ ] Shop
 	- [ ] Stealable totem with bolder.
-	- [ ] Scravice altar. 
+	- [ ] Sacrifice altar.
 - [ ] Items:
 	- [ ] Shotgun
 	- [ ] Jetpack
 	- [ ] Jump boots
 	- [ ] Grab ledge hand
 - [ ] Monsters:
-	-  [ ] Shop keeper (Will shoot the player if he steals something or his shop breaks).
+	- [ ] Shop keeper (Will shoot the player if he steals something or his shop breaks).
 	- [ ] Small spider (Drops down onto the player)
 - [ ] Extra
 	- [ ] Web browser support
