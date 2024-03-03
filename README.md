@@ -46,8 +46,8 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 ![Game spelunky. Player hits a snake](.github/Example1.png)
-Here's why:
 
+Here's why:
 * The interaction between you the enemies and the environment are virtual limitless
 * because of the randomly generated levels you can always replay it.
 * Dynamic physics with destroyable environments. 
