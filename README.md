@@ -136,7 +136,7 @@ This section gives a clear and detailed overview of which parts of the original 
 	- [ ] Light system
 	- [ ] Shop
 - [ ] Monsters:
-	-  [ ]Shop keeper (Will shoot the player if he steals something or his shop breaks).
+	-  [ ] Shop keeper (Will shoot the player if he steals something or his shop breaks).
 	- [ ] Small spider (Drops down onto the player)
 - [ ] Extra
 	- [ ] Web browser support
