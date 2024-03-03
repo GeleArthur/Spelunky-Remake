@@ -47,9 +47,11 @@
 ## About The Project
 ![Game spelunky. Player hits a snake](.github/Example1.png)
 Here's why:
-* Its fun to play it has some very tight game design.
-* Pretty difficult to implement and I like a challenge
-* There are randomly generated levels so you can always replay it.
+
+* The interaction between you the enemies and the environment are virtual limitless
+* because of the randomly generated levels you can always replay it.
+* Dynamic physics with destroyable environments. 
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
