@@ -1,6 +1,4 @@
 #pragma once
-struct Point2f;
-
 struct Vector2f final
 {
 	// -------------------------
@@ -21,13 +19,10 @@ struct Vector2f final
 	Vector2f& operator/=( float rhs);
 	Vector2f& operator+=( const Vector2f& rhs);
 	Vector2f& operator-=( const Vector2f& rhs);
-	explicit operator Point2f(); 
 
 	// -------------------------
 	// Methods
 	// -------------------------
-	// Convert to Point2f	
-	Point2f	ToPoint2f( ) const;
 
 	// Are two vectors equal within a threshold?				
 	// u.Equals(v)

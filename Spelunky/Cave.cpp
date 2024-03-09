@@ -1,79 +1,127 @@
 #include "pch.h"
 #include "Cave.h"
 
+#include <iostream>
+
 #include "Room.h"
+#include "utils.h"
+#include "Vector2i.h"
 
 // Each Cave or gird of rooms. Is 4x4
 
 Cave::Cave()
 {
-	GenerateRooms();
+    GenerateRooms();
 }
 
 Cave::~Cave()
 {
-	for (int i{}; i < m_Rooms.size(); ++i)
-	{
-		delete m_Rooms[i];
-	}
+    for (int i{}; i < m_Rooms.size(); ++i)
+    {
+        delete m_Rooms[i];
+    }
 }
 
 void Cave::Draw() const
 {
-	for (int i{}; i < m_Rooms.size(); ++i)
-	{
-		m_Rooms[i]->TestDrawRoom();
-	}
+    for (int i{}; i < m_Rooms.size(); ++i)
+    {
+        m_Rooms[i]->TestDrawRoom();
+    }
 }
+
+enum class Direction
+{
+    left,
+    right,
+    down
+};
+
+// My guess right now
+// 1 = left, right open
+// 2 = left, right, bottom
+// 3 = left, right, top
 
 void Cave::GenerateRooms()
 {
-	Vector2f currentRoomPosition = Vector2f{float(rand()%4), 4};
+    m_Rooms.clear();
 
-	bool generatingRooms = true;
-	while (generatingRooms)
-	{
-		// Vector2f left = Vector2f{-1,0};
-		// Vector2f down = Vector2f{0,-1};
-		// Vector2f right = Vector2f{1,0};
+    int roomPath[4][4]{};
+    const Vector2i startRoom{utils::Random(0, MAX_ROOM_SIZE_X), 0};
+    roomPath[startRoom.y][startRoom.x] = 9; // enter
+    Vector2i currentRoom{startRoom};
+    Vector2i prevRoom{currentRoom};
+    
+    bool isGeneratingPath{true};
+    while (isGeneratingPath)
+    {
+        bool foundValidDirection = false;
+        Vector2i randomDirection;
+        while (!foundValidDirection)
+        {
+            const int random = utils::Random(1, 9);
+            std::cout << random << " ";
 
-		int x;
-		int y;
+            if (random >= 1 && random <= 3) randomDirection = Vector2i{-1, 0};
+            else if (random >= 4 && random <= 6) randomDirection = Vector2i{1, 0};
+            else randomDirection = Vector2i{0, 1};
 
-		switch (rand()%3)
-		{
-		case 0:
-			x = -1;
-			y = 0;
-			break;
-		case 1:
-			x = 0;
-			y = -1;
-			break;
-		case 2:
-			x = 1;
-			y = 0;
-			break;
-		default:
-			throw;
-		}
+            Vector2i newRoom{currentRoom + randomDirection};
+            //TODO: Hack should fix
+            if(newRoom.x < -1 || newRoom.x > MAX_ROOM_SIZE_X)
+            {
+                newRoom = currentRoom - randomDirection;
+            }
+            
+            if (newRoom.x > -1 && newRoom.x < MAX_ROOM_SIZE_X+1)
+            {
+                currentRoom = newRoom;
+                foundValidDirection = true;
+            }
+        }
 
-		if(GetRoomIndex(x, y) == -1)
+        if (randomDirection.y > 0)
+        {
+            if (currentRoom.y > MAX_ROOM_SIZE_Y)
+            {
+                roomPath[currentRoom.y - 1][currentRoom.x] = 8;
+                isGeneratingPath = false;
+            }
+            else
+            {
+                roomPath[currentRoom.y][currentRoom.x] = 3;
+                roomPath[prevRoom.y][prevRoom.x] = 2;
+            }
+        }
+        else
+        {
+            roomPath[currentRoom.y][currentRoom.x] = 1;
+        }
 
-		generatingRooms = false;
-	}
+        prevRoom = currentRoom;
+    }
+    std::cout << '\n';
 
-	
+    roomPath[startRoom.y][startRoom.x] = 9; // enter
 
+    for (int x{}; x < 4; ++x)
+    {
+        for (int y{}; y < 4; ++y)
+        {
+            std::cout << roomPath[x][y];
+        }
+        std::cout << std::endl;
+    }
 
-	m_Rooms.push_back(new Room{RoomDirection{false, false, false, false}, Vector2f{10,10}});
+    std::cout << roomPath;
 
+    //m_Rooms.push_back(new Room{RoomDirection{false, false, false, false}, Vector2f{10,10}});
 }
 
-int Cave::GetRoomIndex(int x, int y) const
+int Cave::GetRoomIndex(Vector2i v) const
 {
-	if(x > 4 || y > 4) return -1;
+    if (v.x <= 0 || v.y <= 0) return -1;
+    if (v.x > 4 || v.y > 4) return -1;
 
-	return y * room_size_x + x;
-
+    return v.y * MAX_ROOM_SIZE_X + v.x;
 }

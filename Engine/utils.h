@@ -83,4 +83,6 @@ namespace utils
 
 #pragma endregion CollisionFunctionality
 
+	int Random(int start, int stop);
+	float Random(float start = 0, float stop = 1);
 }

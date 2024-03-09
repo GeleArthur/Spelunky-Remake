@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
+#include "Vector2i.h"
 
-#include "Vector2f.h"
 
 struct RoomDirection
 {
@@ -11,11 +11,18 @@ struct RoomDirection
 	bool isRightOpen = false;
 };
 
+enum class SpecialRoomConditions
+{
+	none,
+	entrance,
+	escape,
+};
+
 class Room
 {
 public:
 	RoomDirection IsOpen() const;
-	Room(const RoomDirection& dir, const Vector2f& location);
+	Room(const RoomDirection& dir, const Vector2i& location, SpecialRoomConditions special);
 
 	void TestDrawRoom() const;
 
@@ -35,7 +42,7 @@ private:
 		"1111111111"
 	};
 	 
-	Vector2f m_RoomLocation;
+	Vector2i m_RoomLocation;
 
 
 

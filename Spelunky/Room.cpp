@@ -2,13 +2,14 @@
 #include "Room.h"
 
 #include "utils.h"
+#include "Vector2i.h"
 
 RoomDirection Room::IsOpen() const
 {
 	return m_OpenDirection;
 }
 
-Room::Room(const RoomDirection& dir, const Vector2f& location): m_OpenDirection(dir), m_RoomLocation(location)
+Room::Room(const RoomDirection& dir, const Vector2i& location, SpecialRoomConditions special): m_OpenDirection(dir), m_RoomLocation(location)
 {
 }
 

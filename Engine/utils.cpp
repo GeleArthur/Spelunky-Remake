@@ -684,4 +684,14 @@ bool utils::IntersectRectLine(const Rectf& r, const Vector2f& p1, const Vector2f
 	return true;
 }
 
+int utils::Random(const int start, const int stop)
+{
+	return start + (rand()%(stop - start + 1));
+}
+
+float utils::Random(const float start, const float stop)
+{
+	return start + ((stop - start) * rand()/float(RAND_MAX));
+}
+
 #pragma endregion CollisionFunctionality

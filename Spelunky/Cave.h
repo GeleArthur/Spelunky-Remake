@@ -2,6 +2,7 @@
 #include <vector>
 
 
+struct Vector2i;
 class Room;
 
 class Cave
@@ -10,13 +11,13 @@ public:
 	Cave();
 	~Cave();
 	void Draw() const;
-	const static int room_size_x{4};
-	const static int room_size_y{4};
+	const static int MAX_ROOM_SIZE_X{3};
+	const static int MAX_ROOM_SIZE_Y{3};
 
 
 private:
 	std::vector<Room*> m_Rooms;
 	void GenerateRooms();
-	int GetRoomIndex(int x, int y) const;
+	int GetRoomIndex(Vector2i v) const;
 };
 
