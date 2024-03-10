@@ -32,8 +32,8 @@ std::string Vector2i::ToString() const
 {
 	std::stringstream buffer;
 
-	buffer << std::fixed;
-	buffer << std::setprecision( 2 );
+	//buffer << std::fixed;
+	//buffer << std::setprecision( 2 );
 	buffer << "Vector2i(" <<  x  << ", " <<  y  << ")";
 	return buffer.str();
 }

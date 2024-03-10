@@ -43,6 +43,7 @@ private:
 	};
 	 
 	Vector2i m_RoomLocation;
+	SpecialRoomConditions m_Conditions;
 
 
 

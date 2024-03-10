@@ -82,7 +82,7 @@ void BaseGame::InitializeGameEngine()
 	glLoadIdentity();
 
 	// Set up a two-dimensional orthographic viewing region.
-	glOrtho(0, m_Window.width, 0, m_Window.height, -1, 1); // y from bottom to top
+	glOrtho(0, m_Window.width, m_Window.height, 0, -1, 1); // y from bottom to top
 
 	// Set the viewport to the client window area
 	// The viewport is the rectangular region of the window where the image is drawn.

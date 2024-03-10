@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "Game.h"
 
+#include <iostream>
+#include <ostream>
+
 #include "Cave.h"
 #include "SpriteSheetManager.h"
 
@@ -8,7 +11,7 @@ Game::Game( const Window& window )
 	:BaseGame{ window }
 {
 	Initialize();
-	m_Cave = new Cave{};
+
 }
 
 Game::~Game( )
@@ -19,6 +22,7 @@ Game::~Game( )
 void Game::Initialize( )
 {
 	m_SpriteSheetManager = new SpriteSheetManager{};
+	m_Cave = new Cave{};
 }
 
 void Game::Cleanup( )
@@ -47,9 +51,13 @@ void Game::Draw( ) const
 	m_Cave->Draw();
 }
 
-void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
+void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent &e )
 {
 	//std::cout << "KEYDOWN event: " << e.keysym.sym << std::endl;
+	if(e.keysym.sym == SDLK_r)
+	{
+		m_Cave->CreateRoom();
+	}
 }
 
 void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
