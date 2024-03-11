@@ -7,8 +7,12 @@ public:
 	SpriteSheetManager();
 	~SpriteSheetManager();
 
-private:
-	Texture* m_CurruntPlayerTexture;
+	static SpriteSheetManager* GetSingleton();
+	void DrawTile(Vector2f position, int x, int y) const;
 	Texture* m_LevelTexture;
+
+private:
+	Texture* m_CurrentPlayerTexture;
+	static SpriteSheetManager* m_pSpriteSheetManager;
 };
 

@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "Room.h"
+#include "SpriteSheetManager.h"
 #include "utils.h"
 #include "Vector2i.h"
 
@@ -25,9 +26,10 @@ Cave::~Cave()
 
 void Cave::Draw() const
 {
-    for (int i{}; i < m_Rooms.size(); ++i)
+    for (int i{}; i < int(m_Rooms.size()); ++i)
     {
-        m_Rooms[i]->TestDrawRoom();
+        //m_Rooms[i]->TestDrawRoom();
+        m_Rooms[i]->Draw();
     }
 }
 
@@ -181,7 +183,7 @@ void Cave::CreateRoom()
             default:
                 throw;
             }
-            m_Rooms.push_back(new Room{roomDir, Vector2i{100+x*50,100+y*50}, conditions});
+            m_Rooms.push_back(new Room{roomDir, Vector2i{100+x*50,100+y*50}, conditions, SpriteSheetManager::GetSingleton()});
         }
     }
 

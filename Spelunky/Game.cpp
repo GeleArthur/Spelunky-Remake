@@ -6,6 +6,9 @@
 
 #include "Cave.h"
 #include "SpriteSheetManager.h"
+#include "Matrix.h"
+#include "Texture.h"
+
 
 Game::Game( const Window& window ) 
 	:BaseGame{ window }
@@ -33,6 +36,7 @@ void Game::Cleanup( )
 
 void Game::Update( float elapsedSec )
 {
+	m_TimeRunning += elapsedSec;
 	// Check keyboard state
 	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
 	//if ( pStates[SDL_SCANCODE_RIGHT] )
@@ -48,7 +52,18 @@ void Game::Update( float elapsedSec )
 void Game::Draw( ) const
 {
 	ClearBackground( );
-	m_Cave->Draw();
+
+
+	glPushMatrix();
+	//Matrix4x4::TranslationMatrix(Vector2f{150, 150}).GlMultiMatrix();
+	//Matrix4x4::RotationMatrix(m_TimeRunning).GlMultiMatrix();
+	//Matrix4x4::SkewMatrix(sin(m_TimeRunning)).GlMultiMatrix();
+	//Matrix4x4::TranslationMatrix(Vector2f{-150, -150}).GlMultiMatrix();
+
+	m_SpriteSheetManager->GetSingleton()->m_LevelTexture->Draw(Vector2f{0,0}, Rectf{0,0,2048,2048});
+	//m_Cave->Draw();
+
+	glPopMatrix();
 }
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent &e )

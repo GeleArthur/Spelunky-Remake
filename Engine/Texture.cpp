@@ -275,7 +275,7 @@ void Texture::Draw( const Rectf& dstRect, const Rectf& srcRect ) const
 		// Convert to the range [0.0, 1.0]
 		textLeft = srcRect.left / m_Width;
 		textRight = ( srcRect.left + srcRect.width ) / m_Width;
-		textTop = ( srcRect.bottom - srcRect.height ) / m_Height;
+		textTop = ( srcRect.bottom + srcRect.height ) / m_Height;
 		textBottom = srcRect.bottom / m_Height;
 
 		defaultDestHeight = srcRect.height;
@@ -308,9 +308,6 @@ void Texture::Draw( const Rectf& dstRect, const Rectf& srcRect ) const
 	{
 		glBegin( GL_QUADS );
 		{
-			glTexCoord2f( textLeft, textBottom );
-			glVertex2f( vertexLeft, vertexBottom );
-
 			glTexCoord2f( textLeft, textTop );
 			glVertex2f( vertexLeft, vertexTop );
 
@@ -319,6 +316,9 @@ void Texture::Draw( const Rectf& dstRect, const Rectf& srcRect ) const
 
 			glTexCoord2f( textRight, textBottom );
 			glVertex2f( vertexRight, vertexBottom );
+
+			glTexCoord2f( textLeft, textBottom );
+			glVertex2f( vertexLeft, vertexBottom );
 		}
 		glEnd( );
 	}

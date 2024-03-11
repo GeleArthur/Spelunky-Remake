@@ -3,6 +3,8 @@
 #include "Vector2i.h"
 
 
+class SpriteSheetManager;
+
 struct RoomDirection
 {
 	bool isLeftOpen = false;
@@ -22,9 +24,10 @@ class Room
 {
 public:
 	RoomDirection IsOpen() const;
-	Room(const RoomDirection& dir, const Vector2i& location, SpecialRoomConditions special);
+	Room(const RoomDirection& dir, const Vector2i& location, SpecialRoomConditions special, SpriteSheetManager* spriteSheetManager);
 
 	void TestDrawRoom() const;
+	void Draw() const;
 
 private:
 	RoomDirection m_OpenDirection;
@@ -32,7 +35,7 @@ private:
 	// Random picked string
 	std::string m_Level 
 	{
-		"6000060000"
+		"0000000000"
 		"0000000000"
 		"0000000000"
 		"0000000000"
@@ -41,11 +44,8 @@ private:
 		"0000000000"
 		"1111111111"
 	};
-	 
+
 	Vector2i m_RoomLocation;
 	SpecialRoomConditions m_Conditions;
-
-
-
+	SpriteSheetManager* m_SpriteSheetManager;
 };
-

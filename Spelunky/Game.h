@@ -28,6 +28,7 @@ private:
 
 	SpriteSheetManager* m_SpriteSheetManager;
 	Cave* m_Cave;
+	float m_TimeRunning{0};
 
 	// FUNCTIONS
 	void Initialize();
