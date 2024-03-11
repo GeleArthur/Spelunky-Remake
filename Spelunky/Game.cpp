@@ -55,13 +55,27 @@ void Game::Draw( ) const
 
 
 	glPushMatrix();
+	glTranslatef(m_QuickCamera.x, m_QuickCamera.y, 0);
+	glScalef(m_Zoom.x, m_Zoom.y, 1);
+
+	for (int x{}; x < 64*10*4/256.0f; ++x)
+	{
+		for (int y{}; y < 64*8*4/256.0f; ++y)
+		{
+			m_SpriteSheetManager->m_BackGroundImage->Draw(Vector2f{x*256.0f,y*256.f});
+		}
+	}
+
 	//Matrix4x4::TranslationMatrix(Vector2f{150, 150}).GlMultiMatrix();
 	//Matrix4x4::RotationMatrix(m_TimeRunning).GlMultiMatrix();
 	//Matrix4x4::SkewMatrix(sin(m_TimeRunning)).GlMultiMatrix();
 	//Matrix4x4::TranslationMatrix(Vector2f{-150, -150}).GlMultiMatrix();
 
-	m_SpriteSheetManager->GetSingleton()->m_LevelTexture->Draw(Vector2f{0,0}, Rectf{0,0,2048,2048});
-	//m_Cave->Draw();
+	//m_SpriteSheetManager->GetSingleton()->m_LevelTexture->Draw(Vector2f{0,0}, Rectf{0,64,64,64});
+
+
+
+	m_Cave->Draw();
 
 	glPopMatrix();
 }
@@ -95,11 +109,21 @@ void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 
 void Game::ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e )
 {
-	//std::cout << "MOUSEMOTION event: " << e.x << ", " << e.y << std::endl;
+	if(m_MouseDown)
+	{
+		Vector2f mouseMove = Vector2f(e.x, e.y) - m_PrevMouse;
+		m_QuickCamera += mouseMove;
+	}
+	m_PrevMouse.x = e.x;
+	m_PrevMouse.y = e.y;
 }
 
 void Game::ProcessMouseDownEvent( const SDL_MouseButtonEvent& e )
 {
+	if(e.button == 1)
+	{
+		m_MouseDown = true;
+	}
 	//std::cout << "MOUSEBUTTONDOWN event: ";
 	//switch ( e.button )
 	//{
@@ -118,6 +142,7 @@ void Game::ProcessMouseDownEvent( const SDL_MouseButtonEvent& e )
 
 void Game::ProcessMouseUpEvent( const SDL_MouseButtonEvent& e )
 {
+	m_MouseDown = false;
 	//std::cout << "MOUSEBUTTONUP event: ";
 	//switch ( e.button )
 	//{
@@ -133,8 +158,15 @@ void Game::ProcessMouseUpEvent( const SDL_MouseButtonEvent& e )
 	//}
 }
 
+void Game::ProcessWheelEvent(const SDL_MouseWheelEvent& e)
+{
+	m_Zoom.x += e.preciseY*0.2f * m_Zoom.x;
+	m_Zoom.y += e.preciseY*0.2f * m_Zoom.y;
+	std::cout << m_Zoom.x << '\n';
+}
+
 void Game::ClearBackground( ) const
 {
-	glClearColor( 0.0f, 0.0f, 0.3f, 1.0f );
+	glClearColor( 1.0f, 1.0f, 1.0f, 1.0f );
 	glClear( GL_COLOR_BUFFER_BIT );
 }

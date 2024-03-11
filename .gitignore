@@ -400,3 +400,4 @@ FodyWeavers.xsd
 
 !**/Libraries/**/x86/
 !**/Libraries/**/x64/
+.idea

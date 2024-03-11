@@ -57,8 +57,7 @@ void Room::TestDrawRoom() const
 void Room::Draw() const
 {
 	glPushMatrix();
-	//glTranslatef(static_cast<float>(m_RoomLocation.x), static_cast<float>(m_RoomLocation.y), 0);
-	m_SpriteSheetManager->DrawTile(Vector2f{float(0), float(0)}, 0, 1);
+	glTranslatef(static_cast<float>(m_RoomLocation.x), static_cast<float>(m_RoomLocation.y), 0);
 
 	for (int i{}; i < m_Level.size(); ++i)
 	{
@@ -67,6 +66,7 @@ void Room::Draw() const
 		case '0':
 			break;
 		case '1':
+			m_SpriteSheetManager->DrawTile(Vector2f{float((i%10)*64), float((i/10)*64)}, 0, 1);
 			break;
 		}
 	}

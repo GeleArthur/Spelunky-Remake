@@ -183,7 +183,7 @@ void Cave::CreateRoom()
             default:
                 throw;
             }
-            m_Rooms.push_back(new Room{roomDir, Vector2i{100+x*50,100+y*50}, conditions, SpriteSheetManager::GetSingleton()});
+            m_Rooms.push_back(new Room{roomDir, Vector2i{x*64*10,y*64*8}, conditions, SpriteSheetManager::GetSingleton()});
         }
     }
 

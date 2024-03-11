@@ -6,18 +6,21 @@ SpriteSheetManager* SpriteSheetManager::m_pSpriteSheetManager{nullptr};
 
 SpriteSheetManager::SpriteSheetManager()
 {
-	m_CurrentPlayerTexture = new Texture{"PLAYERS/char_orange.png"};
+	m_pSpriteSheetManager = this;
+
 
 	// 512x512 for each tile stack
 	// 64x64 for each tile
 	m_LevelTexture = new Texture{"ALLTILES/alltiles.png"};
-	m_pSpriteSheetManager = this;
+	m_CurrentPlayerTexture = new Texture{"PLAYERS/char_orange.png"};
+	m_BackGroundImage = new Texture{"MINE/minebg.jpg"};
 }
 
 SpriteSheetManager::~SpriteSheetManager()
 {
 	delete m_CurrentPlayerTexture;
 	delete m_LevelTexture;
+	delete m_BackGroundImage;
 }
 
 SpriteSheetManager* SpriteSheetManager::GetSingleton()
@@ -28,5 +31,5 @@ SpriteSheetManager* SpriteSheetManager::GetSingleton()
 
 void SpriteSheetManager::DrawTile(const Vector2f position, const int x, const int y) const
 {
-	m_LevelTexture->Draw(position, Rectf{float(0), float(0), 128, 128});
+	m_LevelTexture->Draw(position, Rectf{float(x*64), float(y*64), 64, 64});
 }

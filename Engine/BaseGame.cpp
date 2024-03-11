@@ -160,15 +160,14 @@ void BaseGame::Run()
 				this->ProcessKeyUpEvent(e.key);
 				break;
 			case SDL_MOUSEMOTION:
-				e.motion.y = int(m_Window.height) - e.motion.y;
 				this->ProcessMouseMotionEvent(e.motion);
 				break;
+			case SDL_MOUSEWHEEL:
+				this->ProcessWheelEvent(e.wheel);
 			case SDL_MOUSEBUTTONDOWN:
-				e.button.y = int(m_Window.height) - e.button.y;
 				this->ProcessMouseDownEvent(e.button);
 				break;
 			case SDL_MOUSEBUTTONUP:
-				e.button.y = int(m_Window.height) - e.button.y;
 				this->ProcessMouseUpEvent(e.button);
 				break;
 			}

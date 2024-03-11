@@ -9,10 +9,15 @@ public:
 
 	static SpriteSheetManager* GetSingleton();
 	void DrawTile(Vector2f position, int x, int y) const;
+
+	Texture* m_CurrentPlayerTexture;
 	Texture* m_LevelTexture;
+	Texture* m_BackGroundImage;
 
 private:
-	Texture* m_CurrentPlayerTexture;
 	static SpriteSheetManager* m_pSpriteSheetManager;
+
+
+
 };
 
