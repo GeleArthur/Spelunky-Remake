@@ -28,7 +28,7 @@ void Cave::Draw() const
 {
     for (int i{}; i < int(m_Rooms.size()); ++i)
     {
-        //m_Rooms[i]->TestDrawRoom();
+        m_Rooms[i]->TestDrawRoom();
         m_Rooms[i]->Draw();
     }
 }

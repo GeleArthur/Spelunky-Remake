@@ -24,7 +24,7 @@ class Room
 {
 public:
 	RoomDirection IsOpen() const;
-	Room(const RoomDirection& dir, const Vector2i& location, SpecialRoomConditions special, SpriteSheetManager* spriteSheetManager);
+	Room(const RoomDirection& dir, const Vector2i& location, SpecialRoomConditions special);
 
 	void TestDrawRoom() const;
 	void Draw() const;
@@ -47,5 +47,4 @@ private:
 
 	Vector2i m_RoomLocation;
 	SpecialRoomConditions m_Conditions;
-	SpriteSheetManager* m_SpriteSheetManager;
 };

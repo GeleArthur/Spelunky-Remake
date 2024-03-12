@@ -14,7 +14,6 @@ Game::Game( const Window& window )
 	:BaseGame{ window }
 {
 	Initialize();
-
 }
 
 Game::~Game( )
@@ -70,9 +69,7 @@ void Game::Draw( ) const
 	//Matrix4x4::RotationMatrix(m_TimeRunning).GlMultiMatrix();
 	//Matrix4x4::SkewMatrix(sin(m_TimeRunning)).GlMultiMatrix();
 	//Matrix4x4::TranslationMatrix(Vector2f{-150, -150}).GlMultiMatrix();
-
 	//m_SpriteSheetManager->GetSingleton()->m_LevelTexture->Draw(Vector2f{0,0}, Rectf{0,64,64,64});
-
 
 
 	m_Cave->Draw();
@@ -111,11 +108,11 @@ void Game::ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e )
 {
 	if(m_MouseDown)
 	{
-		Vector2f mouseMove = Vector2f(e.x, e.y) - m_PrevMouse;
+		const Vector2f mouseMove = Vector2f(static_cast<float>(e.x), static_cast<float>(e.y)) - m_PrevMouse;
 		m_QuickCamera += mouseMove;
 	}
-	m_PrevMouse.x = e.x;
-	m_PrevMouse.y = e.y;
+	m_PrevMouse.x = static_cast<float>(e.x);
+	m_PrevMouse.y = static_cast<float>(e.y);
 }
 
 void Game::ProcessMouseDownEvent( const SDL_MouseButtonEvent& e )
@@ -162,6 +159,7 @@ void Game::ProcessWheelEvent(const SDL_MouseWheelEvent& e)
 {
 	m_Zoom.x += e.preciseY*0.2f * m_Zoom.x;
 	m_Zoom.y += e.preciseY*0.2f * m_Zoom.y;
+
 	std::cout << m_Zoom.x << '\n';
 }
 

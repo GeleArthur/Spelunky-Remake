@@ -1,4 +1,5 @@
 #pragma once
+enum class TileType;
 class Texture;
 
 class SpriteSheetManager
@@ -8,7 +9,7 @@ public:
 	~SpriteSheetManager();
 
 	static SpriteSheetManager* GetSingleton();
-	void DrawTile(Vector2f position, int x, int y) const;
+	void DrawTile(const Vector2f position, const TileType type, int variant) const;
 
 	Texture* m_CurrentPlayerTexture;
 	Texture* m_LevelTexture;

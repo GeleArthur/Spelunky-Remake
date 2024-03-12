@@ -154,6 +154,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="SpriteSheetManager.cpp" />
+    <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Vector2i.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -163,6 +164,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="pch.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="SpriteSheetManager.h" />
+    <ClInclude Include="Tile.h" />
     <ClInclude Include="Vector2i.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

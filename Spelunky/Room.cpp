@@ -11,9 +11,8 @@ RoomDirection Room::IsOpen() const
 	return m_OpenDirection;
 }
 
-Room::Room(const RoomDirection& dir, const Vector2i& location, const SpecialRoomConditions special, SpriteSheetManager* spriteSheetManager):
-	m_OpenDirection(dir), m_RoomLocation(location),
-	m_Conditions(special), m_SpriteSheetManager(spriteSheetManager)
+Room::Room(const RoomDirection& dir, const Vector2i& location, const SpecialRoomConditions special):
+	m_OpenDirection(dir), m_RoomLocation(location), m_Conditions(special)
 {
 }
 
@@ -61,14 +60,7 @@ void Room::Draw() const
 
 	for (int i{}; i < m_Level.size(); ++i)
 	{
-		switch (m_Level[i])
-		{
-		case '0':
-			break;
-		case '1':
-			m_SpriteSheetManager->DrawTile(Vector2f{float((i%10)*64), float((i/10)*64)}, 0, 1);
-			break;
-		}
+
 	}
 	glPopMatrix();
 }
