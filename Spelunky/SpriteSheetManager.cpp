@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "SpriteSheetManager.h"
 #include "Texture.h"
-#include "Tile.h"
+#include "TileTypes.h"
 
 SpriteSheetManager* SpriteSheetManager::m_pSpriteSheetManager{nullptr};
 
@@ -30,17 +30,17 @@ SpriteSheetManager* SpriteSheetManager::GetSingleton()
 	return m_pSpriteSheetManager;
 }
 
-void SpriteSheetManager::DrawTile(const Vector2f position, const TileType type, int variant = 0) const
+void SpriteSheetManager::DrawTile(const Vector2f position, const TileTypes type, int variant = 0) const
 {
 	switch (type)
 	{
-	case TileType::air:
+	case TileTypes::air:
 		break;
-	case TileType::ground:
+	case TileTypes::ground:
 		//TODO: Add variant
 		m_LevelTexture->Draw(position, Rectf{64.0f, 64.0f, 64.0f, 64.0f});
 		break;
-	case TileType::ladder:
+	case TileTypes::ladder:
 		m_LevelTexture->Draw(position, Rectf{0.0f, 192.0f, 64.0f, 64.0f});
 		break;
 	}

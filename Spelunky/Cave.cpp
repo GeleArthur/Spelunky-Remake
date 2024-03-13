@@ -33,13 +33,6 @@ void Cave::Draw() const
     }
 }
 
-enum class Direction
-{
-    left,
-    right,
-    down
-};
-
 // My guess right now
 // 1 = left, right open
 // 2 = left, right, bottom
@@ -120,10 +113,6 @@ void Cave::GenerateRoomTemplate(std::array<std::array<int,MAX_ROOM_SIZE_Y>, MAX_
         }
         std::cout << std::endl;
     }
-    
-    // std::cout << roomPath;
-
-    //m_Rooms.push_back(new Room{RoomDirection{false, false, false, false}, Vector2f{10,10}});
 }
 
 int Cave::GetRoomIndex(Vector2i v) const
@@ -149,7 +138,6 @@ void Cave::CreateRoom()
     {
         for (int y{}; y < MAX_ROOM_SIZE_Y; ++y)
         {
-            RoomDirection roomDir;
             SpecialRoomConditions conditions{SpecialRoomConditions::none};
             switch (roomPath[y][x])
             {

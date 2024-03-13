@@ -163,8 +163,10 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Room.h" />
+    <ClInclude Include="RoomTypes.h" />
     <ClInclude Include="SpriteSheetManager.h" />
     <ClInclude Include="Tile.h" />
+    <ClInclude Include="TileTypes.h" />
     <ClInclude Include="Vector2i.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

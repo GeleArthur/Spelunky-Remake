@@ -1,24 +1,18 @@
 ﻿#pragma once
 #include "SpriteSheetManager.h"
-
-enum class TileType
-{
-    air,
-    ground,
-    ladder
-};
-
+#include "TileTypes.h"
 
 class Tile
 {
 public:
-    Tile(TileType tileType, SpriteSheetManager* spriteSheet);
+    Tile(TileTypes tileType, Vector2i tileIndex, SpriteSheetManager* spriteSheet);
     void SetVariantIndex(int index);
-    void Draw();
+    void Draw() const;
+    Vector2i GetIndexPosition() const;
+    Vector2f GetWorldPosition() const;
 private:
-    TileType m_TileType;
-    int m_VariantIndex;
     SpriteSheetManager* m_SpriteSheetManager;
     Vector2f m_Position;
-    
+    TileTypes m_TileType;
+    int m_VariantIndex;
 };

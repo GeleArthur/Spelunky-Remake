@@ -6,6 +6,8 @@
 #include <iomanip>
 #include "Vector2f.h"
 
+#include "../Spelunky/Vector2i.h"
+
 //-----------------------------------------------------------------
 // Vector2f Constructors
 //-----------------------------------------------------------------
@@ -17,6 +19,12 @@ Vector2f::Vector2f( )
 Vector2f::Vector2f(const float x, const float y )
 	: x{ x }
 	, y{ y }
+{
+}
+
+Vector2f::Vector2f(const Vector2i& vector):
+	x{float(vector.x)},
+	y(float(vector.y))
 {
 }
 
