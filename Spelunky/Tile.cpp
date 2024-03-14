@@ -2,7 +2,12 @@
 #include "Tile.h"
 #include "TileTypes.h"
 #include "SpriteSheetManager.h"
+#include "Texture.h"
 #include "Vector2i.h"
+
+Tile::Tile(): m_SpriteSheetManager(nullptr), m_TileType(), m_VariantIndex(0)
+{
+}
 
 Tile::Tile(const TileTypes tileType, const Vector2i tileIndex, SpriteSheetManager* spriteSheet):
 	m_SpriteSheetManager(spriteSheet),
@@ -19,7 +24,24 @@ void Tile::SetVariantIndex(const int index)
 
 void Tile::Draw() const
 {
-	m_SpriteSheetManager->DrawTile(m_Position, m_TileType, m_VariantIndex);
+	Texture* levelTexture = m_SpriteSheetManager->GetLevelTexture();
+
+	switch (m_TileType)
+	{
+	case TileTypes::air:
+		break;
+	case TileTypes::ground:
+		{
+			const float variantX = float(m_VariantIndex % 4) *64.f;
+			const float variantY = float(m_VariantIndex / 4) * 64.0f;
+			levelTexture->Draw(m_Position, Rectf{variantX, 64.0f + variantY, 64.0f, 64.0f});
+		}
+		break;
+	case TileTypes::ladder:
+		levelTexture->Draw(m_Position, Rectf{0.0f, 192.0f, 64.0f, 64.0f});
+		break;
+	}
+
 }
 
 Vector2i Tile::GetIndexPosition() const

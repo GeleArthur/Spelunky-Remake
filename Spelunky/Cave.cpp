@@ -4,7 +4,6 @@
 #include <array>
 #include <iostream>
 
-#include "Room.h"
 #include "SpriteSheetManager.h"
 #include "utils.h"
 #include "Vector2i.h"
@@ -13,23 +12,37 @@
 
 Cave::Cave()
 {
-    CreateRoom();
+    std::array<std::array<TileTypes, MAX_CAVE_TILE_COUNT_Y>, MAX_CAVE_TILE_COUNT_X> tiles;
+    GenerateCave(tiles);
+
+    int variantIndexes[] = {0,1,4, 5};
+    
+    for (int x{}; x < MAX_CAVE_TILE_COUNT_X; ++x)
+    {
+        for (int y{}; y < MAX_CAVE_TILE_COUNT_Y; ++y)
+        {
+            m_Tiles[x][y] = Tile{tiles[x][y], Vector2i{x,y}, SpriteSheetManager::GetSingleton()};
+            if(tiles[x][y] == TileTypes::ground)
+            {
+                m_Tiles[x][y].SetVariantIndex(variantIndexes[utils::Random(0,3)]);
+            }
+        }
+    }
 }
 
 Cave::~Cave()
 {
-    for (int i{}; i < m_Rooms.size(); ++i)
-    {
-        delete m_Rooms[i];
-    }
 }
 
 void Cave::Draw() const
 {
-    for (int i{}; i < int(m_Rooms.size()); ++i)
+    for (int x{}; x < MAX_CAVE_TILE_COUNT_X; ++x)
     {
-        m_Rooms[i]->TestDrawRoom();
-        m_Rooms[i]->Draw();
+        for (int y{}; y < MAX_CAVE_TILE_COUNT_Y; ++y)
+        {
+            // m_Tiles[x][y].Draw();
+            m_Tiles[x][y].Draw();
+        }
     }
 }
 
@@ -38,16 +51,26 @@ void Cave::Draw() const
 // 2 = left, right, bottom
 // 3 = left, right, top
 
-
-void Cave::GenerateRoomTemplate(std::array<std::array<int,MAX_ROOM_SIZE_Y>, MAX_ROOM_SIZE_X> &roomPath)
+void Cave::GenerateCave(std::array<std::array<TileTypes,MAX_CAVE_TILE_COUNT_Y>, MAX_CAVE_TILE_COUNT_X> &tileTypes)
 {
-    m_Rooms.clear();
+    std::array<std::array<PathTypes, MAX_ROOMS_Y>, MAX_ROOMS_X> path{};
+    GeneratePath(path);
 
-    const Vector2i startRoom{utils::Random(0, MAX_ROOM_SIZE_X-1), 0};
-    roomPath[startRoom.y][startRoom.x] = 9; // enter
+    for (int x{}; x < tileTypes.size(); ++x)
+    {
+        for (int y{}; y < tileTypes[x].size(); ++y)
+        {
+            tileTypes[x][y] = TileTypes::ground;
+        }
+    }
+}
+
+void Cave::GeneratePath(std::array<std::array<PathTypes, MAX_ROOMS_X>, MAX_ROOMS_Y> &roomPath)
+{
+    const Vector2i startRoom{utils::Random(0, MAX_ROOMS_X-1), 0};
+    roomPath[startRoom.y][startRoom.x] = PathTypes::entrance; // enter
     Vector2i currentRoom{startRoom};
     Vector2i prevRoom{currentRoom};
-
     
     bool isGeneratingPath{true};
     while (isGeneratingPath)
@@ -65,115 +88,58 @@ void Cave::GenerateRoomTemplate(std::array<std::array<int,MAX_ROOM_SIZE_Y>, MAX_
 
             Vector2i newRoom{currentRoom + randomDirection};
             //TODO: Hack should fix
-            if((newRoom.x <= 0 || newRoom.x >= MAX_ROOM_SIZE_X-1) && randomDirection.y == 0)
+            if((newRoom.x <= 0 || newRoom.x >= MAX_ROOMS_X-1) && randomDirection.y == 0)
             {
                 newRoom = currentRoom - randomDirection;
             }
             
-            if (newRoom.x > -1 && newRoom.x < MAX_ROOM_SIZE_X)
+            if (newRoom.x > -1 && newRoom.x < MAX_ROOMS_X)
             {
                 currentRoom = newRoom;
                 foundValidDirection = true;
             }
         }
 
-		std::cout << currentRoom << '\n';
+        std::cout << currentRoom << '\n';
 
-
+        // If we went down
         if (randomDirection.y > 0)
         {
-            if (currentRoom.y >= MAX_ROOM_SIZE_Y)
+            // Did we hit exit?
+            if (currentRoom.y >= MAX_ROOMS_Y)
             {
-                roomPath[currentRoom.y - 1][currentRoom.x] = 8;
+                roomPath[currentRoom.y - 1][currentRoom.x] = PathTypes::exit;
                 isGeneratingPath = false;
             }
             else
             {
-                roomPath[currentRoom.y][currentRoom.x] = 3;
-                roomPath[prevRoom.y][prevRoom.x] = 2;
+                // Open the path up
+                roomPath[currentRoom.y][currentRoom.x] = PathTypes::leftRightUp;
+                if(roomPath[prevRoom.y][prevRoom.x] == PathTypes::leftRightDown)
+                    roomPath[prevRoom.y][prevRoom.x] = PathTypes::allOpen;
+                else
+                    roomPath[prevRoom.y][prevRoom.x] = PathTypes::leftRightDown;
             }
         }
-        else
+        else // We went left right
         {
-            roomPath[currentRoom.y][currentRoom.x] = 1;
+            roomPath[currentRoom.y][currentRoom.x] = PathTypes::leftRight;
         }
 
         prevRoom = currentRoom;
     }
     std::cout << '\n';
 
-    roomPath[startRoom.y][startRoom.x] = 9; // enter
+    // Make sure entrance 
+    roomPath[startRoom.y][startRoom.x] = PathTypes::entrance; // enter
 
 
     for (int x{}; x < 4; ++x)
     {
         for (int y{}; y < 4; ++y)
         {
-            std::cout << roomPath[x][y];
+            std::cout << static_cast<int>(roomPath[x][y]);
         }
         std::cout << std::endl;
     }
-}
-
-int Cave::GetRoomIndex(Vector2i v) const
-{
-    if (v.x <= 0 || v.y <= 0) return -1;
-    if (v.x > 4 || v.y > 4) return -1;
-
-    return v.y * MAX_ROOM_SIZE_X + v.x;
-}
-
-void Cave::CreateRoom()
-{
-	for (int i{}; i < static_cast<int>(m_Rooms.size()); ++i)
-	{
-		delete m_Rooms[i];
-	}
-    m_Rooms.clear();
-    std::array<std::array<int,MAX_ROOM_SIZE_Y>, MAX_ROOM_SIZE_X> roomPath = {0};
-
-    GenerateRoomTemplate(roomPath);
-
-    for (int x{}; x < MAX_ROOM_SIZE_X; ++x)
-    {
-        for (int y{}; y < MAX_ROOM_SIZE_Y; ++y)
-        {
-            SpecialRoomConditions conditions{SpecialRoomConditions::none};
-            switch (roomPath[y][x])
-            {
-            case 0:
-                break;
-            case 1:
-                roomDir.isLeftOpen = true;
-                roomDir.isRightOpen = true;
-                break;
-            case 2:
-                roomDir.isLeftOpen = true;
-                roomDir.isRightOpen = true;
-                roomDir.isDownOpen = true;
-                break;
-            case 3:
-                roomDir.isLeftOpen = true;
-                roomDir.isRightOpen = true;
-                roomDir.isTopOpen = true;
-                break;
-            case 8:
-                roomDir.isLeftOpen = true;
-                roomDir.isRightOpen = true;
-                conditions = SpecialRoomConditions::entrance;
-                break;
-            case 9:
-                roomDir.isLeftOpen = true;
-                roomDir.isRightOpen = true;
-                roomDir.isTopOpen = true;
-                conditions = SpecialRoomConditions::escape;
-                break;
-            default:
-                throw;
-            }
-            m_Rooms.push_back(new Room{roomDir, Vector2i{x*64*10,y*64*8}, conditions, SpriteSheetManager::GetSingleton()});
-        }
-    }
-
-    
 }

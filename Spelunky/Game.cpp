@@ -61,7 +61,7 @@ void Game::Draw( ) const
 	{
 		for (int y{}; y < 64*8*4/256.0f; ++y)
 		{
-			m_SpriteSheetManager->m_BackGroundImage->Draw(Vector2f{x*256.0f,y*256.f});
+			m_SpriteSheetManager->GetBackGroundTexture()->Draw(Vector2f{x*256.0f,y*256.f});
 		}
 	}
 
@@ -82,7 +82,6 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent &e )
 	//std::cout << "KEYDOWN event: " << e.keysym.sym << std::endl;
 	if(e.keysym.sym == SDLK_r)
 	{
-		m_Cave->CreateRoom();
 	}
 }
 

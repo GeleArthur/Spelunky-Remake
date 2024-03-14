@@ -30,19 +30,12 @@ SpriteSheetManager* SpriteSheetManager::GetSingleton()
 	return m_pSpriteSheetManager;
 }
 
-void SpriteSheetManager::DrawTile(const Vector2f position, const TileTypes type, int variant = 0) const
+Texture* SpriteSheetManager::GetLevelTexture() const
 {
-	switch (type)
-	{
-	case TileTypes::air:
-		break;
-	case TileTypes::ground:
-		//TODO: Add variant
-		m_LevelTexture->Draw(position, Rectf{64.0f, 64.0f, 64.0f, 64.0f});
-		break;
-	case TileTypes::ladder:
-		m_LevelTexture->Draw(position, Rectf{0.0f, 192.0f, 64.0f, 64.0f});
-		break;
-	}
+	return m_LevelTexture;
+}
 
+Texture* SpriteSheetManager::GetBackGroundTexture() const
+{
+	return m_BackGroundImage;
 }
