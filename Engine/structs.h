@@ -35,6 +35,8 @@ struct Color4f
 	float g;
 	float b;
 	float a;
+	
+	Color4f SetAlpha(float alpha) const;
 };
 
 struct Circlef

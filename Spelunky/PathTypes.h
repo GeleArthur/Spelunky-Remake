@@ -2,12 +2,9 @@
 
 enum class PathTypes
 {
-    closed,
-    leftRight,
-    leftRightUp,
-    leftRightDown,
-    allOpen,
+    sideRoom,
 
-    entrance,
-    exit
+    bottom,
+    top,
+    leftRight,
 };

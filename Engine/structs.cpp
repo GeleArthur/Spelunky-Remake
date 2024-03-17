@@ -45,6 +45,11 @@ Color4f::Color4f( float r, float g, float b, float a )
 {
 }
 
+Color4f Color4f::SetAlpha(const float alpha) const
+{
+	return Color4f{r,g,b, alpha};
+}
+
 //-----------------------------------------------------------------
 // Circlef Constructors
 //-----------------------------------------------------------------

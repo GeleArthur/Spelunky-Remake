@@ -75,8 +75,8 @@ const std::vector<std::string> RoomTemplates::ALTARS
 
 const std::unordered_map<PathTypes, std::vector<std::string>> RoomTemplates::PATH_TO_ROOM
 {
-    {PathTypes::closed, SIDE_ROOMS},
-    {PathTypes::leftRight, LEFT_RIGHT},
-    {PathTypes::entrance, ENTRANCE_DOWN},
+    {PathTypes::sideRoom, SIDE_ROOMS},
+    // {PathTypes::leftRight, LEFT_RIGHT},
+    // {PathTypes::entrance, ENTRANCE_DOWN},
     // {PathTypes::, ENTRANCE_DOWN},
 };

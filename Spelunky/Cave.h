@@ -2,9 +2,16 @@
 #include <array>
 #include <vector>
 #include "PathTypes.h"
+#include "Vector2i.h"
 
 enum class TileTypes;
 class Tile;
+
+struct ExtraPathInformation
+{
+	Vector2i entranceLocation;
+	Vector2i exitLocation;
+};
 
 class Cave
 {
@@ -22,8 +29,9 @@ public:
 private:
 	std::vector<std::vector<Tile>> m_Tiles;
 	std::array<std::array<PathTypes, MAX_ROOMS_Y>, MAX_ROOMS_X> m_PathDebug;
+	ExtraPathInformation m_InfoDebug;
 	
 	void GenerateTiles(std::array<std::array<TileTypes,MAX_CAVE_TILE_COUNT_Y>, MAX_CAVE_TILE_COUNT_X> &roomPath);
-	void GeneratePath(std::array<std::array<PathTypes, MAX_ROOMS_Y>, MAX_ROOMS_X> &roomPath);
-	void RoomStringToTileType(const std::string& roomString, std::array<std::array<TileTypes, Cave::MAX_CAVE_TILE_COUNT_Y>, Cave::MAX_CAVE_TILE_COUNT_X> &tileTypes, Vector2i roomLocation);
+	void GeneratePath(std::array<std::array<PathTypes, MAX_ROOMS_Y>, MAX_ROOMS_X> &roomPath, ExtraPathInformation& extraInfo);
+	void RoomStringToTileType(const std::string* roomString, std::array<std::array<TileTypes, Cave::MAX_CAVE_TILE_COUNT_Y>, Cave::MAX_CAVE_TILE_COUNT_X> &tileTypes, Vector2i roomLocation);
 };
