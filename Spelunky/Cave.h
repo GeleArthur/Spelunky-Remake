@@ -1,13 +1,10 @@
 #pragma once
 #include <array>
 #include <vector>
-
 #include "PathTypes.h"
-#include "Tile.h"
 
-
-struct Vector2i;
-class Room;
+enum class TileTypes;
+class Tile;
 
 class Cave
 {
@@ -23,8 +20,10 @@ public:
 	const static int MAX_CAVE_TILE_COUNT_Y{MAX_ROOMS_Y*TILES_PER_ROOM_Y};
 
 private:
-	std::array<std::array<Tile, MAX_CAVE_TILE_COUNT_Y>, MAX_CAVE_TILE_COUNT_X> m_Tiles;
+	std::vector<std::vector<Tile>> m_Tiles;
+	std::array<std::array<PathTypes, MAX_ROOMS_Y>, MAX_ROOMS_X> m_PathDebug;
 	
-	void GenerateCave(std::array<std::array<TileTypes,MAX_CAVE_TILE_COUNT_Y>, MAX_CAVE_TILE_COUNT_X> &roomPath);
+	void GenerateTiles(std::array<std::array<TileTypes,MAX_CAVE_TILE_COUNT_Y>, MAX_CAVE_TILE_COUNT_X> &roomPath);
 	void GeneratePath(std::array<std::array<PathTypes, MAX_ROOMS_Y>, MAX_ROOMS_X> &roomPath);
+	void RoomStringToTileType(const std::string& roomString, std::array<std::array<TileTypes, Cave::MAX_CAVE_TILE_COUNT_Y>, Cave::MAX_CAVE_TILE_COUNT_X> &tileTypes, Vector2i roomLocation);
 };

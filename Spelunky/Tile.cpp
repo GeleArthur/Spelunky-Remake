@@ -1,13 +1,13 @@
 ﻿#include "pch.h"
 #include "Tile.h"
+
+#include <iostream>
+
 #include "TileTypes.h"
 #include "SpriteSheetManager.h"
 #include "Texture.h"
 #include "Vector2i.h"
 
-Tile::Tile(): m_SpriteSheetManager(nullptr), m_TileType(), m_VariantIndex(0)
-{
-}
 
 Tile::Tile(const TileTypes tileType, const Vector2i tileIndex, SpriteSheetManager* spriteSheet):
 	m_SpriteSheetManager(spriteSheet),

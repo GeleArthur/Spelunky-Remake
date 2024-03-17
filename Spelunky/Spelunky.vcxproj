@@ -152,6 +152,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="RoomTemplates.cpp" />
     <ClCompile Include="SpriteSheetManager.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Vector2i.cpp" />
@@ -162,6 +163,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PathTypes.h" />
+    <ClInclude Include="RoomTemplates.h" />
     <ClInclude Include="SpriteSheetManager.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileTypes.h" />

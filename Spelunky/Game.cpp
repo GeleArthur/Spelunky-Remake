@@ -82,6 +82,8 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent &e )
 	//std::cout << "KEYDOWN event: " << e.keysym.sym << std::endl;
 	if(e.keysym.sym == SDLK_r)
 	{
+		delete m_Cave;
+		m_Cave = new Cave{};
 	}
 }
 

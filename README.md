@@ -62,8 +62,8 @@ This section gives a clear and detailed overview of which parts of the original 
 
 ### The minimum I will most certainly develop:
 - [ ] Level generation
-	- [ ] 4x4 rooms
-	- [ ] 100% goal path (step 1 of book)
+	- [x] 4x4 rooms
+	- [x] 100% goal path (step 1 of book)
 	- [ ] Individual rooms (step 2 of book)
 	- [ ] Obstacles in rooms (step 3 of book)
 	- [ ] Items and enemy placement

@@ -3,5 +3,7 @@ enum class TileTypes
 {
     air,
     ground,
-    ladder
+    ladder,
+
+    unknown, // temp variable
 };

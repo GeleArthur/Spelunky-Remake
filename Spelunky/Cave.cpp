@@ -4,25 +4,33 @@
 #include <array>
 #include <iostream>
 
+#include "RoomTemplates.h"
 #include "SpriteSheetManager.h"
+#include "Tile.h"
+#include "TileTypes.h"
 #include "utils.h"
 #include "Vector2i.h"
 
 // Each Cave or gird of rooms. Is 4x4
 
-Cave::Cave()
+Cave::Cave(): m_Tiles(MAX_CAVE_TILE_COUNT_X), m_PathDebug()
 {
-    std::array<std::array<TileTypes, MAX_CAVE_TILE_COUNT_Y>, MAX_CAVE_TILE_COUNT_X> tiles;
-    GenerateCave(tiles);
+    for (int x{}; x < MAX_CAVE_TILE_COUNT_X; ++x)
+    {
+        m_Tiles[x].reserve(MAX_CAVE_TILE_COUNT_Y);
+    }
+    
+    std::array<std::array<TileTypes, MAX_CAVE_TILE_COUNT_Y>, MAX_CAVE_TILE_COUNT_X> tileTypes;
+    GenerateTiles(tileTypes);
 
-    int variantIndexes[] = {0,1,4, 5};
+    const int variantIndexes[] = {0,1,4,5};
     
     for (int x{}; x < MAX_CAVE_TILE_COUNT_X; ++x)
     {
         for (int y{}; y < MAX_CAVE_TILE_COUNT_Y; ++y)
         {
-            m_Tiles[x][y] = Tile{tiles[x][y], Vector2i{x,y}, SpriteSheetManager::GetSingleton()};
-            if(tiles[x][y] == TileTypes::ground)
+            m_Tiles[x].emplace_back(Tile{tileTypes[x][y], Vector2i{x,y}, SpriteSheetManager::GetSingleton()});
+            if(tileTypes[x][y] == TileTypes::ground)
             {
                 m_Tiles[x][y].SetVariantIndex(variantIndexes[utils::Random(0,3)]);
             }
@@ -44,6 +52,38 @@ void Cave::Draw() const
             m_Tiles[x][y].Draw();
         }
     }
+
+    for (int i{}; i < m_PathDebug.size(); ++i)
+    {
+        for (int j{}; j < m_PathDebug[i].size(); ++j)
+        {
+            switch (m_PathDebug[i][j])
+            {
+            case PathTypes::closed:
+                utils::SetColor(Color4f{1,1,1,0.4});
+                break;
+            case PathTypes::leftRight:
+                utils::SetColor(Color4f{0,0,1,0.4});
+                break;
+            case PathTypes::leftRightUp:
+                utils::SetColor(Color4f{1,0,1,0.4});
+                break;
+            case PathTypes::leftRightDown:
+                utils::SetColor(Color4f{0,1,1,0.4});
+                break;
+            case PathTypes::allOpen:
+                utils::SetColor(Color4f{1,1,0,0.4});
+                break;
+            case PathTypes::entrance:
+                utils::SetColor(Color4f{0,1,0,0.4});
+                break;
+            case PathTypes::exit:
+                utils::SetColor(Color4f{1,0,0,0.4});
+                break;
+            }
+            utils::FillRect(i*TILES_PER_ROOM_X*64, j*TILES_PER_ROOM_Y*64, TILES_PER_ROOM_X*64 , TILES_PER_ROOM_Y*64);
+        }
+    }
 }
 
 // My guess right now
@@ -51,16 +91,40 @@ void Cave::Draw() const
 // 2 = left, right, bottom
 // 3 = left, right, top
 
-void Cave::GenerateCave(std::array<std::array<TileTypes,MAX_CAVE_TILE_COUNT_Y>, MAX_CAVE_TILE_COUNT_X> &tileTypes)
+void Cave::GenerateTiles(std::array<std::array<TileTypes,MAX_CAVE_TILE_COUNT_Y>, MAX_CAVE_TILE_COUNT_X> &tileArray)
 {
     std::array<std::array<PathTypes, MAX_ROOMS_Y>, MAX_ROOMS_X> path{};
     GeneratePath(path);
-
-    for (int x{}; x < tileTypes.size(); ++x)
+    m_PathDebug = path;
+    
+    for (int x{}; x < static_cast<int>(path.size()); ++x)
     {
-        for (int y{}; y < tileTypes[x].size(); ++y)
+        for (int y{}; y < static_cast<int>(path[x].size()); ++y)
         {
-            tileTypes[x][y] = TileTypes::ground;
+            switch (path[x][y])
+            {
+            case PathTypes::closed:
+                RoomStringToTileType(RoomTemplates::SIDE_ROOMS[utils::Random(0, int(RoomTemplates::SIDE_ROOMS.size()-1))], tileArray, Vector2i{x,y});
+                break;
+            case PathTypes::leftRight:
+                RoomStringToTileType(RoomTemplates::LEFT_RIGHT[utils::Random(0, int(RoomTemplates::LEFT_RIGHT.size()-1))], tileArray, Vector2i{x,y});
+                break;
+            case PathTypes::leftRightUp:
+                RoomStringToTileType(RoomTemplates::LEFT_RIGHT[utils::Random(0, int(RoomTemplates::LEFT_RIGHT.size()-1))], tileArray, Vector2i{x,y});
+                break;
+            case PathTypes::leftRightDown:
+                
+                break;
+            case PathTypes::allOpen:
+                
+                break;
+            case PathTypes::entrance:
+                RoomStringToTileType(RoomTemplates::ENTRANCE_LEFT_RIGHT[utils::Random(0, int(RoomTemplates::ENTRANCE_LEFT_RIGHT.size()-1))], tileArray, Vector2i{x,y});
+                break;
+            case PathTypes::exit:
+                RoomStringToTileType(RoomTemplates::EXIT[utils::Random(0, int(RoomTemplates::EXIT.size()-1))], tileArray, Vector2i{x,y});
+                break;
+            }
         }
     }
 }
@@ -68,7 +132,7 @@ void Cave::GenerateCave(std::array<std::array<TileTypes,MAX_CAVE_TILE_COUNT_Y>, 
 void Cave::GeneratePath(std::array<std::array<PathTypes, MAX_ROOMS_X>, MAX_ROOMS_Y> &roomPath)
 {
     const Vector2i startRoom{utils::Random(0, MAX_ROOMS_X-1), 0};
-    roomPath[startRoom.y][startRoom.x] = PathTypes::entrance; // enter
+    roomPath[startRoom.x][startRoom.y] = PathTypes::entrance; // enter
     Vector2i currentRoom{startRoom};
     Vector2i prevRoom{currentRoom};
     
@@ -108,22 +172,22 @@ void Cave::GeneratePath(std::array<std::array<PathTypes, MAX_ROOMS_X>, MAX_ROOMS
             // Did we hit exit?
             if (currentRoom.y >= MAX_ROOMS_Y)
             {
-                roomPath[currentRoom.y - 1][currentRoom.x] = PathTypes::exit;
+                roomPath[currentRoom.x][currentRoom.y-1] = PathTypes::exit;
                 isGeneratingPath = false;
             }
             else
             {
                 // Open the path up
-                roomPath[currentRoom.y][currentRoom.x] = PathTypes::leftRightUp;
-                if(roomPath[prevRoom.y][prevRoom.x] == PathTypes::leftRightDown)
-                    roomPath[prevRoom.y][prevRoom.x] = PathTypes::allOpen;
+                roomPath[currentRoom.x][currentRoom.y] = PathTypes::leftRightUp;
+                if(roomPath[prevRoom.x][prevRoom.y] == PathTypes::leftRightDown)
+                    roomPath[prevRoom.x][prevRoom.y] = PathTypes::allOpen;
                 else
-                    roomPath[prevRoom.y][prevRoom.x] = PathTypes::leftRightDown;
+                    roomPath[prevRoom.x][prevRoom.y] = PathTypes::leftRightDown;
             }
         }
         else // We went left right
         {
-            roomPath[currentRoom.y][currentRoom.x] = PathTypes::leftRight;
+            roomPath[currentRoom.x][currentRoom.y] = PathTypes::leftRight;
         }
 
         prevRoom = currentRoom;
@@ -131,15 +195,42 @@ void Cave::GeneratePath(std::array<std::array<PathTypes, MAX_ROOMS_X>, MAX_ROOMS
     std::cout << '\n';
 
     // Make sure entrance 
-    roomPath[startRoom.y][startRoom.x] = PathTypes::entrance; // enter
+    roomPath[startRoom.x][startRoom.y] = PathTypes::entrance; // enter
 
 
     for (int x{}; x < 4; ++x)
     {
         for (int y{}; y < 4; ++y)
         {
-            std::cout << static_cast<int>(roomPath[x][y]);
+            std::cout << static_cast<int>(roomPath[y][x]);
         }
         std::cout << std::endl;
+    }
+}
+
+void Cave::RoomStringToTileType(
+    const std::string& roomString,
+    std::array<std::array<TileTypes, MAX_CAVE_TILE_COUNT_Y>,MAX_CAVE_TILE_COUNT_X> &tileTypes,
+    Vector2i roomLocation)
+{
+    for (int i{}; i < roomString.size(); ++i)
+    {
+        int xLocation = (roomLocation.x * 10) + i%10;
+        int yLocation = (roomLocation.y *8) + i/10;
+        TileTypes tileType;
+        
+        switch (roomString[i])
+        {
+            case '0':
+                tileType = TileTypes::air;
+                break;
+            case '1':
+                tileType = TileTypes::ground;
+                break;
+            default:
+                tileType = TileTypes::unknown;
+                break;
+        }
+        tileTypes[xLocation][yLocation] = tileType;
     }
 }

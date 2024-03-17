@@ -5,7 +5,6 @@
 class Tile
 {
 public:
-    explicit Tile();
     explicit Tile(TileTypes tileType, Vector2i tileIndex, SpriteSheetManager* spriteSheet);
     void SetVariantIndex(int index);
     void Draw() const;
