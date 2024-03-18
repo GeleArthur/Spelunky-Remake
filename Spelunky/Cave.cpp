@@ -8,13 +8,17 @@
 #include "magic_enum.hpp"
 #include "RoomTemplates.h"
 #include "SpriteSheetManager.h"
+#include "Texture.h"
 #include "Tile.h"
 #include "TileTypes.h"
 #include "utils.h"
 #include "Vector2i.h"
 
 // Each Cave or gird of rooms. Is 4x4
-Cave::Cave(): m_Tiles(MAX_CAVE_TILE_COUNT_X), m_PathDebug()
+Cave::Cave(SpriteSheetManager* spriteSheet):
+    m_Tiles(MAX_CAVE_TILE_COUNT_X),
+    m_SpriteSheetManager(spriteSheet),
+    m_PathDebug()
 {
     for (int x{}; x < MAX_CAVE_TILE_COUNT_X; ++x)
     {
@@ -49,6 +53,11 @@ Cave::~Cave()
 
 void Cave::Draw() const
 {
+    const Texture* doors = m_SpriteSheetManager->GetDoorsTexture();
+    doors->Draw(m_EntranceLocation - Vector2f{128-32, 100}, Rectf{256,0,256,256});
+    doors->Draw(m_ExitLocation - Vector2f{128-32, 100}, Rectf{0,0,256,256});
+
+    
     for (int x{}; x < MAX_CAVE_TILE_COUNT_X; ++x)
     {
         for (int y{}; y < MAX_CAVE_TILE_COUNT_Y; ++y)
@@ -99,6 +108,9 @@ void Cave::Draw() const
 // 3 = left, right, top
 void Cave::GenerateTiles(std::array<std::array<TileTypes, MAX_CAVE_TILE_COUNT_Y>, MAX_CAVE_TILE_COUNT_X>& tileArray)
 {
+    m_EntranceLocation = Vector2f{-1,-1};
+    m_ExitLocation = Vector2f{-1,-1};
+    
     ExtraPathInformation extra;
     std::array<std::array<PathTypes, MAX_ROOMS_Y>, MAX_ROOMS_X> path{};
     GeneratePath(path, extra);
@@ -109,7 +121,7 @@ void Cave::GenerateTiles(std::array<std::array<TileTypes, MAX_CAVE_TILE_COUNT_Y>
     {
         for (int y{}; y < static_cast<int>(path[x].size()); ++y)
         {
-            PathTypes roomAbove = y > 0 ? path[x][y - 1] : PathTypes::sideRoom;
+            const PathTypes roomAbove = y > 0 ? path[x][y - 1] : PathTypes::sideRoom;
             const std::string* roomString = nullptr;
 
             if (extra.entranceLocation == Vector2i{x, y})
@@ -250,11 +262,10 @@ void Cave::RoomStringToTileType(
 
     const std::string processedString = RoomStringPreprocessor(*roomString); //TODO: Sucks make a better processor
 
-    bool static placedEntrance = false; // TODO:Remove
     for (int i{}; i < processedString.size(); ++i)
     {
-        int xLocation = (roomLocation.x * 10) + i % 10;
-        int yLocation = (roomLocation.y * 8) + i / 10;
+        const int xLocation = (roomLocation.x * 10) + i % 10;
+        const int yLocation = (roomLocation.y * 8) + i / 10;
         TileTypes tileType;
 
         switch (processedString.at(i))
@@ -284,12 +295,14 @@ void Cave::RoomStringToTileType(
             tileType = TileTypes::pushBlock;
             break;
         case '9':
-            if(placedEntrance)
+            if(m_EntranceLocation == Vector2f{-1,-1}) // Todo: replace this
             {
-                placedEntrance = true;
+                m_EntranceLocation = Vector2f{xLocation*64.0f, yLocation*64.0f};
                 tileType = TileTypes::entrance;
-            }else
+            }
+            else
             {
+                m_ExitLocation = Vector2f{xLocation*64.0f, yLocation*64.0f};
                 tileType = TileTypes::exit;
             }
             break;

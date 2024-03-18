@@ -26,7 +26,7 @@ Game::~Game( )
 void Game::Initialize( )
 {
 	m_SpriteSheetManager = new SpriteSheetManager{};
-	m_Cave = new Cave{};
+	m_Cave = new Cave{m_SpriteSheetManager};
 }
 
 void Game::Cleanup( )
@@ -59,6 +59,7 @@ void Game::Draw( ) const
 	glTranslatef(m_QuickCamera.x, m_QuickCamera.y, 0);
 	glScalef(m_Zoom.x, m_Zoom.y, 1);
 
+	// Background
 	for (int x{}; x < 64*10*4/256; ++x)
 	{
 		for (int y{}; y < 64*8*4/256; ++y)
@@ -66,13 +67,6 @@ void Game::Draw( ) const
 			m_SpriteSheetManager->GetBackGroundTexture()->Draw(Vector2f{x*256.0f,y*256.f});
 		}
 	}
-
-	//Matrix4x4::TranslationMatrix(Vector2f{150, 150}).GlMultiMatrix();
-	//Matrix4x4::RotationMatrix(m_TimeRunning).GlMultiMatrix();
-	//Matrix4x4::SkewMatrix(sin(m_TimeRunning)).GlMultiMatrix();
-	//Matrix4x4::TranslationMatrix(Vector2f{-150, -150}).GlMultiMatrix();
-	//m_SpriteSheetManager->GetSingleton()->m_LevelTexture->Draw(Vector2f{0,0}, Rectf{0,64,64,64});
-
 
 	m_Cave->Draw();
 
@@ -86,7 +80,7 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent &e )
 	{
 		delete m_Cave;
 		std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
-		m_Cave = new Cave{};
+		m_Cave = new Cave{SpriteSheetManager::GetSingleton()};
 		float elapsedSeconds = std::chrono::duration<float>(std::chrono::steady_clock::now() - t2).count();
 		std::cout << "Took: " << elapsedSeconds << " sec. To generate level";
 	}

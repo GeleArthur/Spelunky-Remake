@@ -4,6 +4,7 @@
 #include "PathTypes.h"
 #include "Vector2i.h"
 
+class SpriteSheetManager;
 enum class TileTypes;
 class Tile;
 
@@ -16,7 +17,7 @@ struct ExtraPathInformation
 class Cave
 {
 public:
-	Cave();
+	explicit Cave(SpriteSheetManager* spriteSheet);
 	~Cave();
 	void Draw() const;
 	const static int MAX_ROOMS_X{4};
@@ -28,9 +29,15 @@ public:
 
 private:
 	std::vector<std::vector<Tile>> m_Tiles;
+	SpriteSheetManager* m_SpriteSheetManager;
+
+	// TODO: Group these
+	Vector2f m_EntranceLocation;
+	Vector2f m_ExitLocation;
+	
+	
 	std::array<std::array<PathTypes, MAX_ROOMS_Y>, MAX_ROOMS_X> m_PathDebug;
 	ExtraPathInformation m_InfoDebug;
-	
 	void GenerateTiles(std::array<std::array<TileTypes,MAX_CAVE_TILE_COUNT_Y>, MAX_CAVE_TILE_COUNT_X> &roomPath);
 	void GeneratePath(std::array<std::array<PathTypes, MAX_ROOMS_Y>, MAX_ROOMS_X> &roomPath, ExtraPathInformation& extraInfo);
 	void RoomStringToTileType(const std::string* roomString, std::array<std::array<TileTypes, Cave::MAX_CAVE_TILE_COUNT_Y>, Cave::MAX_CAVE_TILE_COUNT_X> &tileTypes, Vector2i roomLocation);
