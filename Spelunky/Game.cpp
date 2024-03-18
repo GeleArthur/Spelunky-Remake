@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Game.h"
 
+#include <complex>
 #include <iostream>
 #include <ostream>
 
@@ -57,9 +58,9 @@ void Game::Draw( ) const
 	glTranslatef(m_QuickCamera.x, m_QuickCamera.y, 0);
 	glScalef(m_Zoom.x, m_Zoom.y, 1);
 
-	for (int x{}; x < 64*10*4/256.0f; ++x)
+	for (int x{}; x < 64*10*4/256; ++x)
 	{
-		for (int y{}; y < 64*8*4/256.0f; ++y)
+		for (int y{}; y < 64*8*4/256; ++y)
 		{
 			m_SpriteSheetManager->GetBackGroundTexture()->Draw(Vector2f{x*256.0f,y*256.f});
 		}
@@ -161,7 +162,7 @@ void Game::ProcessWheelEvent(const SDL_MouseWheelEvent& e)
 	m_Zoom.x += e.preciseY*0.2f * m_Zoom.x;
 	m_Zoom.y += e.preciseY*0.2f * m_Zoom.y;
 
-	std::cout << m_Zoom.x << '\n';
+	// std::cout << m_Zoom.x << '\n';
 }
 
 void Game::ClearBackground( ) const

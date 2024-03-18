@@ -16,8 +16,14 @@ public:
     const static std::vector<std::string> EXIT;
     const static std::vector<std::string> LEFT_RIGHT;
     const static std::vector<std::string> SIDE_ROOMS;
+    const static std::vector<std::string> TOP_OPEN;
+    const static std::vector<std::string> BOTTOM_TOP_OPEN;
+    const static std::vector<std::string> BOTTOM_OPEN;
+
+    // Special
     const static std::vector<std::string> IDOLS;
     const static std::vector<std::string> ALTARS;
     const static std::unordered_map<PathTypes, std::vector<std::string>> PATH_TO_ROOM;
 
+    static const std::string* GetRandomString(const std::vector<std::string>& strings);
 };

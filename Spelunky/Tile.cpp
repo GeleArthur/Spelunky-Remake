@@ -40,6 +40,9 @@ void Tile::Draw() const
 	case TileTypes::ladder:
 		levelTexture->Draw(m_Position, Rectf{0.0f, 192.0f, 64.0f, 64.0f});
 		break;
+	case TileTypes::unknown:
+		levelTexture->Draw(m_Position, Rectf{15*64,26*64,64,64});
+		break;
 	}
 
 }

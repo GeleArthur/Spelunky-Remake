@@ -2,8 +2,10 @@
 #include "Cave.h"
 
 #include <array>
+#include <iomanip>
 #include <iostream>
 
+#include "magic_enum.hpp"
 #include "RoomTemplates.h"
 #include "SpriteSheetManager.h"
 #include "Tile.h"
@@ -107,36 +109,50 @@ void Cave::GenerateTiles(std::array<std::array<TileTypes,MAX_CAVE_TILE_COUNT_Y>,
             
             if(extra.entranceLocation == Vector2i{x,y})
             {
+                std::cout << "Entrance is: " << magic_enum::enum_name(path[x][y]) << '\n';
                 switch (path[x][y])
                 {
                 case PathTypes::leftRight:
-                    roomString = &RoomTemplates::ENTRANCE_LEFT_RIGHT[utils::Random(0, int(RoomTemplates::ENTRANCE_LEFT_RIGHT.size()-1))];
+                    roomString = RoomTemplates::GetRandomString(RoomTemplates::ENTRANCE_LEFT_RIGHT);
                     break;
-                case PathTypes::top:
-                    roomString = &RoomTemplates::ENTRANCE_DOWN[utils::Random(0, int(RoomTemplates::ENTRANCE_DOWN.size()-1))];
+                case PathTypes::bottom:
+                    roomString = RoomTemplates::GetRandomString(RoomTemplates::ENTRANCE_DOWN);
                     break;
                     default:
-                        break;
-                        //throw;
+                        throw;
                 }
             }
             else if(extra.exitLocation == Vector2i{x,y})
             {
-                
+                std::cout << "Exit is: " << magic_enum::enum_name(path[x][y]) << '\n';
+                roomString = RoomTemplates::GetRandomString(RoomTemplates::EXIT);
             }
             else
             {
                 switch (path[x][y])
                 {
                 case PathTypes::sideRoom:
-                    // RoomStringToTileType(RoomTemplates::SIDE_ROOMS[utils::Random(0, int(RoomTemplates::SIDE_ROOMS.size()-1))], tileArray, Vector2i{x,y});
+                    roomString = RoomTemplates::GetRandomString(RoomTemplates::SIDE_ROOMS);
+                    //Extra: add idols
                     break;
                 case PathTypes::leftRight:
-                    // RoomStringToTileType(RoomTemplates::LEFT_RIGHT[utils::Random(0, int(RoomTemplates::LEFT_RIGHT.size()-1))], tileArray, Vector2i{x,y});
-                    break;
-                case PathTypes::bottom:
+                    roomString = RoomTemplates::GetRandomString(RoomTemplates::LEFT_RIGHT);
                     break;
                 case PathTypes::top:
+                    roomString = RoomTemplates::GetRandomString(RoomTemplates::TOP_OPEN);
+                    break;
+                case PathTypes::bottom:
+                    if(roomAbove == PathTypes::bottom)
+                    {
+                        roomString = RoomTemplates::GetRandomString(RoomTemplates::BOTTOM_TOP_OPEN);
+                    }
+                    else
+                    {
+                        if(utils::Random(0,1) == 1)
+                            roomString = RoomTemplates::GetRandomString(RoomTemplates::BOTTOM_TOP_OPEN);
+                        else
+                            roomString = RoomTemplates::GetRandomString(RoomTemplates::BOTTOM_OPEN);
+                    }
                     break;
                 }
             }
@@ -152,6 +168,8 @@ void Cave::GeneratePath(std::array<std::array<PathTypes, MAX_ROOMS_X>, MAX_ROOMS
     extraInfo.entranceLocation = startRoom;
     Vector2i currentRoom{startRoom};
     Vector2i prevRoom{currentRoom};
+
+    roomPath[startRoom.x][startRoom.y] = PathTypes::leftRight;
     
     bool isGeneratingPath{true};
     while (isGeneratingPath)
@@ -193,7 +211,10 @@ void Cave::GeneratePath(std::array<std::array<PathTypes, MAX_ROOMS_X>, MAX_ROOMS
         }
         else // We went left right
         {
-            roomPath[currentRoom.x][currentRoom.y] = PathTypes::leftRight;
+            if(roomPath[currentRoom.x][currentRoom.y] != PathTypes::top)
+            {
+                roomPath[currentRoom.x][currentRoom.y] = PathTypes::leftRight;
+            }
         }
 
         prevRoom = currentRoom;
@@ -204,7 +225,7 @@ void Cave::GeneratePath(std::array<std::array<PathTypes, MAX_ROOMS_X>, MAX_ROOMS
     {
         for (int y{}; y < 4; ++y)
         {
-            std::cout << static_cast<int>(roomPath[y][x]);
+            std::cout <<std::setw(12) << magic_enum::enum_name(roomPath[y][x]) << " ";
         }
         std::cout << std::endl;
     }

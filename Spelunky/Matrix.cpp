@@ -123,7 +123,3 @@ Matrix4x4 Matrix4x4::operator*(const Matrix4x4 &other) const
 
 	return result;
 }
-
-
-
-
