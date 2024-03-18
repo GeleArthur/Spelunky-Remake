@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Game.h"
 
+#include <chrono>
 #include <complex>
 #include <iostream>
 #include <ostream>
@@ -84,7 +85,10 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent &e )
 	if(e.keysym.sym == SDLK_r)
 	{
 		delete m_Cave;
+		std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
 		m_Cave = new Cave{};
+		float elapsedSeconds = std::chrono::duration<float>(std::chrono::steady_clock::now() - t2).count();
+		std::cout << "Took: " << elapsedSeconds << " sec. To generate level";
 	}
 }
 

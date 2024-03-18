@@ -1,4 +1,6 @@
 #pragma once
+// SMART POINTERS WHEN AAAAAAARGGGGGG
+
 enum class TileTypes;
 class Texture;
 
@@ -11,12 +13,14 @@ public:
 	static SpriteSheetManager* GetSingleton();
 	Texture* GetLevelTexture() const;
 	Texture* GetBackGroundTexture() const;
+	Texture* GetDoorsTexture() const;
 
 private:
 	static SpriteSheetManager* m_pSpriteSheetManager;
 
 	Texture* m_CurrentPlayerTexture;
 	Texture* m_LevelTexture;
-	Texture* m_BackGroundImage;
+	Texture* m_BackGroundTexture;
+	Texture* m_ExitDoorsTexture;
 };
 

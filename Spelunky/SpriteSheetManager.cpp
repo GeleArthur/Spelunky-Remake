@@ -14,14 +14,16 @@ SpriteSheetManager::SpriteSheetManager()
 	// 64x64 for each tile
 	m_LevelTexture = new Texture{"ALLTILES/alltiles.png"};
 	m_CurrentPlayerTexture = new Texture{"PLAYERS/char_orange.png"};
-	m_BackGroundImage = new Texture{"MINE/minebg.jpg"};
+	m_BackGroundTexture = new Texture{"MINE/minebg.jpg"};
+	m_ExitDoorsTexture = new Texture{"ANYLEVEL/TU_exitdoors.png"};
 }
 
 SpriteSheetManager::~SpriteSheetManager()
 {
 	delete m_CurrentPlayerTexture;
 	delete m_LevelTexture;
-	delete m_BackGroundImage;
+	delete m_BackGroundTexture;
+	delete m_ExitDoorsTexture;
 }
 
 SpriteSheetManager* SpriteSheetManager::GetSingleton()
@@ -37,5 +39,10 @@ Texture* SpriteSheetManager::GetLevelTexture() const
 
 Texture* SpriteSheetManager::GetBackGroundTexture() const
 {
-	return m_BackGroundImage;
+	return m_BackGroundTexture;
+}
+
+Texture* SpriteSheetManager::GetDoorsTexture() const
+{
+	return m_ExitDoorsTexture;
 }
