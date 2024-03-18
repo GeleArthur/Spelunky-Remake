@@ -56,8 +56,10 @@ void Game::Draw( ) const
 
 
 	glPushMatrix();
-	glTranslatef(m_QuickCamera.x, m_QuickCamera.y, 0);
-	glScalef(m_Zoom.x, m_Zoom.y, 1);
+	m_MoveMatrix.GlMultiMatrix();
+	m_ZoomMatrix.GlMultiMatrix();
+	// glTranslatef(m_QuickCamera.x, m_QuickCamera.y, 0);
+	// glScalef(m_Zoom.x, m_Zoom.y, 1);
 
 	// Background
 	for (int x{}; x < 64*10*4/256; ++x)
@@ -109,7 +111,8 @@ void Game::ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e )
 	if(m_MouseDown)
 	{
 		const Vector2f mouseMove = Vector2f(static_cast<float>(e.x), static_cast<float>(e.y)) - m_PrevMouse;
-		m_QuickCamera += mouseMove;
+		m_MoveMatrix.m30 += mouseMove.x;
+		m_MoveMatrix.m31 += mouseMove.y;
 	}
 	m_PrevMouse.x = static_cast<float>(e.x);
 	m_PrevMouse.y = static_cast<float>(e.y);
@@ -157,8 +160,9 @@ void Game::ProcessMouseUpEvent( const SDL_MouseButtonEvent& e )
 
 void Game::ProcessWheelEvent(const SDL_MouseWheelEvent& e)
 {
-	m_Zoom.x += e.preciseY*0.2f * m_Zoom.x;
-	m_Zoom.y += e.preciseY*0.2f * m_Zoom.y;
+	m_ZoomMatrix = m_ZoomMatrix * Matrix4x4::TranslationMatrix(Vector2f{m_MoveMatrix.m30 - e.mouseX, m_MoveMatrix.m31 - e.mouseY});
+	m_ZoomMatrix.m33 -= e.preciseY*0.2f * m_ZoomMatrix.m33;
+	m_ZoomMatrix = m_ZoomMatrix * Matrix4x4::TranslationMatrix(Vector2f{-(m_MoveMatrix.m30 - e.mouseX), -(m_MoveMatrix.m31 - e.mouseY)});
 
 	// std::cout << m_Zoom.x << '\n';
 }
