@@ -1,6 +1,7 @@
 #pragma once
 #include "BaseGame.h"
 #include "Matrix.h"
+class PlayerObject;
 class Cave;
 class SpriteSheetManager;
 
@@ -30,11 +31,11 @@ private:
 
 	SpriteSheetManager* m_SpriteSheetManager;
 	Cave* m_Cave;
+	PlayerObject* m_Player;
+	
 	float m_TimeRunning{0};
-	// Vector2f m_QuickCamera{0,0};
 	Vector2f m_PrevMouse{0,0};
 	bool m_MouseDown{};
-	// Vector2f m_Zoom{1,1};
 	Matrix4x4 m_ZoomMatrix{Matrix4x4::IdentityMatrix()};
 	Matrix4x4 m_MoveMatrix{Matrix4x4::IdentityMatrix()};
 

@@ -46,3 +46,8 @@ Texture* SpriteSheetManager::GetDoorsTexture() const
 {
 	return m_ExitDoorsTexture;
 }
+
+Texture* SpriteSheetManager::GetCurrentPlayerTexture() const
+{
+	return m_CurrentPlayerTexture;
+}

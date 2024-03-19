@@ -14,6 +14,7 @@ public:
 	Texture* GetLevelTexture() const;
 	Texture* GetBackGroundTexture() const;
 	Texture* GetDoorsTexture() const;
+	Texture* GetCurrentPlayerTexture() const;
 
 private:
 	static SpriteSheetManager* m_pSpriteSheetManager;

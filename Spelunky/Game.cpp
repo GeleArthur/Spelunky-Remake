@@ -9,6 +9,7 @@
 #include "Cave.h"
 #include "SpriteSheetManager.h"
 #include "Matrix.h"
+#include "PlayerObject.h"
 #include "Texture.h"
 
 
@@ -27,17 +28,20 @@ void Game::Initialize( )
 {
 	m_SpriteSheetManager = new SpriteSheetManager{};
 	m_Cave = new Cave{m_SpriteSheetManager};
+	m_Player = new PlayerObject{Vector2f{100,100}, m_SpriteSheetManager};
 }
 
 void Game::Cleanup( )
 {
 	delete m_SpriteSheetManager;
 	delete m_Cave;
+	delete m_Player;
 }
 
 void Game::Update( float elapsedSec )
 {
 	m_TimeRunning += elapsedSec;
+	m_Player->Update(elapsedSec);
 	// Check keyboard state
 	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
 	//if ( pStates[SDL_SCANCODE_RIGHT] )
@@ -58,8 +62,6 @@ void Game::Draw( ) const
 	glPushMatrix();
 	m_MoveMatrix.GlMultiMatrix();
 	m_ZoomMatrix.GlMultiMatrix();
-	// glTranslatef(m_QuickCamera.x, m_QuickCamera.y, 0);
-	// glScalef(m_Zoom.x, m_Zoom.y, 1);
 
 	// Background
 	for (int x{}; x < 64*10*4/256; ++x)
@@ -71,6 +73,8 @@ void Game::Draw( ) const
 	}
 
 	m_Cave->Draw();
+
+	m_Player->Draw();
 
 	glPopMatrix();
 }
