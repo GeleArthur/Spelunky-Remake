@@ -22,9 +22,8 @@ PhysicsObject::~PhysicsObject()
 
 void PhysicsObject::UpdatePhysics(const float elapsedTime)
 {
-    
-    
     m_Velocity += Vector2f{0, 100.f} * elapsedTime;
+    m_Collider.GetCenterPosition().
     m_Position += m_Velocity * elapsedTime;
 }
 

@@ -14,7 +14,7 @@ bool Collider::CheckAgainstRect(const Rectf& other, HitInfo& out)
 {
 }
 
-const Vector2f& Collider::GetCenterPosition() const
+Vector2f& Collider::GetCenterPosition()
 {
     return m_CenterPosition;
 }
