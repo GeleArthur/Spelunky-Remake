@@ -73,9 +73,7 @@ void Game::Draw( ) const
 	}
 
 	m_Cave->Draw();
-
 	m_Player->Draw();
-
 	glPopMatrix();
 }
 

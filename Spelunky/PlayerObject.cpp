@@ -1,11 +1,14 @@
 ﻿#include "pch.h"
 #include "PlayerObject.h"
 
+#include <vector>
+
 #include "SpriteSheetManager.h"
 #include "Texture.h"
+#include "Tile.h"
 
-PlayerObject::PlayerObject(const Vector2f startPosition, SpriteSheetManager* spriteSheetManager):
-    PhysicsObject(startPosition),
+PlayerObject::PlayerObject(const Vector2f startPosition, SpriteSheetManager* spriteSheetManager, const std::vector<std::vector<Tile>>& tiles):
+    PhysicsObject(startPosition, m_WorldTiles),
     m_SpriteSheetManager(spriteSheetManager)
 {
 }

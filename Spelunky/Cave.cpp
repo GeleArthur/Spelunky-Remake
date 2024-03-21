@@ -102,6 +102,11 @@ void Cave::Draw() const
     // }
 }
 
+const std::vector<std::vector<Tile>>& Cave::GetTiles()
+{
+    return m_Tiles;
+}
+
 // My guess right now
 // 1 = left, right open
 // 2 = left, right, bottom
