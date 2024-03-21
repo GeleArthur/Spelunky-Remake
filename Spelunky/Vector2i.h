@@ -49,3 +49,4 @@ bool operator==( const Vector2i& lhs, const Vector2i& rhs );
 bool operator!=( const  Vector2i& lhs, const Vector2i& rhs );
 
 std::ostream& operator<< ( std::ostream& lhs, const Vector2i& rhs );
+

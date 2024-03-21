@@ -149,6 +149,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Cave.cpp" />
+    <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix.cpp" />
@@ -157,12 +158,14 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="PlayerObject.cpp" />
     <ClCompile Include="Rock.cpp" />
     <ClCompile Include="RoomTemplates.cpp" />
+    <ClCompile Include="SphereCollider.cpp" />
     <ClCompile Include="SpriteSheetManager.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Vector2i.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cave.h" />
+    <ClInclude Include="Collider.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="magic_enum.hpp" />
     <ClInclude Include="Matrix.h" />
@@ -172,6 +175,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="PlayerObject.h" />
     <ClInclude Include="Rock.h" />
     <ClInclude Include="RoomTemplates.h" />
+    <ClInclude Include="SphereCollider.h" />
     <ClInclude Include="SpriteSheetManager.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileTypes.h" />

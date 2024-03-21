@@ -15,6 +15,7 @@ public:
 	Texture* GetBackGroundTexture() const;
 	Texture* GetDoorsTexture() const;
 	Texture* GetCurrentPlayerTexture() const;
+	Texture* GetItemsTexture() const;
 
 private:
 	static SpriteSheetManager* m_pSpriteSheetManager;
@@ -23,5 +24,6 @@ private:
 	Texture* m_LevelTexture;
 	Texture* m_BackGroundTexture;
 	Texture* m_ExitDoorsTexture;
+	Texture* m_ItemsTexture;
 };
 

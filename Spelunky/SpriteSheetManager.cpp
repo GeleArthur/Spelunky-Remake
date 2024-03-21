@@ -51,3 +51,8 @@ Texture* SpriteSheetManager::GetCurrentPlayerTexture() const
 {
 	return m_CurrentPlayerTexture;
 }
+
+Texture* SpriteSheetManager::GetItemsTexture() const
+{
+	return m_ItemsTexture;
+}
