@@ -3,10 +3,10 @@
 
 class SpriteSheetManager;
 
-class Rock : PhysicsObject
+class Rock : public PhysicsObject
 {
 public:
-    Rock(const Vector2f& position, const SpriteSheetManager* spriteSheetManager, const std::vector<std::vector<Tile>>& tiles);
+    Rock(const Vector2f& position, const SpriteSheetManager* spriteSheetManager, const std::vector<std::vector<Tile>>* tiles);
 
     void Update(float elapsedTime);
     void Draw();

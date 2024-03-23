@@ -1,20 +1,17 @@
 ﻿#pragma once
+#include "CollisionHelpers.h"
 
-struct HitInfo
+enum class ColliderTypes
 {
-    float lambda;
-    Vector2f intersectPoint;
-    Vector2f normal;
+    circle = 0b0000'0001,
+    rect = 0b0000'0010
 };
 
 class Collider
 {
 public:
-    explicit Collider(const Vector2f& centerPosition);
-    virtual ~Collider();
-    virtual bool CheckAgainstRect(const Rectf& other, HitInfo& out);
-    Vector2f& GetCenterPosition();
-
-protected:
-    Vector2f m_CenterPosition;
+    virtual ~Collider() = default;
+    virtual ColliderTypes GetColliderType() const = 0;
+    virtual Vector2f GetCenterPosition() = 0;
+    // virtual bool CollisionCheck(const Collider& other, HitInfo& hitInfo) = 0;
 };

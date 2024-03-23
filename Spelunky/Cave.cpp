@@ -102,9 +102,9 @@ void Cave::Draw() const
     // }
 }
 
-const std::vector<std::vector<Tile>>& Cave::GetTiles()
+const std::vector<std::vector<Tile>>* Cave::GetTiles() const
 {
-    return m_Tiles;
+    return &m_Tiles;
 }
 
 // My guess right now

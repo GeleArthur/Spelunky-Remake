@@ -10,6 +10,7 @@
 #include "SpriteSheetManager.h"
 #include "Matrix.h"
 #include "PlayerObject.h"
+#include "RectCollider.h"
 #include "Texture.h"
 
 
@@ -28,9 +29,8 @@ void Game::Initialize( )
 {
 	m_SpriteSheetManager = new SpriteSheetManager{};
 	m_Cave = new Cave{m_SpriteSheetManager};
-	m_Player = new PlayerObject{Vector2f{100,100}, m_SpriteSheetManager};
-
-	Vector2i cool;
+	Collider* tempPtr = new RectCollider{};
+	m_Player = new PlayerObject{tempPtr, m_SpriteSheetManager, m_Cave->GetTiles()};
 }
 
 void Game::Cleanup( )
