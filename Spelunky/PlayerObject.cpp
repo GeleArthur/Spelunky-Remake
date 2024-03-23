@@ -8,8 +8,8 @@
 #include "Texture.h"
 #include "Tile.h"
 
-PlayerObject::PlayerObject(Collider* collider, SpriteSheetManager* spriteSheetManager, const std::vector<std::vector<Tile>>* tiles):
-    PhysicsObject(collider, tiles),
+PlayerObject::PlayerObject(SpriteSheetManager* spriteSheetManager, const std::vector<std::vector<Tile>>* tiles):
+    PhysicsObject(Vector2f{0,0}, new CircleCollider{Vector2f{}, 50, this}, tiles),
     m_SpriteSheetManager(spriteSheetManager)
 {
 }

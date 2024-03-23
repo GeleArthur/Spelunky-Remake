@@ -9,7 +9,7 @@ class SpriteSheetManager;
 class PlayerObject final : PhysicsObject
 {
 public:
-    explicit PlayerObject(Collider* collider, SpriteSheetManager* spriteSheetManager, const std::vector<std::vector<Tile>>* tiles);
+    explicit PlayerObject(SpriteSheetManager* spriteSheetManager, const std::vector<std::vector<Tile>>* tiles);
     void Draw() const;
     void Update(float elapsedTimes);
 

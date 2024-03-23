@@ -4,8 +4,6 @@ class RectCollider;
 class Collider;
 class CircleCollider;
 
-
-
 namespace CollisionHelpers
 {
     struct HitInfo

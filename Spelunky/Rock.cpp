@@ -7,7 +7,7 @@
 
 
 Rock::Rock(const Vector2f& position, const SpriteSheetManager* spriteSheetManager ,const std::vector<std::vector<Tile>>* tiles):
-    PhysicsObject(new CircleCollider{position, 30}, tiles),
+    PhysicsObject(position, new CircleCollider{Vector2f{}, 30}, tiles),
     m_SpriteSheetManager(spriteSheetManager)
 {
 }
@@ -19,5 +19,6 @@ void Rock::Update(const float elapsedTime)
 
 void Rock::Draw()
 {
+    GetCollider()->DebugDraw();
     m_SpriteSheetManager->GetItemsTexture()->Draw(GetCollider()->GetCenterPosition(), Rectf{1360, 0, 80,80});
 }

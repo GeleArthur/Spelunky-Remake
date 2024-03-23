@@ -1,9 +1,13 @@
 ﻿#include "pch.h"
 #include "CircleCollider.h"
 
-CircleCollider::CircleCollider(const Vector2f& position, const float size):
+#include "PhysicsObject.h"
+#include "utils.h"
+
+CircleCollider::CircleCollider(const Vector2f& position, const float size, PhysicsObject* owner):
     m_CenterPosition(position),
-    m_Size(size)
+    m_Size(size),
+    m_PhysicsOwner(owner)
 {
 }
 
@@ -14,7 +18,16 @@ ColliderTypes CircleCollider::GetColliderType() const
 
 Vector2f CircleCollider::GetCenterPosition()
 {
-    return m_CenterPosition;
+    Vector2f centerPos = m_CenterPosition;
+    if(m_PhysicsOwner != nullptr)
+        centerPos =+ m_PhysicsOwner->GetPosition();
+    
+    return centerPos;
+}
+
+void CircleCollider::DebugDraw()
+{
+    utils::DrawEllipse(GetCenterPosition(), m_Size, m_Size);
 }
 
 // bool SphereCollider::CheckAgainstRect(const Rectf& other, HitInfo& out)
