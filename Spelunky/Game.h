@@ -1,6 +1,8 @@
 #pragma once
 #include "BaseGame.h"
 #include "Matrix.h"
+class ItemManager;
+class WorldManager;
 class PlayerObject;
 class Cave;
 class SpriteSheetManager;
@@ -32,6 +34,8 @@ private:
 	SpriteSheetManager* m_SpriteSheetManager;
 	Cave* m_Cave;
 	PlayerObject* m_Player;
+	WorldManager* m_WorldManager;
+	ItemManager* m_ItemManager;
 	
 	float m_TimeRunning{0};
 	Vector2f m_PrevMouse{0,0};

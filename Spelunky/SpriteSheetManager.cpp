@@ -16,6 +16,7 @@ SpriteSheetManager::SpriteSheetManager()
 	m_CurrentPlayerTexture = new Texture{"PLAYERS/char_orange.png"};
 	m_BackGroundTexture = new Texture{"MINE/minebg.jpg"};
 	m_ExitDoorsTexture = new Texture{"ANYLEVEL/TU_exitdoors.png"};
+	m_ItemsTexture = new Texture{"ITEMS/items.png"};
 }
 
 SpriteSheetManager::~SpriteSheetManager()

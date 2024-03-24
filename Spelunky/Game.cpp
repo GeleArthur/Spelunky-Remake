@@ -11,7 +11,9 @@
 #include "Matrix.h"
 #include "PlayerObject.h"
 #include "RectCollider.h"
+#include "Rock.h"
 #include "Texture.h"
+#include "WorldManager.h"
 
 
 Game::Game( const Window& window ) 
@@ -27,9 +29,14 @@ Game::~Game( )
 
 void Game::Initialize( )
 {
+	m_WorldManager = new WorldManager{};
 	m_SpriteSheetManager = new SpriteSheetManager{};
 	m_Cave = new Cave{m_SpriteSheetManager};
 	m_Player = new PlayerObject{m_SpriteSheetManager, m_Cave->GetTiles()};
+	m_ItemManager = new ItemManager{};
+	m_ItemManager->AddItem(new Rock{Vector2f{}, m_SpriteSheetManager, m_Cave->GetTiles()});
+	
+	m_WorldManager->Init(m_Cave, m_Player, m_SpriteSheetManager, m_ItemManager);
 }
 
 void Game::Cleanup( )
@@ -37,12 +44,15 @@ void Game::Cleanup( )
 	delete m_SpriteSheetManager;
 	delete m_Cave;
 	delete m_Player;
+	delete m_ItemManager;
+	delete m_WorldManager;
 }
 
 void Game::Update( float elapsedSec )
 {
 	m_TimeRunning += elapsedSec;
 	m_Player->Update(elapsedSec);
+	m_ItemManager->UpdateItems(elapsedSec);
 	// Check keyboard state
 	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
 	//if ( pStates[SDL_SCANCODE_RIGHT] )
@@ -74,6 +84,7 @@ void Game::Draw( ) const
 	}
 
 	m_Cave->Draw();
+	m_ItemManager->DrawItems();
 	m_Player->Draw();
 	glPopMatrix();
 }

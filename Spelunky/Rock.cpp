@@ -17,8 +17,11 @@ void Rock::Update(const float elapsedTime)
     UpdatePhysics(elapsedTime);
 }
 
-void Rock::Draw()
+void Rock::Draw() const
 {
     GetCollider()->DebugDraw();
-    m_SpriteSheetManager->GetItemsTexture()->Draw(GetCollider()->GetCenterPosition(), Rectf{1360, 0, 80,80});
+    m_SpriteSheetManager->GetItemsTexture()->Draw(
+        GetCollider()->GetCenterPosition() - Vector2f{40, 40},
+        Rectf{1360, 0, 80,80}
+    );
 }
