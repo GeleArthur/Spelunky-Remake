@@ -8,7 +8,7 @@ class PhysicsObject
 {
 public:
     explicit PhysicsObject(const Vector2f& position, Collider* collider, const std::vector<std::vector<Tile>>* tiles);
-    PhysicsObject(const PhysicsObject& other);
+    // PhysicsObject(const PhysicsObject& other);
     virtual ~PhysicsObject();
     Collider* GetCollider() const;
     virtual void UpdatePhysics(float elapsedTime);

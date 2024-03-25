@@ -4,6 +4,7 @@
 
 #include "CircleCollider.h"
 #include "Collider.h"
+#include "RectCollider.h"
 #include "Tile.h"
 
 class Tile;
@@ -16,21 +17,27 @@ PhysicsObject::PhysicsObject(const Vector2f& position, Collider* collider, const
 {
 }
 
-PhysicsObject::PhysicsObject(const PhysicsObject& other):
-    m_Position(other.m_Position),
-    m_Velocity(other.m_Velocity),
-    m_WorldTiles(other.m_WorldTiles)
-{
-    switch (other.m_Collider->GetColliderType())
-    {
-    case ColliderTypes::circle:
-        CircleCollider* circleCollider = reinterpret_cast<CircleCollider*>(other.m_Collider);
-        m_Collider = new CircleCollider{circleCollider.};
-        break;
-    case ColliderTypes::rect:
-        break;
-    }
-}
+// PhysicsObject::PhysicsObject(const PhysicsObject& other):
+//     m_Position(other.m_Position),
+//     m_Velocity(other.m_Velocity),
+//     m_WorldTiles(other.m_WorldTiles)
+// {
+//     switch (other.m_Collider->GetColliderType())
+//     {
+//     case ColliderTypes::circle:
+//         {
+//             CircleCollider* circleCollider = reinterpret_cast<CircleCollider*>(other.m_Collider);
+//             m_Collider = new CircleCollider{circleCollider->GetLocalCenterPosition(), circleCollider->GetSize(), this};
+//         }
+//         break;
+//     case ColliderTypes::rect:
+//         {
+//             RectCollider* rectCollider = reinterpret_cast<RectCollider*>(other.m_Collider);
+//             m_Collider = new RectCollider{rectCollider->GetRect(), this};
+//         }
+//         break;
+//     }
+// }
 
 PhysicsObject::~PhysicsObject()
 {
@@ -44,7 +51,7 @@ void PhysicsObject::UpdatePhysics(const float elapsedTime)
     
     for (int i{}; i < m_WorldTiles->size(); ++i)
     {
-        for (int j{}; j < m_WorldTiles[i].size(); ++j)
+        for (int j{}; j < m_WorldTiles->at(i).size(); ++j)
         {
             
             // CollisionHelpers::RectVsRect()

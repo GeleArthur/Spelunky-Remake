@@ -275,8 +275,8 @@ void Texture::Draw( const Rectf& dstRect, const Rectf& srcRect ) const
 		// Convert to the range [0.0, 1.0]
 		textLeft = srcRect.left / m_Width;
 		textRight = ( srcRect.left + srcRect.width ) / m_Width;
-		textTop = ( srcRect.bottom + srcRect.height ) / m_Height;
-		textBottom = srcRect.bottom / m_Height;
+		textTop = ( srcRect.top + srcRect.height ) / m_Height;
+		textBottom = srcRect.top / m_Height;
 
 		defaultDestHeight = srcRect.height;
 		defaultDestWidth = srcRect.width;
@@ -284,7 +284,7 @@ void Texture::Draw( const Rectf& dstRect, const Rectf& srcRect ) const
 
 	// Determine vertex coordinates
 	float vertexLeft{ dstRect.left };
-	float vertexBottom{ dstRect.bottom };
+	float vertexBottom{ dstRect.top };
 	float vertexRight{};
 	float vertexTop{};
 	if ( !( dstRect.width > 0.001f && dstRect.height > 0.001f ) ) // If no size specified use default size
@@ -345,10 +345,10 @@ void Texture::DrawFilledRect(const Rectf& rect) const
 	glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
 	glBegin(GL_POLYGON);
 	{
-		glVertex2f(rect.left, rect.bottom);
-		glVertex2f(rect.left + rect.width, rect.bottom);
-		glVertex2f(rect.left + rect.width, rect.bottom + rect.height);
-		glVertex2f(rect.left , rect.bottom + rect.height);
+		glVertex2f(rect.left, rect.top);
+		glVertex2f(rect.left + rect.width, rect.top);
+		glVertex2f(rect.left + rect.width, rect.top + rect.height);
+		glVertex2f(rect.left , rect.top + rect.height);
 	}
 	glEnd();
 

@@ -47,7 +47,7 @@ bool SVGParser::GetVerticesFromSvgFile( const std::string& filePath, std::vector
 
 	Rectf viewBox{};
 	std::stringstream sstream{ viewBoxValue };
-	sstream >> viewBox.left >> viewBox.bottom >> viewBox.width >> viewBox.height;
+	sstream >> viewBox.left >> viewBox.top >> viewBox.width >> viewBox.height;
 
 	//std::vector<std::vector<Vector2f>> vertices{ vertices };
 	for (size_t i{}; i < vertices.size(); ++i)

@@ -23,7 +23,7 @@ Rectf::Rectf( )
 
 Rectf::Rectf( float left, float bottom, float width, float height )
 	:left{ left }
-	,bottom{ bottom }
+	,top{ bottom }
 	,width{ width }
 	,height{ height }
 {

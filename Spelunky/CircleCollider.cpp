@@ -40,6 +40,16 @@ void CircleCollider::SetLocalCenterPosition(const Vector2f& newPos)
     m_CenterPosition = newPos;
 }
 
+float CircleCollider::GetSize() const
+{
+    return m_Size;
+}
+
+void CircleCollider::SetSize(float newSize)
+{
+    m_Size = newSize;
+}
+
 // bool SphereCollider::CheckAgainstRect(const Rectf& other, HitInfo& out)
 // {
 //     Vector2f sidesToTest{m_CenterPosition};

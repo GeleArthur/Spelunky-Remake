@@ -2,12 +2,13 @@
 #include "Rock.h"
 
 #include "CircleCollider.h"
+#include "RectCollider.h"
 #include "SpriteSheetManager.h"
 #include "Texture.h"
 
 
 Rock::Rock(const Vector2f& position, const SpriteSheetManager* spriteSheetManager ,const std::vector<std::vector<Tile>>* tiles):
-    PhysicsObject(position, new CircleCollider{Vector2f{}, 30, this}, tiles),
+    PhysicsObject(position, new RectCollider{Rectf{0,0,30,30}, this}, tiles),
     m_SpriteSheetManager(spriteSheetManager)
 {
 }

@@ -10,9 +10,10 @@ public:
     virtual ColliderTypes GetColliderType() const override;
     virtual Vector2f GetCenterPosition() override;
     virtual void DebugDraw() override;
-    // bool CollisionCheck(const Collider& other, HitInfo& hitInfo) override;
     Vector2f GetLocalCenterPosition() const;
     void SetLocalCenterPosition(const Vector2f& newPos);
+    float GetSize() const;
+    void SetSize(float newSize);
     
 
 private:

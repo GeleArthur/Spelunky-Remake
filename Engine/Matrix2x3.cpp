@@ -21,19 +21,19 @@ Vector2f Matrix2x3::Transform(const Vector2f& vector) const
 std::vector<Vector2f> Matrix2x3::Transform(const Rectf & r) const
 {
 	std::vector<Vector2f> vertices{ 4 };
-	vertices[0] = Transform( Vector2f{ r.left, r.bottom } );
-	vertices[1] = Transform( Vector2f{ r.left, r.bottom + r.height } );
-	vertices[2] = Transform( Vector2f{ r.left + r.width, r.bottom + r.height } );
-	vertices[3] = Transform( Vector2f{ r.left + r.width, r.bottom } );
+	vertices[0] = Transform( Vector2f{ r.left, r.top } );
+	vertices[1] = Transform( Vector2f{ r.left, r.top + r.height } );
+	vertices[2] = Transform( Vector2f{ r.left + r.width, r.top + r.height } );
+	vertices[3] = Transform( Vector2f{ r.left + r.width, r.top } );
 	return vertices;
 }
 
 void Matrix2x3::Transform( const Rectf& r, Vector2f* transVertices ) const
 {
-	transVertices[0] = Transform( Vector2f{ r.left, r.bottom } );
-	transVertices[1] = Transform( Vector2f{ r.left, r.bottom + r.height } );
-	transVertices[2] = Transform( Vector2f{ r.left + r.width, r.bottom + r.height } );
-	transVertices[3] = Transform( Vector2f{ r.left + r.width, r.bottom } );
+	transVertices[0] = Transform( Vector2f{ r.left, r.top } );
+	transVertices[1] = Transform( Vector2f{ r.left, r.top + r.height } );
+	transVertices[2] = Transform( Vector2f{ r.left + r.width, r.top + r.height } );
+	transVertices[3] = Transform( Vector2f{ r.left + r.width, r.top } );
 }
 
 

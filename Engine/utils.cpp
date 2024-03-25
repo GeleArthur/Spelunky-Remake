@@ -103,7 +103,7 @@ void utils::DrawRect( const Vector2f& bottomLeft, float width, float height, flo
 
 void utils::DrawRect( const Rectf& rect, float lineWidth )
 {
-	DrawRect( rect.left, rect.bottom, rect.width, rect.height, lineWidth );
+	DrawRect( rect.left, rect.top, rect.width, rect.height, lineWidth );
 }
 
 void utils::FillRect( float left, float bottom, float width, float height )
@@ -129,7 +129,7 @@ void utils::FillRect( const Vector2f& bottomLeft, float width, float height )
 
 void utils::FillRect( const Rectf& rect )
 {
-	FillRect( rect.left, rect.bottom, rect.width, rect.height );
+	FillRect( rect.left, rect.top, rect.width, rect.height );
 }
 
 void utils::DrawEllipse( float centerX, float centerY, float radX, float radY, float lineWidth )
@@ -292,8 +292,8 @@ bool utils::IsPointInRect( const Vector2f& p, const Rectf& r )
 {
 	return ( p.x >= r.left && 
 		p.x <= r.left + r.width &&
-		p.y >= r.bottom &&
-		p.y <= r.bottom + r.height );
+		p.y >= r.top &&
+		p.y <= r.top + r.height );
 }
 
 bool utils::IsPointInCircle( const Vector2f& p, const Circlef& c )
@@ -312,10 +312,10 @@ bool utils::IsOverlapping( const Vector2f& a, const Vector2f& b, const Rectf& r 
 	}
 
 	HitInfo hitInfo{};
-	Vector2f vertices[]{ Vector2f {r.left, r.bottom},
-		Vector2f{ r.left + r.width, r.bottom },
-		Vector2f{ r.left + r.width, r.bottom + r.height },
-		Vector2f{ r.left, r.bottom + r.height } };
+	Vector2f vertices[]{ Vector2f {r.left, r.top},
+		Vector2f{ r.left + r.width, r.top },
+		Vector2f{ r.left + r.width, r.top + r.height },
+		Vector2f{ r.left, r.top + r.height } };
 
 	return Raycast( vertices, 4, a, b, hitInfo );
 }
@@ -329,7 +329,7 @@ bool utils::IsOverlapping( const Rectf& r1, const Rectf& r2 )
 	}
 
 	// If one rectangle is under the other
-	if ( r1.bottom > ( r2.bottom + r2.height ) || r2.bottom > ( r1.bottom + r1.height ) )
+	if ( r1.top > ( r2.top + r2.height ) || r2.top > ( r1.top + r1.height ) )
 	{
 		return false;
 	}
@@ -345,19 +345,19 @@ bool utils::IsOverlapping( const Rectf& r, const Circlef& c )
 		return true;
 	}
 	// Check line segments
-	if (utils::DistPointLineSegment(c.center, Vector2f{ r.left, r.bottom }, Vector2f{ r.left, r.bottom + r.height }) <= c.radius)
+	if (utils::DistPointLineSegment(c.center, Vector2f{ r.left, r.top }, Vector2f{ r.left, r.top + r.height }) <= c.radius)
 	{
 		return true;
 	}
-	if ( utils::DistPointLineSegment( c.center, Vector2f{ r.left, r.bottom }, Vector2f{ r.left + r.width, r.bottom } ) <= c.radius )
+	if ( utils::DistPointLineSegment( c.center, Vector2f{ r.left, r.top }, Vector2f{ r.left + r.width, r.top } ) <= c.radius )
 	{
 		return true;
 	}
-	if (utils::DistPointLineSegment(c.center, Vector2f{ r.left + r.width, r.bottom + r.height }, Vector2f{ r.left, r.bottom + r.height }) <= c.radius)
+	if (utils::DistPointLineSegment(c.center, Vector2f{ r.left + r.width, r.top + r.height }, Vector2f{ r.left, r.top + r.height }) <= c.radius)
 	{
 		return true;
 	}
-	if (utils::DistPointLineSegment(c.center, Vector2f{ r.left + r.width, r.bottom + r.height }, Vector2f{ r.left + r.width, r.bottom }) <= c.radius)
+	if (utils::DistPointLineSegment(c.center, Vector2f{ r.left + r.width, r.top + r.height }, Vector2f{ r.left + r.width, r.top }) <= c.radius)
 	{
 		return true;
 	}
@@ -547,9 +547,9 @@ bool utils::Raycast( const Vector2f* vertices, const size_t nrVertices, const Ve
 	Rectf r1, r2;
 	// r1: minimal AABB rect enclosing the ray
 	r1.left = std::min( rayP1.x, rayP2.x );
-	r1.bottom = std::min( rayP1.y, rayP2.y );
+	r1.top = std::min( rayP1.y, rayP2.y );
 	r1.width = std::max( rayP1.x, rayP2.x ) - r1.left;
-	r1.height = std::max( rayP1.y, rayP2.y ) - r1.bottom;
+	r1.height = std::max( rayP1.y, rayP2.y ) - r1.top;
 
 	// Line-line intersections.
 	for ( size_t idx{ 0 }; idx <= nrVertices; ++idx )
@@ -561,9 +561,9 @@ bool utils::Raycast( const Vector2f* vertices, const size_t nrVertices, const Ve
 
 		// r2: minimal AABB rect enclosing the 2 vertices
 		r2.left = std::min( q1.x, q2.x );
-		r2.bottom = std::min( q1.y, q2.y );
+		r2.top = std::min( q1.y, q2.y );
 		r2.width = std::max( q1.x, q2.x ) - r2.left;
-		r2.height = std::max( q1.y, q2.y ) - r2.bottom;
+		r2.height = std::max( q1.y, q2.y ) - r2.top;
 
 		if ( IsOverlapping( r1, r2 ) )
 		{
@@ -669,8 +669,8 @@ bool utils::IntersectRectLine(const Rectf& r, const Vector2f& p1, const Vector2f
 	// x1: value between 0 and 1 where 0 is on p1 and 1 is on p2, <0 and >1 means intersection is not on line segment
 	float x1{ (r.left - p1.x) / (p2.x - p1.x) };
 	float x2{ (r.left + r.width - p1.x) / (p2.x - p1.x) };
-	float y1{ (r.bottom - p1.y) / (p2.y - p1.y) };
-	float y2{ (r.bottom + r.height - p1.y) / (p2.y - p1.y) };
+	float y1{ (r.top - p1.y) / (p2.y - p1.y) };
+	float y2{ (r.top + r.height - p1.y) / (p2.y - p1.y) };
 
 	using std::max; using std::min;
 	float tMin{ max(min(x1,x2),min(y1,y2)) };

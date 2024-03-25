@@ -19,7 +19,7 @@ struct Rectf
 	explicit Rectf( float left, float bottom, float width, float height );
 	
 	float left;
-	float bottom;
+	float top;
 	float width;
 	float height;
 
