@@ -3,7 +3,7 @@
 #include "Vector2f.h"
 
 // Row major matrix
-struct Matrix4x4
+struct Matrix4X4
 {
 	float m00;
 	float m10;
@@ -24,13 +24,13 @@ struct Matrix4x4
 
 	void OpenGlArray(GLfloat (&array)[16]) const;
 	void GlMultiMatrix() const;
-	static Matrix4x4 IdentityMatrix();
-	static Matrix4x4 TranslationMatrix(const Vector2f& position);
-	static Matrix4x4 RotationMatrix(float rotation);
-	static Matrix4x4 ScaleMatrix(float scale);
-	static Matrix4x4 ScaleMatrix(float scaleX = 1, float scaleY = 1, float scaleZ = 1);
-	static Matrix4x4 SkewMatrix(float yx = 1, float xy = 1);
+	static Matrix4X4 IdentityMatrix();
+	static Matrix4X4 TranslationMatrix(const Vector2f& position);
+	static Matrix4X4 RotationMatrix(float rotation);
+	static Matrix4X4 ScaleMatrix(float scale);
+	static Matrix4X4 ScaleMatrix(float scaleX = 1, float scaleY = 1, float scaleZ = 1);
+	static Matrix4X4 SkewMatrix(float yx = 1, float xy = 1);
 
 	void PrintMatrix() const;
-	Matrix4x4 operator*(const Matrix4x4& other) const;
+	Matrix4X4 operator*(const Matrix4X4& other) const;
 };

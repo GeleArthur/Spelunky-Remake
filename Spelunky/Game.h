@@ -40,8 +40,8 @@ private:
 	float m_TimeRunning{0};
 	Vector2f m_PrevMouse{0,0};
 	bool m_MouseDown{};
-	Matrix4x4 m_ZoomMatrix{Matrix4x4::IdentityMatrix()};
-	Matrix4x4 m_MoveMatrix{Matrix4x4::IdentityMatrix()};
+	Matrix4X4 m_ZoomMatrix{Matrix4X4::IdentityMatrix()};
+	Matrix4X4 m_MoveMatrix{Matrix4X4::IdentityMatrix()};
 
 	// FUNCTIONS
 	void Initialize();

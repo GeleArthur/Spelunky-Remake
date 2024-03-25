@@ -6,6 +6,8 @@ class RectCollider : public Collider
 public:
     virtual ColliderTypes GetColliderType() const override;
     virtual Vector2f GetCenterPosition() override;
+    void DebugDraw() override;
+
 private:
     
 };

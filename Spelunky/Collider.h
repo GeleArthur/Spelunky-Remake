@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "CollisionHelpers.h"
+struct Vector2f;
 
 enum class ColliderTypes
 {

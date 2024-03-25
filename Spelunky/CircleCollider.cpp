@@ -30,6 +30,16 @@ void CircleCollider::DebugDraw()
     utils::DrawEllipse(GetCenterPosition(), m_Size, m_Size);
 }
 
+Vector2f CircleCollider::GetLocalCenterPosition() const
+{
+    return m_CenterPosition;
+}
+
+void CircleCollider::SetLocalCenterPosition(const Vector2f& newPos)
+{
+    m_CenterPosition = newPos;
+}
+
 // bool SphereCollider::CheckAgainstRect(const Rectf& other, HitInfo& out)
 // {
 //     Vector2f sidesToTest{m_CenterPosition};

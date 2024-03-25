@@ -4,7 +4,7 @@
 #include <iostream>
 
 // Column major matrix
-void Matrix4x4::OpenGlArray(GLfloat (&array)[16]) const
+void Matrix4X4::OpenGlArray(GLfloat (&array)[16]) const
 {
 	array[0] =  m00;
 	array[1] =  m01;
@@ -27,16 +27,16 @@ void Matrix4x4::OpenGlArray(GLfloat (&array)[16]) const
 	array[15] = m33;
 }
 
-void Matrix4x4::GlMultiMatrix() const
+void Matrix4X4::GlMultiMatrix() const
 {
 	GLfloat glArray[16]{};
 	OpenGlArray(glArray);
 	glMultMatrixf(glArray);
 }
 
-Matrix4x4 Matrix4x4::IdentityMatrix()
+Matrix4X4 Matrix4X4::IdentityMatrix()
 {
-	return Matrix4x4{
+	return Matrix4X4{
 		1,0,0,0,
 		0,1,0,0,
 		0,0,1,0,
@@ -44,18 +44,18 @@ Matrix4x4 Matrix4x4::IdentityMatrix()
 	};
 }
 
-Matrix4x4 Matrix4x4::TranslationMatrix(const Vector2f& position)
+Matrix4X4 Matrix4X4::TranslationMatrix(const Vector2f& position)
 {
-	Matrix4x4 result{IdentityMatrix()};
+	Matrix4X4 result{IdentityMatrix()};
 	result.m30 = position.x;
 	result.m31 = position.y;
 
 	return result;
 }
 
-Matrix4x4 Matrix4x4::RotationMatrix(const float rotation)
+Matrix4X4 Matrix4X4::RotationMatrix(const float rotation)
 {
-	Matrix4x4 rotationMatrix{IdentityMatrix()};
+	Matrix4X4 rotationMatrix{IdentityMatrix()};
 	rotationMatrix.m00 = cos(rotation);
 	rotationMatrix.m10 = -sin(rotation);
 	rotationMatrix.m11 = cos(rotation);
@@ -64,30 +64,30 @@ Matrix4x4 Matrix4x4::RotationMatrix(const float rotation)
 	return rotationMatrix;
 }
 
-Matrix4x4 Matrix4x4::ScaleMatrix(const float scale)
+Matrix4X4 Matrix4X4::ScaleMatrix(const float scale)
 {
-	Matrix4x4 scaleMatrix{IdentityMatrix()};
+	Matrix4X4 scaleMatrix{IdentityMatrix()};
 	scaleMatrix.m33 = 1.0f/scale; // Cool tick
 	return scaleMatrix;
 }
 
-Matrix4x4 Matrix4x4::ScaleMatrix(const float scaleX, const float scaleY, const float scaleZ)
+Matrix4X4 Matrix4X4::ScaleMatrix(const float scaleX, const float scaleY, const float scaleZ)
 {
-	Matrix4x4 scaleMatrix{IdentityMatrix()};
+	Matrix4X4 scaleMatrix{IdentityMatrix()};
 	scaleMatrix.m00 = scaleX;
 	scaleMatrix.m11 = scaleY;
 	scaleMatrix.m22 = scaleZ;
 	return scaleMatrix;
 }
 
-Matrix4x4 Matrix4x4::SkewMatrix(const float yx, const float xy)
+Matrix4X4 Matrix4X4::SkewMatrix(const float yx, const float xy)
 {
-	Matrix4x4 skewMatrix{IdentityMatrix()};
+	Matrix4X4 skewMatrix{IdentityMatrix()};
 	skewMatrix.m01 = yx;
 	return skewMatrix;
 }
 
-void Matrix4x4::PrintMatrix() const
+void Matrix4X4::PrintMatrix() const
 {
 	std::cout << m00 << " " << m01 << " " << m02 << " " << m03 << std::endl;
 	std::cout << m10 << " " << m11 << " " << m12 << " " << m13 << std::endl;
@@ -95,9 +95,9 @@ void Matrix4x4::PrintMatrix() const
 	std::cout << m30 << " " << m31 << " " << m32 << " " << m33 << std::endl;
 }
 
-Matrix4x4 Matrix4x4::operator*(const Matrix4x4 &other) const
+Matrix4X4 Matrix4X4::operator*(const Matrix4X4 &other) const
 {
-	Matrix4x4 result;
+	Matrix4X4 result;
 
 	// Love
 	

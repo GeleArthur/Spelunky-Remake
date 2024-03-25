@@ -35,6 +35,7 @@ void CollisionHelpers::CircleVsCircle(const CircleCollider& circle1, const Circl
 
 void CollisionHelpers::RectVsRect(const RectCollider& rect1, const RectCollider& rect2, HitInfo& out)
 {
+    
 }
 
 void CollisionHelpers::RectVsCircle(const RectCollider& rect1, const CircleCollider& rect2, HitInfo& out)

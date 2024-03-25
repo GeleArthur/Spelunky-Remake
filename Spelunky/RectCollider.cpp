@@ -10,3 +10,7 @@ Vector2f RectCollider::GetCenterPosition()
 {
     return Vector2f{0,0};
 }
+
+void RectCollider::DebugDraw()
+{
+}

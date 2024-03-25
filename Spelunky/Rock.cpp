@@ -7,7 +7,7 @@
 
 
 Rock::Rock(const Vector2f& position, const SpriteSheetManager* spriteSheetManager ,const std::vector<std::vector<Tile>>* tiles):
-    PhysicsObject(position, new CircleCollider{Vector2f{}, 30}, tiles),
+    PhysicsObject(position, new CircleCollider{Vector2f{}, 30, this}, tiles),
     m_SpriteSheetManager(spriteSheetManager)
 {
 }

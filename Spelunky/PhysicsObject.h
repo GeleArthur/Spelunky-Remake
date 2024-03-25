@@ -8,12 +8,15 @@ class PhysicsObject
 {
 public:
     explicit PhysicsObject(const Vector2f& position, Collider* collider, const std::vector<std::vector<Tile>>* tiles);
+    PhysicsObject(const PhysicsObject& other);
     virtual ~PhysicsObject();
     Collider* GetCollider() const;
     virtual void UpdatePhysics(float elapsedTime);
 
     Vector2f GetPosition() const;
     void Teleport(const Vector2f& newPosition);
+
+    // PhysicsObject& operator=(const PhysicsObject& rhs) = delete;
     
 private:
     Vector2f m_Position;
