@@ -24,12 +24,18 @@ Cave::Cave(SpriteSheetManager* spriteSheet):
     {
         m_Tiles[x].reserve(MAX_CAVE_TILE_COUNT_Y);
     }
+}
 
+Cave::~Cave()
+{
+}
+
+void Cave::GenerateLevel()
+{
     std::array<std::array<TileTypes, MAX_CAVE_TILE_COUNT_Y>, MAX_CAVE_TILE_COUNT_X> tileTypes;
     GenerateTiles(tileTypes);
 
     const int variantIndexes[] = {0, 1, 4, 5};
-
     for (int x{}; x < MAX_CAVE_TILE_COUNT_X; ++x)
     {
         for (int y{}; y < MAX_CAVE_TILE_COUNT_Y; ++y)
@@ -45,10 +51,6 @@ Cave::Cave(SpriteSheetManager* spriteSheet):
             }
         }
     }
-}
-
-Cave::~Cave()
-{
 }
 
 void Cave::Draw() const
@@ -102,6 +104,8 @@ void Cave::Draw() const
     // }
 }
 
+
+
 const std::vector<std::vector<Tile>>* Cave::GetTiles() const
 {
     return &m_Tiles;
@@ -121,7 +125,7 @@ void Cave::GenerateTiles(std::array<std::array<TileTypes, MAX_CAVE_TILE_COUNT_Y>
     GeneratePath(path, extra);
     m_PathDebug = path;
     m_InfoDebug = extra;
-
+    
     for (int x{}; x < static_cast<int>(path.size()); ++x)
     {
         for (int y{}; y < static_cast<int>(path[x].size()); ++y)

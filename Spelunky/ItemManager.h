@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <array>
 #include <vector>
 
 #include "Item.h"

@@ -20,6 +20,7 @@ public:
 	explicit Cave(SpriteSheetManager* spriteSheet);
 	~Cave();
 	void Draw() const;
+	void GenerateLevel();
 	const std::vector<std::vector<Tile>>* GetTiles() const;
 	const static int MAX_ROOMS_X{4};
 	const static int MAX_ROOMS_Y{4};

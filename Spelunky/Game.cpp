@@ -33,6 +33,7 @@ void Game::Initialize( )
 	m_WorldManager = new WorldManager{};
 	m_SpriteSheetManager = new SpriteSheetManager{};
 	m_Cave = new Cave{m_SpriteSheetManager};
+	m_Cave->GenerateLevel();
 	m_Player = new PlayerObject{m_SpriteSheetManager, m_Cave->GetTiles()};
 	m_ItemManager = new ItemManager{};
 	m_ItemManager->AddItem(new Rock{Vector2f{}, m_SpriteSheetManager, m_Cave->GetTiles()});
@@ -95,9 +96,10 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent &e )
 	//std::cout << "KEYDOWN event: " << e.keysym.sym << std::endl;
 	if(e.keysym.sym == SDLK_r)
 	{
-		delete m_Cave;
+		// delete m_Cave;
 		std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
-		m_Cave = new Cave{SpriteSheetManager::GetSingleton()};
+		m_Cave->GenerateLevel();
+		// m_Cave = new Cave{SpriteSheetManager::GetSingleton()};
 		float elapsedSeconds = std::chrono::duration<float>(std::chrono::steady_clock::now() - t2).count();
 		std::cout << "Took: " << elapsedSeconds << " sec. To generate level";
 	}
