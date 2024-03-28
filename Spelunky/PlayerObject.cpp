@@ -4,12 +4,13 @@
 #include <vector>
 
 #include "CircleCollider.h"
+#include "RectCollider.h"
 #include "SpriteSheetManager.h"
 #include "Texture.h"
 #include "Tile.h"
 
 PlayerObject::PlayerObject(SpriteSheetManager* spriteSheetManager, const std::vector<std::vector<Tile>>* tiles):
-    PhysicsObject(Vector2f{0,0}, new CircleCollider{Vector2f{}, 50, this}, tiles),
+    PhysicsObject(Vector2f{0,0}, new RectCollider{Rectf{0,0,64,64}, this}, tiles),
     m_SpriteSheetManager(spriteSheetManager)
 {
 }

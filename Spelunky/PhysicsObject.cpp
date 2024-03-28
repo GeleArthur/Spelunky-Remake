@@ -1,5 +1,7 @@
 ﻿#include "pch.h"
 #include "PhysicsObject.h"
+
+#include <iostream>
 #include <vector>
 
 #include "CircleCollider.h"
@@ -53,6 +55,13 @@ void PhysicsObject::UpdatePhysics(const float elapsedTime)
     {
         for (int j{}; j < m_WorldTiles->at(i).size(); ++j)
         {
+            CollisionHelpers::HitInfo out;
+            if(CollisionHelpers::CheckAgainstWorld(m_Collider, m_WorldTiles, out))
+            {
+                // WE HIT!!!!
+                std::cout << "WE HIT";
+            }
+            
             
             // CollisionHelpers::RectVsRect()
             // m_WorldTiles->at(i).at(j).GetWorldPosition()

@@ -14,6 +14,7 @@
 #include "RectCollider.h"
 #include "Rock.h"
 #include "Texture.h"
+#include "utils.h"
 #include "WorldManager.h"
 
 
@@ -89,6 +90,21 @@ void Game::Draw( ) const
 	m_ItemManager->DrawItems();
 	m_Player->Draw();
 	glPopMatrix();
+	
+	CircleCollider cool{Vector2f{m_PrevMouse.x,m_PrevMouse.y}, 50};
+	RectCollider rect1{Rectf{200, 200, 63, 200}};
+	CollisionHelpers::HitInfo out;
+	utils::SetColor(Color4f{1,1,1,1});
+
+	if(RectVsCircle(rect1, cool, out))
+	{
+		utils::SetColor(Color4f{1,0,0,1});
+	}
+	utils::FillRect(rect1.GetRect());
+	utils::FillEllipse(cool.GetCenterPosition(), cool.GetSize(), cool.GetSize());
+	
+	
+	// utils::FillEllipse(cool.GetCenterPosition(), cool.GetSize(), cool.GetSize());
 }
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent &e )

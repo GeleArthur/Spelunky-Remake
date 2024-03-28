@@ -16,7 +16,7 @@ ColliderTypes CircleCollider::GetColliderType() const
     return ColliderTypes::circle;
 }
 
-Vector2f CircleCollider::GetCenterPosition()
+Vector2f CircleCollider::GetCenterPosition() const
 {
     Vector2f centerPos = m_CenterPosition;
     if(m_PhysicsOwner != nullptr)
@@ -25,9 +25,21 @@ Vector2f CircleCollider::GetCenterPosition()
     return centerPos;
 }
 
-void CircleCollider::DebugDraw()
+void CircleCollider::DebugDraw() const
 {
     utils::DrawEllipse(GetCenterPosition(), m_Size, m_Size);
+}
+
+bool CircleCollider::CheckCollision(Collider* other, CollisionHelpers::HitInfo& out) const
+{
+    switch (other->GetColliderType())
+    {
+    case ColliderTypes::circle:
+        return CollisionHelpers::CircleVsCircle(*this, dynamic_cast<const CircleCollider&>(*other), out);
+        break;
+    case ColliderTypes::rect:
+        break;
+    }
 }
 
 Vector2f CircleCollider::GetLocalCenterPosition() const
@@ -50,20 +62,4 @@ void CircleCollider::SetSize(float newSize)
     m_Size = newSize;
 }
 
-// bool SphereCollider::CheckAgainstRect(const Rectf& other, HitInfo& out)
-// {
-//     Vector2f sidesToTest{m_CenterPosition};
-//     if(m_CenterPosition.x < other.left) sidesToTest.x = other.left;
-//     else if (m_CenterPosition.x > other.left + other.width) sidesToTest.x = other.left + other.width;
-//
-//     if(m_CenterPosition.y < other.bottom) sidesToTest.y = other.bottom;
-//     else if (m_CenterPosition.y > other.bottom + other.height) sidesToTest.y = other.bottom + other.height;
-//
-//     if(sidesToTest.SquaredLength() < m_Size*m_Size)
-//     {
-//         out.normal;
-//         
-//         return true;
-//     }
-//     return false;
-// }
+

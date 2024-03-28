@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "RectCollider.h"
 
+#include "CircleCollider.h"
 #include "PhysicsObject.h"
 #include "utils.h"
 
@@ -16,7 +17,7 @@ ColliderTypes RectCollider::GetColliderType() const
     return ColliderTypes::rect;
 }
 
-Vector2f RectCollider::GetCenterPosition()
+Vector2f RectCollider::GetCenterPosition() const
 {
     Vector2f centerPos{m_Rect.top - m_Rect.width/2, m_Rect.left - m_Rect.height/2};
     if(m_Owner != nullptr)
@@ -27,13 +28,26 @@ Vector2f RectCollider::GetCenterPosition()
     return centerPos;
 }
 
-void RectCollider::DebugDraw()
+void RectCollider::DebugDraw() const
 {
     const Vector2f pos{ m_Owner != nullptr ? m_Owner->GetPosition() : Vector2f{0,0} };
     utils::DrawRect(Rectf{pos.x + m_Rect.left, pos.y + m_Rect.top, m_Rect.width, m_Rect.height});
 }
 
-Rectf RectCollider::GetRect()
+bool RectCollider::CheckCollision(Collider* other, CollisionHelpers::HitInfo& out) const
+{
+    switch (other->GetColliderType())
+    {
+    case ColliderTypes::circle:
+        return RectVsCircle(*this, dynamic_cast<const CircleCollider&>(*other), out);
+    case ColliderTypes::rect:
+        return RectVsRect(*this, dynamic_cast<const RectCollider&>(*other), out);
+    default:
+        throw;
+    }
+}
+
+Rectf RectCollider::GetRect() const
 {
     return m_Rect;
 }

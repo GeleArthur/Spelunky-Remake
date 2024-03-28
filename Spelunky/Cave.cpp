@@ -32,6 +32,10 @@ Cave::~Cave()
 
 void Cave::GenerateLevel()
 {
+    for (int i{}; i < MAX_CAVE_TILE_COUNT_X; ++i)
+    {
+        m_Tiles[i].clear();
+    }
     std::array<std::array<TileTypes, MAX_CAVE_TILE_COUNT_Y>, MAX_CAVE_TILE_COUNT_X> tileTypes;
     GenerateTiles(tileTypes);
 
