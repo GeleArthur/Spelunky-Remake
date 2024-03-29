@@ -62,7 +62,7 @@ void Cave::Draw() const
     const Texture* doors = m_SpriteSheetManager->GetDoorsTexture();
     doors->Draw(m_EntranceLocation - Vector2f{128-32, 100}, Rectf{256,0,256,256});
     doors->Draw(m_ExitLocation - Vector2f{128-32, 100}, Rectf{0,0,256,256});
-
+    
     
     for (int x{}; x < MAX_CAVE_TILE_COUNT_X; ++x)
     {

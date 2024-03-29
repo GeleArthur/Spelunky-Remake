@@ -34,7 +34,7 @@ void RectCollider::DebugDraw() const
     utils::DrawRect(Rectf{pos.x + m_Rect.left, pos.y + m_Rect.top, m_Rect.width, m_Rect.height});
 }
 
-bool RectCollider::CheckCollision(Collider* other, CollisionHelpers::HitInfo& out) const
+bool RectCollider::CheckCollision(Collider* other, collision_helpers::HitInfo& out) const
 {
     switch (other->GetColliderType())
     {

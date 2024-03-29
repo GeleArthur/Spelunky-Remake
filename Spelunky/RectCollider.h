@@ -10,7 +10,7 @@ public:
     virtual ColliderTypes GetColliderType() const override;
     virtual Vector2f GetCenterPosition() const override;
     virtual void DebugDraw() const override;
-    virtual bool CheckCollision(Collider* other, CollisionHelpers::HitInfo& out) const override;
+    virtual bool CheckCollision(Collider* other, collision_helpers::HitInfo& out) const override;
 
     
     Rectf GetRect() const;

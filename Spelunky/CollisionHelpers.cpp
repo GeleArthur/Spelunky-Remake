@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "CollisionHelpers.h"
 
+#include <iostream>
 #include <vector>
 
 #include "CircleCollider.h"
@@ -9,7 +10,7 @@
 #include "Tile.h"
 #include "utils.h"
 
-bool CollisionHelpers::CheckCollision(const Collider& collider1, const Collider& collider2, HitInfo& out)
+bool collision_helpers::CheckCollision(const Collider& collider1, const Collider& collider2, HitInfo& out)
 {
     const char collider1Type = static_cast<char>(collider1.GetColliderType());
     const char collider2Type = static_cast<char>(collider2.GetColliderType());
@@ -38,7 +39,7 @@ bool CollisionHelpers::CheckCollision(const Collider& collider1, const Collider&
     }
 }
 
-bool CollisionHelpers::CircleVsCircle(const CircleCollider& circle1, const CircleCollider& circle2, HitInfo& out)
+bool collision_helpers::CircleVsCircle(const CircleCollider& circle1, const CircleCollider& circle2, HitInfo& out)
 {
     const Vector2f distance = (circle2.GetCenterPosition() - circle1.GetCenterPosition());
     if(distance.SquaredLength() > circle1.GetSize()*circle1.GetSize()+circle2.GetSize()*circle2.GetSize())
@@ -53,7 +54,7 @@ bool CollisionHelpers::CircleVsCircle(const CircleCollider& circle1, const Circl
     return false;
 }
 
-bool CollisionHelpers::RectVsRect(const RectCollider& rect1, const RectCollider& rect2, HitInfo& out)
+bool collision_helpers::RectVsRect(const RectCollider& rect1, const RectCollider& rect2, HitInfo& out)
 {
     Rectf rectData1 = rect1.GetRect();
     Rectf rectData2 = rect2.GetRect();
@@ -74,7 +75,7 @@ bool CollisionHelpers::RectVsRect(const RectCollider& rect1, const RectCollider&
     return false;
 }
 
-bool CollisionHelpers::RectVsCircle(const RectCollider& rect1, const CircleCollider& circle, HitInfo& out)
+bool collision_helpers::RectVsCircle(const RectCollider& rect1, const CircleCollider& circle, HitInfo& out)
 {
     utils::DrawEllipse(Vector2f{rect1.GetRect().left, rect1.GetRect().top}, circle.GetSize(), circle.GetSize());
     utils::DrawEllipse(Vector2f{rect1.GetRect().left + rect1.GetRect().width, rect1.GetRect().top}, circle.GetSize(), circle.GetSize());
@@ -106,7 +107,7 @@ bool CollisionHelpers::RectVsCircle(const RectCollider& rect1, const CircleColli
     return false;
 }
 
-bool CollisionHelpers::CheckAgainstWorld(const Collider* collider, const std::vector<std::vector<Tile>>* worldTiles, HitInfo& out)
+bool collision_helpers::CheckAgainstWorld(const Collider* collider, const std::vector<std::vector<Tile>>* worldTiles, HitInfo& out)
 {
     switch(collider->GetColliderType())
     {
@@ -119,5 +120,54 @@ bool CollisionHelpers::CheckAgainstWorld(const Collider* collider, const std::ve
     }
 
     return false;
+}
+
+bool collision_helpers::RayVsRect(const Rectf& rect, const Vector2f& rayOrigin, const Vector2f& rayDir, RayVsRectInfo& out )
+{
+    const float nearTimeX = (rect.left - rayOrigin.x)/rayDir.x;
+    const float nearTimeY = (rect.top - rayOrigin.y)/rayDir.y;
+
+    const float farTimeX = (rect.left + rect.width - rayOrigin.x)/rayDir.x;
+    const float farTimeY = (rect.top + rect.height - rayOrigin.y)/rayDir.y;
     
+    if(nearTimeX < farTimeY && nearTimeY < farTimeX)
+    {
+        utils::SetColor(Color4f{0,1,0,1});
+        out.nearHit = std::max(nearTimeX, nearTimeY);
+        out.pointHit = rayOrigin + rayDir * out.nearHit;
+        utils::FillEllipse(rayOrigin + rayDir * out.nearHit, 10, 10);
+
+        utils::SetColor(Color4f{1,0,0,1});
+        out.farHit = std::min(farTimeX, farTimeY);
+
+        utils::FillEllipse(rayOrigin + rayDir * out.farHit, 10, 10);
+        if(nearTimeX > nearTimeY)
+        {
+            if(rayDir.x < 0) out.normal = Vector2f{1,0};
+            else out.normal = Vector2f{-1,0};
+        }
+        else
+        {
+            if(rayDir.y < 0) out.normal = Vector2f{0,1};
+            else out.normal = Vector2f{0,-1};
+        }
+        
+        return true;
+    }
+    
+    return false;
+}
+
+bool collision_helpers::DynamicRectVsRect(const Rectf& rect, const Vector2f& velocity, const Rectf& staticRect, RayVsRectInfo& out)
+{
+    Rectf expendRect{staticRect.left - rect.width/2, staticRect.top - rect.height/2, staticRect.width + rect.width, staticRect.height + rect.height};
+    utils::DrawRect(expendRect);
+
+    if(RayVsRect(expendRect, Vector2f{rect.left + rect.width/2, rect.top + rect.height/2}, velocity, out))
+    {
+        return out.nearHit < 1.0;
+    }
+    
+    
+    return false;
 }

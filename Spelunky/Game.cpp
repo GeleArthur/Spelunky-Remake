@@ -71,8 +71,7 @@ void Game::Update( float elapsedSec )
 void Game::Draw( ) const
 {
 	ClearBackground( );
-
-
+	
 	glPushMatrix();
 	m_MoveMatrix.GlMultiMatrix();
 	m_ZoomMatrix.GlMultiMatrix();
@@ -85,23 +84,43 @@ void Game::Draw( ) const
 			m_SpriteSheetManager->GetBackGroundTexture()->Draw(Vector2f{x*256.0f,y*256.f});
 		}
 	}
-
+	
 	m_Cave->Draw();
 	m_ItemManager->DrawItems();
 	m_Player->Draw();
 	glPopMatrix();
-	
-	CircleCollider cool{Vector2f{m_PrevMouse.x,m_PrevMouse.y}, 50};
-	RectCollider rect1{Rectf{200, 200, 63, 200}};
-	CollisionHelpers::HitInfo out;
-	utils::SetColor(Color4f{1,1,1,1});
 
-	if(RectVsCircle(rect1, cool, out))
+	
+	// utils::DrawRect(collison);
+	// utils::DrawLine(Vector2f{100,100}, m_PrevMouse);
+
+	// if(collision_helpers::RayVsRect(collison, Vector2f{100,100}, m_PrevMouse - Vector2f{100,100}, out) && out.nearHit < 1.0f)
+	// {
+	// 	utils::DrawLine(out.pointHit, out.pointHit+ out.normal*50);
+	// }
+
+	Rectf collison{200, 200, 63, 200};
+	collision_helpers::RayVsRectInfo out;
+	Rectf movingRect{m_PrevMouse.x,m_PrevMouse.y, 30, 30};
+	Vector2f velocity{30, 30};	
+	
+	if(collision_helpers::DynamicRectVsRect(movingRect, velocity, collison, out))
 	{
-		utils::SetColor(Color4f{1,0,0,1});
+		
 	}
-	utils::FillRect(rect1.GetRect());
-	utils::FillEllipse(cool.GetCenterPosition(), cool.GetSize(), cool.GetSize());
+	
+	
+	// CircleCollider cool{Vector2f{m_PrevMouse.x,m_PrevMouse.y}, 50};
+	// RectCollider rect1{};
+	// CollisionHelpers::HitInfo out;
+	// utils::SetColor(Color4f{1,1,1,1});
+	//
+	// if(RectVsCircle(rect1, cool, out))
+	// {
+	// 	utils::SetColor(Color4f{1,0,0,1});
+	// }
+	// utils::FillRect(rect1.GetRect());
+	// utils::FillEllipse(cool.GetCenterPosition(), cool.GetSize(), cool.GetSize());
 	
 	
 	// utils::FillEllipse(cool.GetCenterPosition(), cool.GetSize(), cool.GetSize());

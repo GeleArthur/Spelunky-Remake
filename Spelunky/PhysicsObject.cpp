@@ -55,8 +55,8 @@ void PhysicsObject::UpdatePhysics(const float elapsedTime)
     {
         for (int j{}; j < m_WorldTiles->at(i).size(); ++j)
         {
-            CollisionHelpers::HitInfo out;
-            if(CollisionHelpers::CheckAgainstWorld(m_Collider, m_WorldTiles, out))
+            collision_helpers::HitInfo out;
+            if(collision_helpers::CheckAgainstWorld(m_Collider, m_WorldTiles, out))
             {
                 // WE HIT!!!!
                 std::cout << "WE HIT";

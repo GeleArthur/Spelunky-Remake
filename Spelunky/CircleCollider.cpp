@@ -30,12 +30,12 @@ void CircleCollider::DebugDraw() const
     utils::DrawEllipse(GetCenterPosition(), m_Size, m_Size);
 }
 
-bool CircleCollider::CheckCollision(Collider* other, CollisionHelpers::HitInfo& out) const
+bool CircleCollider::CheckCollision(Collider* other, collision_helpers::HitInfo& out) const
 {
     switch (other->GetColliderType())
     {
     case ColliderTypes::circle:
-        return CollisionHelpers::CircleVsCircle(*this, dynamic_cast<const CircleCollider&>(*other), out);
+        return collision_helpers::CircleVsCircle(*this, dynamic_cast<const CircleCollider&>(*other), out);
         break;
     case ColliderTypes::rect:
         break;

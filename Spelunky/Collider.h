@@ -15,5 +15,5 @@ public:
     virtual ColliderTypes GetColliderType() const = 0;
     virtual Vector2f GetCenterPosition() const = 0;
     virtual void DebugDraw() const = 0;
-    virtual bool CheckCollision(Collider* other, CollisionHelpers::HitInfo& out) const = 0;
+    virtual bool CheckCollision(Collider* other, collision_helpers::HitInfo& out) const = 0;
 };
