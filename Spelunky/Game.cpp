@@ -56,6 +56,12 @@ void Game::Update( float elapsedSec )
 	m_TimeRunning += elapsedSec;
 	m_Player->Update(elapsedSec);
 	m_ItemManager->UpdateItems(elapsedSec);
+
+	if(m_MouseDown)
+	{
+		m_DebugStartPoint = Vector2f{m_PrevMouse};
+	}
+	
 	// Check keyboard state
 	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
 	//if ( pStates[SDL_SCANCODE_RIGHT] )
@@ -89,41 +95,40 @@ void Game::Draw( ) const
 	m_ItemManager->DrawItems();
 	m_Player->Draw();
 	glPopMatrix();
+	// Rectf movingRect{m_PrevMouse.x,m_PrevMouse.y, 30, 30};
+	// utils::DrawRect(movingRect);
 
-	
-	// utils::DrawRect(collison);
-	// utils::DrawLine(Vector2f{100,100}, m_PrevMouse);
-
-	// if(collision_helpers::RayVsRect(collison, Vector2f{100,100}, m_PrevMouse - Vector2f{100,100}, out) && out.nearHit < 1.0f)
-	// {
-	// 	utils::DrawLine(out.pointHit, out.pointHit+ out.normal*50);
-	// }
-
-	Rectf collison{200, 200, 63, 200};
-	collision_helpers::RayVsRectInfo out;
-	Rectf movingRect{m_PrevMouse.x,m_PrevMouse.y, 30, 30};
-	Vector2f velocity{30, 30};	
-	
-	if(collision_helpers::DynamicRectVsRect(movingRect, velocity, collison, out))
-	{
-		
-	}
-	
-	
-	// CircleCollider cool{Vector2f{m_PrevMouse.x,m_PrevMouse.y}, 50};
-	// RectCollider rect1{};
-	// CollisionHelpers::HitInfo out;
+	// Rectf collison{200, 200, 63, 200};
 	// utils::SetColor(Color4f{1,1,1,1});
-	//
-	// if(RectVsCircle(rect1, cool, out))
+	// utils::DrawRect(collison);
+	// utils::SetColor(Color4f{0,0,1,1});
+	// utils::DrawLine(m_DebugStartPoint, m_PrevMouse);
+
+	// if(
+	// 	collision_helpers::RayVsRectInfo out;
+	// 	RayVsRect(collison, m_DebugStartPoint, m_PrevMouse - m_DebugStartPoint, out))
 	// {
-	// 	utils::SetColor(Color4f{1,0,0,1});
+	// 	// utils::SetColor(Color4f{0,1,0,1});
+	// 	// utils::DrawEllipse(out.pointHit, 10, 10);
 	// }
-	// utils::FillRect(rect1.GetRect());
-	// utils::FillEllipse(cool.GetCenterPosition(), cool.GetSize(), cool.GetSize());
+	//
+	//
+	// Rectf movingRect{m_PrevMouse.x, m_PrevMouse.y, 50, 25};
+	// Vector2f velocity{100, 100};
+	// utils::DrawRect(movingRect);
+	// utils::SetColor({0.3f,0.6f,0,1});
+	// utils::DrawRect(movingRect.left + velocity.x, movingRect.top + velocity.y, movingRect.width, movingRect.height);
+	//
+	// if(
+	// 	collision_helpers::RayVsRectInfo out;
+	// 	DynamicRectVsRect(movingRect, velocity, collison, out))
+	// {
+	// 	utils::SetColor(Color4f{0,1,0,1});
+	// 	utils::DrawRect(out.pointHit.x - movingRect.width/2, out.pointHit.y - movingRect.height/2, movingRect.width, movingRect.height);
+	// 	// utils::DrawEllipse(out.pointHit, 10, 10);
+	// }
 	
 	
-	// utils::FillEllipse(cool.GetCenterPosition(), cool.GetSize(), cool.GetSize());
 }
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent &e )
@@ -221,6 +226,6 @@ void Game::ProcessWheelEvent(const SDL_MouseWheelEvent& e)
 
 void Game::ClearBackground( ) const
 {
-	glClearColor( 1.0f, 1.0f, 1.0f, 1.0f );
+	glClearColor( 0.2f, 0.2f, 0.2f, 1.0f );
 	glClear( GL_COLOR_BUFFER_BIT );
 }

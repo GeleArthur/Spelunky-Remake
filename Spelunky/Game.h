@@ -36,7 +36,8 @@ private:
 	PlayerObject* m_Player;
 	WorldManager* m_WorldManager;
 	ItemManager* m_ItemManager;
-	
+
+	Vector2f m_DebugStartPoint{};
 	float m_TimeRunning{0};
 	Vector2f m_PrevMouse{0,0};
 	bool m_MouseDown{};
