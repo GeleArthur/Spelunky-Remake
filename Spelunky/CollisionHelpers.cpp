@@ -10,35 +10,6 @@
 #include "Tile.h"
 #include "utils.h"
 
-bool collision_helpers::CheckCollision(const Collider& collider1, const Collider& collider2, HitInfo& out)
-{
-    const char collider1Type = static_cast<char>(collider1.GetColliderType());
-    const char collider2Type = static_cast<char>(collider2.GetColliderType());
-
-    // Real 
-    switch (collider1Type | collider2Type)
-    {
-    case 0b0000'0001:
-        return  CircleVsCircle(reinterpret_cast<const CircleCollider&>(collider1),
-                       reinterpret_cast<const CircleCollider&>(collider2), out);
-    case 0b0000'0010:
-        return RectVsRect(reinterpret_cast<const RectCollider&>(collider1),
-                   reinterpret_cast<const RectCollider&>(collider2), out);
-    case 0b0000'0011:
-        if(collider1Type == 0b0000'0001)
-        {
-            return RectVsCircle(reinterpret_cast<const RectCollider&>(collider2), reinterpret_cast<const CircleCollider&>(collider1),  out);
-        }
-        else
-        {
-            return RectVsCircle(reinterpret_cast<const RectCollider&>(collider1), reinterpret_cast<const CircleCollider&>(collider2),  out);
-        }
-    default:
-        throw;
-        return false;
-    }
-}
-
 bool collision_helpers::CircleVsCircle(const CircleCollider& circle1, const CircleCollider& circle2, HitInfo& out)
 {
     const Vector2f distance = (circle2.GetCenterPosition() - circle1.GetCenterPosition());
@@ -75,50 +46,32 @@ bool collision_helpers::RectVsRect(const RectCollider& rect1, const RectCollider
     return false;
 }
 
-bool collision_helpers::RectVsCircle(const RectCollider& rect1, const CircleCollider& circle, HitInfo& out)
+bool collision_helpers::CircleVsRect(const CircleCollider& circle, const RectCollider& rect1, HitInfo& out)
 {
-    utils::DrawEllipse(Vector2f{rect1.GetRect().left, rect1.GetRect().top}, circle.GetSize(), circle.GetSize());
-    utils::DrawEllipse(Vector2f{rect1.GetRect().left + rect1.GetRect().width, rect1.GetRect().top}, circle.GetSize(), circle.GetSize());
-    utils::DrawEllipse(Vector2f{rect1.GetRect().left, rect1.GetRect().top + rect1.GetRect().height }, circle.GetSize(), circle.GetSize());
-    utils::DrawEllipse(Vector2f{rect1.GetRect().left + rect1.GetRect().width, rect1.GetRect().top + rect1.GetRect().height}, circle.GetSize(), circle.GetSize());
-
-    
     const Vector2f centerPosCircle = circle.GetCenterPosition();
-    Vector2f sidesToTest{circle.GetCenterPosition()};
-    const Rectf other{rect1.GetRect()};
+    Vector2f intersectPoint{circle.GetCenterPosition()};
+    const Rectf rectOther{rect1.GetRect()};
     
-    if(centerPosCircle.x < other.left) sidesToTest.x = other.left;
-    else if (centerPosCircle.x > other.left + other.width) sidesToTest.x = other.left + other.width;
+    if(centerPosCircle.x < rectOther.left) intersectPoint.x = rectOther.left;
+    else if (centerPosCircle.x > rectOther.left + rectOther.width) intersectPoint.x = rectOther.left + rectOther.width;
 
-    if(centerPosCircle.y < other.top) sidesToTest.y = other.top;
-    else if (centerPosCircle.y > other.top + other.height) sidesToTest.y = other.top + other.height;
+    if(centerPosCircle.y < rectOther.top) intersectPoint.y = rectOther.top;
+    else if (centerPosCircle.y > rectOther.top + rectOther.height) intersectPoint.y = rectOther.top + rectOther.height;
     
-    utils::DrawEllipse(sidesToTest, circle.GetSize(), circle.GetSize());
-
-    const Vector2f distance = centerPosCircle - sidesToTest;
+    const Vector2f distance = intersectPoint - centerPosCircle;
+    const float overlap = circle.GetSize() - distance.Length();
     
-    if(distance.SquaredLength() <= circle.GetSize()*circle.GetSize())
+    if(overlap > 0)
     {
-        out.intersectPoint = sidesToTest;
-        out.normal = distance.Normalized();
-        out.lambda = 0; // ????? 
+        if(distance.SquaredLength() <= 0)
+        {
+            std::cout << "Physics are going to fast!!!" << '\n';
+        }
+        out.intersectPoint = intersectPoint;
+        out.normal = -distance.Normalized();
+        out.lambda = overlap;
         return true;
     }
-    return false;
-}
-
-bool collision_helpers::CheckAgainstWorld(const Collider* collider, const std::vector<std::vector<Tile>>* worldTiles, HitInfo& out)
-{
-    switch(collider->GetColliderType())
-    {
-    case ColliderTypes::circle:
-        
-        return false;
-    case ColliderTypes::rect:
-        
-        return false;
-    }
-
     return false;
 }
 
@@ -157,7 +110,7 @@ bool collision_helpers::RayVsRect(const Rectf& rect, const Vector2f& rayOrigin, 
     return true;
 }
 
-bool collision_helpers::DynamicRectVsRect(const Rectf& movingRect, const Vector2f& velocity, const Rectf& staticRect, RayVsRectInfo& out)
+bool collision_helpers::RectRayVsRect(const Rectf& movingRect, const Vector2f& rayDirection, const Rectf& staticRect, RayVsRectInfo& out)
 {
     const Rectf extendedRect{
         staticRect.left - movingRect.width/2,
@@ -166,10 +119,19 @@ bool collision_helpers::DynamicRectVsRect(const Rectf& movingRect, const Vector2
         staticRect.height + movingRect.height
     };
     
-    if(RayVsRect(extendedRect, Vector2f{movingRect.left + movingRect.width/2, movingRect.top + movingRect.height/2}, velocity, out))
+    if(RayVsRect(extendedRect, Vector2f{movingRect.left + movingRect.width/2, movingRect.top + movingRect.height/2}, rayDirection, out))
     {
         return out.nearHit < 1.0;
     }
     
+    return false;
+}
+
+bool collision_helpers::CircleRayVsRect(
+    const CircleCollider& movingCircle,
+    const Vector2f& rayDirection,
+    const Rectf& staticRect,
+    RayVsRectInfo& out)
+{
     return false;
 }

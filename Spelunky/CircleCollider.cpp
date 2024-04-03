@@ -40,6 +40,7 @@ bool CircleCollider::CheckCollision(Collider* other, collision_helpers::HitInfo&
     case ColliderTypes::rect:
         break;
     }
+    return false;
 }
 
 Vector2f CircleCollider::GetLocalCenterPosition() const

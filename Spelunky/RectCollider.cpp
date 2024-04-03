@@ -39,7 +39,7 @@ bool RectCollider::CheckCollision(Collider* other, collision_helpers::HitInfo& o
     switch (other->GetColliderType())
     {
     case ColliderTypes::circle:
-        return RectVsCircle(*this, dynamic_cast<const CircleCollider&>(*other), out);
+        return CircleVsRect(dynamic_cast<const CircleCollider&>(*other), *this, out);
     case ColliderTypes::rect:
         return RectVsRect(*this, dynamic_cast<const RectCollider&>(*other), out);
     default:

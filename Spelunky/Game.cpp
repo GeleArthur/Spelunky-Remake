@@ -95,6 +95,19 @@ void Game::Draw( ) const
 	m_ItemManager->DrawItems();
 	m_Player->Draw();
 	glPopMatrix();
+
+	utils::DrawEllipse(m_PrevMouse, 30, 30);
+	utils::DrawRect(Rectf{200, 200, 230, 100});
+
+	if(collision_helpers::HitInfo out; CircleVsRect(CircleCollider{m_PrevMouse, 30}, RectCollider{Rectf{200, 200, 230, 100}}, out))
+	{
+		// utils::FillEllipse(out.intersectPoint, 5, 5);
+		// utils::DrawEllipse(m_PrevMouse + out.normal * out.lambda, 30, 30);
+		utils::DrawEllipse(out.intersectPoint + out.normal * 30, 28, 28);
+		utils::DrawLine(out.intersectPoint, out.intersectPoint + out.normal * 30);
+	}
+
+	
 	// Rectf movingRect{m_PrevMouse.x,m_PrevMouse.y, 30, 30};
 	// utils::DrawRect(movingRect);
 

@@ -1,8 +1,6 @@
 ﻿#pragma once
 #include <vector>
 
-#include "Tile.h"
-
 class RectCollider;
 class Collider;
 class CircleCollider;
@@ -24,11 +22,11 @@ namespace collision_helpers
         float farHit;
     };
 
-    bool CheckCollision(const Collider& collider1, const Collider& collider2, HitInfo& out);
     bool CircleVsCircle(const CircleCollider& circle1, const CircleCollider& circle2, HitInfo& out);
     bool RectVsRect(const RectCollider& rect1, const RectCollider& rect2, HitInfo& out);
-    bool RectVsCircle(const RectCollider& rect1, const CircleCollider& circle, HitInfo& out);
-    bool CheckAgainstWorld(const Collider* collider, const std::vector<std::vector<Tile>>* worldTiles, HitInfo& out);
+    bool CircleVsRect(const CircleCollider& circle, const RectCollider& rect1, HitInfo& out);
+
     bool RayVsRect(const Rectf& rect, const Vector2f& rayOrigin, const Vector2f& rayDir, RayVsRectInfo& out );
-    bool DynamicRectVsRect(const Rectf& movingRect, const Vector2f& velocity, const Rectf& staticRect, RayVsRectInfo& out);
+    bool RectRayVsRect(const Rectf& movingRect, const Vector2f& rayDirection, const Rectf& staticRect, RayVsRectInfo& out);
+    bool CircleRayVsRect(const CircleCollider& movingCircle, const Vector2f& rayDirection,  const Rectf& staticRect, RayVsRectInfo& out);
 };
