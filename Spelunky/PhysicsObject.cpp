@@ -6,6 +6,7 @@
 
 #include "CircleCollider.h"
 #include "Collider.h"
+#include "GlobalValues.h"
 #include "RectCollider.h"
 #include "Tile.h"
 
@@ -51,13 +52,18 @@ void PhysicsObject::UpdatePhysics(const float elapsedTime)
     m_Velocity += Vector2f{0, 100.f} * elapsedTime;
     m_Position += m_Velocity * elapsedTime;
     
-    for (int i{}; i < m_WorldTiles->size(); ++i)
+    for (int i{}; i < int(m_WorldTiles->size()); ++i)
     {
-        for (int j{}; j < m_WorldTiles->at(i).size(); ++j)
+        for (int j{}; j < int(m_WorldTiles->at(i).size()); ++j)
         {
-            collision_helpers::HitInfo out;
+            const Tile* currentTile = &m_WorldTiles->at(i).at(j);
+            if(currentTile->GetTileType() == TileTypes::air) continue;
             
-            
+            if(collision_helpers::HitInfo out; m_Collider->CheckCollision(currentTile->GetCollider(), out))
+            {
+                m_Position = out.intersectPoint;
+                m_Velocity.y = 0;
+            }
             
             // CollisionHelpers::RectVsRect()
             // m_WorldTiles->at(i).at(j).GetWorldPosition()

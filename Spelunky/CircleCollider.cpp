@@ -30,7 +30,7 @@ void CircleCollider::DebugDraw() const
     utils::DrawEllipse(GetCenterPosition(), m_Size, m_Size);
 }
 
-bool CircleCollider::CheckCollision(Collider* other, collision_helpers::HitInfo& out) const
+bool CircleCollider::CheckCollision(const Collider* other, collision_helpers::HitInfo& out) const
 {
     switch (other->GetColliderType())
     {

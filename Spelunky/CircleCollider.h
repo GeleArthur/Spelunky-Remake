@@ -3,20 +3,20 @@
 
 class PhysicsObject;
 
-class CircleCollider : public Collider
+class CircleCollider final : public Collider
 {
 public:
     explicit CircleCollider(const Vector2f& position, float size, PhysicsObject* owner = nullptr);
     virtual ColliderTypes GetColliderType() const override;
     virtual Vector2f GetCenterPosition() const override;
     virtual void DebugDraw() const override;
-    bool CheckCollision(Collider* other, collision_helpers::HitInfo& out) const override;
+    bool CheckCollision(const Collider* other, collision_helpers::HitInfo& out) const override;
 
     Vector2f GetLocalCenterPosition() const;
     void SetLocalCenterPosition(const Vector2f& newPos);
     float GetSize() const;
     void SetSize(float newSize);
-
+    
 private:
     Vector2f m_CenterPosition;
     float m_Size;

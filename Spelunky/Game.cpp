@@ -55,7 +55,7 @@ void Game::Update( float elapsedSec )
 {
 	m_TimeRunning += elapsedSec;
 	m_Player->Update(elapsedSec);
-	m_ItemManager->UpdateItems(elapsedSec);
+	// m_ItemManager->UpdateItems(elapsedSec);
 
 	if(m_MouseDown)
 	{
@@ -95,53 +95,6 @@ void Game::Draw( ) const
 	m_ItemManager->DrawItems();
 	m_Player->Draw();
 	glPopMatrix();
-
-	utils::DrawEllipse(m_PrevMouse, 30, 30);
-	utils::DrawRect(Rectf{200, 200, 230, 100});
-
-	if(collision_helpers::HitInfo out; CircleVsRect(CircleCollider{m_PrevMouse, 30}, RectCollider{Rectf{200, 200, 230, 100}}, out))
-	{
-		// utils::FillEllipse(out.intersectPoint, 5, 5);
-		// utils::DrawEllipse(m_PrevMouse + out.normal * out.lambda, 30, 30);
-		utils::DrawEllipse(out.intersectPoint + out.normal * 30, 28, 28);
-		utils::DrawLine(out.intersectPoint, out.intersectPoint + out.normal * 30);
-	}
-
-	
-	// Rectf movingRect{m_PrevMouse.x,m_PrevMouse.y, 30, 30};
-	// utils::DrawRect(movingRect);
-
-	// Rectf collison{200, 200, 63, 200};
-	// utils::SetColor(Color4f{1,1,1,1});
-	// utils::DrawRect(collison);
-	// utils::SetColor(Color4f{0,0,1,1});
-	// utils::DrawLine(m_DebugStartPoint, m_PrevMouse);
-
-	// if(
-	// 	collision_helpers::RayVsRectInfo out;
-	// 	RayVsRect(collison, m_DebugStartPoint, m_PrevMouse - m_DebugStartPoint, out))
-	// {
-	// 	// utils::SetColor(Color4f{0,1,0,1});
-	// 	// utils::DrawEllipse(out.pointHit, 10, 10);
-	// }
-	//
-	//
-	// Rectf movingRect{m_PrevMouse.x, m_PrevMouse.y, 50, 25};
-	// Vector2f velocity{100, 100};
-	// utils::DrawRect(movingRect);
-	// utils::SetColor({0.3f,0.6f,0,1});
-	// utils::DrawRect(movingRect.left + velocity.x, movingRect.top + velocity.y, movingRect.width, movingRect.height);
-	//
-	// if(
-	// 	collision_helpers::RayVsRectInfo out;
-	// 	DynamicRectVsRect(movingRect, velocity, collison, out))
-	// {
-	// 	utils::SetColor(Color4f{0,1,0,1});
-	// 	utils::DrawRect(out.pointHit.x - movingRect.width/2, out.pointHit.y - movingRect.height/2, movingRect.width, movingRect.height);
-	// 	// utils::DrawEllipse(out.pointHit, 10, 10);
-	// }
-	
-	
 }
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent &e )

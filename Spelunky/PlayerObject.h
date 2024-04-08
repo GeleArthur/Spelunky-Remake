@@ -6,7 +6,7 @@
 class Tile;
 class SpriteSheetManager;
 
-class PlayerObject final : PhysicsObject
+class PlayerObject final : public PhysicsObject
 {
 public:
     explicit PlayerObject(SpriteSheetManager* spriteSheetManager, const std::vector<std::vector<Tile>>* tiles);

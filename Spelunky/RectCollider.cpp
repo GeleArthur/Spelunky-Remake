@@ -9,7 +9,6 @@ RectCollider::RectCollider(const Rectf& rect, PhysicsObject* owner):
     m_Rect(rect),
     m_Owner(owner)
 {
-    
 }
 
 ColliderTypes RectCollider::GetColliderType() const
@@ -34,22 +33,28 @@ void RectCollider::DebugDraw() const
     utils::DrawRect(Rectf{pos.x + m_Rect.left, pos.y + m_Rect.top, m_Rect.width, m_Rect.height});
 }
 
-bool RectCollider::CheckCollision(Collider* other, collision_helpers::HitInfo& out) const
+bool RectCollider::CheckCollision(const Collider* other, collision_helpers::HitInfo& out) const
 {
     switch (other->GetColliderType())
     {
     case ColliderTypes::circle:
-        return CircleVsRect(dynamic_cast<const CircleCollider&>(*other), *this, out);
+        return CircleVsRect(reinterpret_cast<const CircleCollider&>(*other), *this, out);
     case ColliderTypes::rect:
-        return RectVsRect(*this, dynamic_cast<const RectCollider&>(*other), out);
+        return RectVsRect(*this, reinterpret_cast<const RectCollider&>(*other), out);
     default:
         throw;
     }
 }
 
-Rectf RectCollider::GetRect() const
+const Rectf& RectCollider::GetRect() const
 {
     return m_Rect;
+}
+
+Rectf RectCollider::GetRectWorldSpace() const
+{
+    const Vector2f center = m_Owner->GetPosition();
+    return Rectf{center.x + m_Rect.left, center.y + m_Rect.top, m_Rect.width, m_Rect.height};
 }
 
 void RectCollider::SetRect(const Rectf& rect)

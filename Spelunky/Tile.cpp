@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+#include "GlobalValues.h"
 #include "TileTypes.h"
 #include "SpriteSheetManager.h"
 #include "Texture.h"
@@ -11,7 +12,8 @@
 
 Tile::Tile(const TileTypes tileType, const Vector2i tileIndex, SpriteSheetManager* spriteSheet):
 	m_SpriteSheetManager(spriteSheet),
-	m_Position(tileIndex * 64),
+	m_Position(tileIndex * g_TileSize),
+	m_Collider(RectCollider{Rectf{m_Position.x, m_Position.y, g_TileSize, g_TileSize}}),
 	m_TileType(tileType),
 	m_VariantIndex(0)
 {
@@ -68,11 +70,20 @@ void Tile::Draw() const
 
 Vector2i Tile::GetIndexPosition() const
 {
-	return Vector2i{static_cast<int>(m_Position.x/64), static_cast<int>(m_Position.y/64)};
+	return Vector2i{static_cast<int>(m_Position.x/g_TileSize), static_cast<int>(m_Position.y/g_TileSize)};
 }
 
-Vector2f Tile::GetWorldPosition() const
+const Vector2f& Tile::GetWorldPosition() const
 {
 	return m_Position;
 }
 
+TileTypes Tile::GetTileType() const
+{
+	return m_TileType;
+}
+
+const RectCollider* Tile::GetCollider() const
+{
+	return &m_Collider;
+}
