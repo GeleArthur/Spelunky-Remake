@@ -6,19 +6,17 @@ class PhysicsObject;
 class CircleCollider final : public Collider
 {
 public:
-    explicit CircleCollider(const Vector2f& position, float size, PhysicsObject* owner = nullptr);
+    explicit CircleCollider(const Vector2f& position, float size);
     virtual ColliderTypes GetColliderType() const override;
-    virtual Vector2f GetCenterPosition() const override;
     virtual void DebugDraw() const override;
-    bool CheckCollision(const Collider* other, collision_helpers::HitInfo& out) const override;
 
-    Vector2f GetLocalCenterPosition() const;
-    void SetLocalCenterPosition(const Vector2f& newPos);
     float GetSize() const;
     void SetSize(float newSize);
+
+    const Vector2f& GetCenterPosition() const;
+    void SetCenterPosition(const Vector2f& newPosition);
     
 private:
     Vector2f m_CenterPosition;
     float m_Size;
-    PhysicsObject* m_PhysicsOwner;
 };

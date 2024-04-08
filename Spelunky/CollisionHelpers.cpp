@@ -27,8 +27,8 @@ bool collision_helpers::CircleVsCircle(const CircleCollider& circle1, const Circ
 
 bool collision_helpers::RectVsRect(const RectCollider& rect1, const RectCollider& rect2, HitInfo& out)
 {
-    Rectf rectData1 = rect1.GetRectWorldSpace();
-    Rectf rectData2 = rect2.GetRectWorldSpace();
+    Rectf rectData1 = rect1.GetRect();
+    Rectf rectData2 = rect2.GetRect();
 
     Vector2f centerRect1 = Vector2f{rectData1.left + rectData1.width/2, rectData1.top + rectData1.height/2};
     
