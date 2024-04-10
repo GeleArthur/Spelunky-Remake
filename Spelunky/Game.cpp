@@ -8,6 +8,8 @@
 
 #include "Cave.h"
 #include "CircleCollider.h"
+#include "GizmosDrawer.h"
+#include "GlobalValues.h"
 #include "SpriteSheetManager.h"
 #include "Matrix.h"
 #include "PlayerObject.h"
@@ -17,6 +19,7 @@
 #include "utils.h"
 #include "WorldManager.h"
 
+float Game::currentTime{0};
 
 Game::Game( const Window& window ) 
 	:BaseGame{ window }
@@ -53,9 +56,8 @@ void Game::Cleanup( )
 
 void Game::Update( float elapsedSec )
 {
-	m_TimeRunning += elapsedSec;
+	currentTime += elapsedSec;
 	m_Player->Update(elapsedSec);
-	// m_ItemManager->UpdateItems(elapsedSec);
 
 	if(m_MouseDown)
 	{
@@ -94,6 +96,7 @@ void Game::Draw( ) const
 	m_Cave->Draw();
 	m_ItemManager->DrawItems();
 	m_Player->Draw();
+	GizmosDrawer::Draw();
 	glPopMatrix();
 }
 

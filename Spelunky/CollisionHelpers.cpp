@@ -6,6 +6,7 @@
 
 #include "CircleCollider.h"
 #include "Collider.h"
+#include "GizmosDrawer.h"
 #include "RectCollider.h"
 #include "Tile.h"
 #include "utils.h"
@@ -77,6 +78,7 @@ bool collision_helpers::CircleVsRect(const CircleCollider& circle, const RectCol
 
 bool collision_helpers::RayVsRect(const Rectf& rect, const Vector2f& rayOrigin, const Vector2f& rayDir, RayVsRectInfo& out )
 {
+    Vector2f rayDirNorm = rayDir.Normalized();
     float nearTimeX = (rect.left - rayOrigin.x) / rayDir.x;
     float nearTimeY = (rect.top - rayOrigin.y) / rayDir.y;
     
@@ -93,8 +95,11 @@ bool collision_helpers::RayVsRect(const Rectf& rect, const Vector2f& rayOrigin, 
 
     if (out.farHit < 0)
         return false;
-        
-    out.pointHit = rayOrigin + rayDir * out.nearHit;
+
+    // GizmosDrawer::DrawCircle(rayOrigin + (rayDir * out.nearHit), 10);
+    // GizmosDrawer::DrawCircle(rayOrigin + (rayDir * out.farHit), 10);
+    
+    out.pointHit = rayOrigin + (rayDir * out.nearHit);
 
     if(nearTimeX > nearTimeY)
     {

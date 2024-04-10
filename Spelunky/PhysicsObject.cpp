@@ -6,6 +6,7 @@
 
 #include "CircleCollider.h"
 #include "Collider.h"
+#include "GizmosDrawer.h"
 #include "GlobalValues.h"
 #include "RectCollider.h"
 #include "Tile.h"
@@ -28,6 +29,7 @@ PhysicsObject::~PhysicsObject()
 void PhysicsObject::UpdatePhysics(const float elapsedTime)
 {
     m_Velocity += Vector2f{0, 100.f} * elapsedTime;
+    
     switch (m_Collider->GetColliderType())
     {
     case ColliderTypes::circle:
@@ -35,29 +37,49 @@ void PhysicsObject::UpdatePhysics(const float elapsedTime)
         break;
     case ColliderTypes::rect:
         const RectCollider* rectCollider{reinterpret_cast<RectCollider*>(m_Collider)};
+
+        std::vector<collision_helpers::RayVsRectInfo> results{};
+        
         for (int i{}; i < int(m_WorldTiles->size()); ++i)
         {
             for (int j{}; j < int(m_WorldTiles->at(i).size()); ++j)
             {
-                utils::SetColor({1,1,1,1});
+                // utils::SetColor({1,1,1,1});
                 const Tile* currentTile = &m_WorldTiles->at(i).at(j);
                 if(currentTile->GetTileType() == TileTypes::air) continue;
-                const Rectf rect = rectCollider->GetRect();
                 collision_helpers::RayVsRectInfo out;
-                if (!RectRayVsRect(
-                    Rectf{rect.left, rect.top, rect.width, rect.height},
+                if (RectRayVsRect(
+                    rectCollider->GetRect(),
                     m_Velocity * elapsedTime,
                     currentTile->GetCollider()->GetRect(), out)
-                    ) continue;
-
-                utils::SetColor({1,0,0,1});
-                rectCollider->DebugDraw();
-                out.
-                // m_Collider->SetOrigin(out.pointHit);
-                m_Velocity.y = 0;
-                return;
+                    )
+                {
+                    GizmosDrawer::DrawCircle(rectCollider->GetRect().GetCenter() + m_Velocity, 10, 10);
+                    results.push_back(out);
+                }
             }
         }
+
+        if(results.empty()) break;
+
+        collision_helpers::RayVsRectInfo closestCollider;
+        float shortestDistance = std::numeric_limits<float>::max();
+        for (int i{}; i < int(results.size()); ++i)
+        {
+            const float distance = (results[i].pointHit - Vector2f{rectCollider->GetRect().left, rectCollider->GetRect().top}).SquaredLength();
+            if(distance < shortestDistance)
+            {
+                shortestDistance = distance;
+                closestCollider = results[i];
+            }
+        }
+
+        // utils::SetColor({1,0,0,1});
+        // rectCollider->DebugDraw();
+        // m_Collider->SetOrigin(out.pointHit);
+        const float strengthInVelocity = closestCollider.normal.DotProduct(m_Velocity);
+        m_Velocity -= closestCollider.normal * strengthInVelocity;
+        
         break;
     }
     m_Collider->SetOrigin(m_Collider->GetOrigin() + m_Velocity * elapsedTime);

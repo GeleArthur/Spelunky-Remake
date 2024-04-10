@@ -1,3 +1,6 @@
 ﻿#pragma once
 
-constexpr int g_TileSize{64};
+namespace SpeluckyGlobals
+{
+    constexpr int g_TileSize{64};
+}

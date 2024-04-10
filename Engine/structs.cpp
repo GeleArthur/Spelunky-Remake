@@ -29,6 +29,11 @@ Rectf::Rectf( float left, float bottom, float width, float height )
 {
 }
 
+Vector2f Rectf::GetCenter() const
+{
+	return Vector2f{left + width/2, top + height/2};
+}
+
 //-----------------------------------------------------------------
 // Color4f Constructors
 //-----------------------------------------------------------------

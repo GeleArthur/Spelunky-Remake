@@ -7,6 +7,7 @@
 #include "Texture.h"
 #include "Vector2i.h"
 
+using namespace SpeluckyGlobals;
 
 Tile::Tile(const TileTypes tileType, const Vector2i tileIndex, SpriteSheetManager* spriteSheet):
 	m_SpriteSheetManager(spriteSheet),
@@ -23,7 +24,7 @@ void Tile::SetVariantIndex(const int index)
 
 void Tile::Draw() const
 {
-	if(m_TileType != TileTypes::air) GetCollider()->DebugDraw();
+	// if(m_TileType != TileTypes::air) GetCollider()->DebugDraw();
 	
 	Texture* levelTexture = m_SpriteSheetManager->GetLevelTexture();
 	Texture* doorsTexture = m_SpriteSheetManager->GetDoorsTexture();

@@ -152,6 +152,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="CollisionHelpers.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GizmosDrawer.cpp" />
     <ClCompile Include="GlobalValues.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="ItemManager.cpp" />
@@ -174,6 +175,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="Collider.h" />
     <ClInclude Include="CollisionHelpers.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GizmosDrawer.h" />
     <ClInclude Include="GlobalValues.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="ItemManager.h" />

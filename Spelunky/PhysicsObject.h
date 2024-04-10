@@ -12,9 +12,9 @@ public:
     Collider* GetCollider() const;
     virtual void UpdatePhysics(float elapsedTime);
 
-private:
+protected:
     Vector2f m_Velocity;
-
+    
     Vector2f m_Gravity{0, 100};
     float m_Bounciness{0.9f};
     Collider* m_Collider;

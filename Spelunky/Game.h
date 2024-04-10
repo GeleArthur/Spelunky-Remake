@@ -29,6 +29,9 @@ public:
 	void ProcessMouseUpEvent( const SDL_MouseButtonEvent& e ) override;
 	void ProcessWheelEvent( const SDL_MouseWheelEvent& e ) override;
 
+	static float currentTime;
+
+	
 private:
 
 	SpriteSheetManager* m_SpriteSheetManager;
@@ -38,7 +41,6 @@ private:
 	ItemManager* m_ItemManager;
 
 	Vector2f m_DebugStartPoint{};
-	float m_TimeRunning{0};
 	Vector2f m_PrevMouse{0,0};
 	bool m_MouseDown{};
 	Matrix4X4 m_ZoomMatrix{Matrix4X4::IdentityMatrix()};
