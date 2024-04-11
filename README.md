@@ -64,8 +64,8 @@ This section gives a clear and detailed overview of which parts of the original 
 - [ ] Level generation
 	- [x] 4x4 rooms
 	- [x] 100% goal path (step 1 of book)
-	- [ ] Individual rooms (step 2 of book)
-	- [ ] Obstacles in rooms (step 3 of book)
+	- [x] Individual rooms (step 2 of book)
+	- [x] Obstacles in rooms (step 3 of book)
 	- [ ] Items and enemy placement
 - [ ] World
 	- [ ] All "objects" need to have physics.

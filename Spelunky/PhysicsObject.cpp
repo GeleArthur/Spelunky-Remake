@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "PhysicsObject.h"
 
+#include <algorithm>
 #include <iostream>
 #include <vector>
 
@@ -13,6 +14,8 @@
 #include "utils.h"
 
 class Tile;
+
+bool PhysicsObject::pauseAllPhysicsDebug{false};
 
 PhysicsObject::PhysicsObject(Collider* collider, const std::vector<std::vector<Tile>>* tiles):
     m_Velocity(0, 0),
@@ -28,6 +31,7 @@ PhysicsObject::~PhysicsObject()
 
 void PhysicsObject::UpdatePhysics(const float elapsedTime)
 {
+    if(pauseAllPhysicsDebug) return;
     m_Velocity += Vector2f{0, 100.f} * elapsedTime;
     
     switch (m_Collider->GetColliderType())
@@ -60,31 +64,32 @@ void PhysicsObject::UpdatePhysics(const float elapsedTime)
                     GizmosDrawer::SetColor({1,0,0});
                     GizmosDrawer::DrawRect(currentTile->GetCollider()->GetRect());
                     // GizmosDrawer::DrawCircle(out.pointHit, 10);
+
+                    const float strengthInVelocity = out.normal.DotProduct(m_Velocity);
+                    m_Velocity -= out.normal * strengthInVelocity;
                     results.push_back(out);
                 }
             }
         }
 
         if(results.empty()) break;
-        
 
-        collision_helpers::RayVsRectInfo closestCollider;
-        float shortestDistance = std::numeric_limits<float>::max();
-        for (int i{}; i < int(results.size()); ++i)
-        {
-            const float distance = (results[i].pointHit - Vector2f{rectCollider->GetRect().left, rectCollider->GetRect().top}).SquaredLength();
-            if(distance < shortestDistance)
-            {
-                shortestDistance = distance;
-                closestCollider = results[i];
-            }
-        }
+        // std::sort(results.begin(), results.end(),
+        //     [](const collision_helpers::RayVsRectInfo& l, const collision_helpers::RayVsRectInfo& r)
+        // {
+        //     return l.nearHit > r.nearHit;
+        // });
+        //
+        // for (int i{}; i < int(results.size()); ++i)
+        // {
+        //     const float strengthInVelocity = results[i].normal.DotProduct(m_Velocity);
+        //     m_Velocity -= results[i].normal * strengthInVelocity;
+        // }
 
         // utils::SetColor({1,0,0,1});
         // rectCollider->DebugDraw();
         // m_Collider->SetOrigin(out.pointHit);
-        const float strengthInVelocity = closestCollider.normal.DotProduct(m_Velocity);
-        m_Velocity -= closestCollider.normal * strengthInVelocity;
+
         
         break;
     }

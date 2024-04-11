@@ -12,6 +12,8 @@ public:
     Collider* GetCollider() const;
     virtual void UpdatePhysics(float elapsedTime);
 
+    static bool pauseAllPhysicsDebug;
+
 protected:
     Vector2f m_Velocity;
     

@@ -44,7 +44,7 @@ void Cave::GenerateLevel()
     {
         for (int y{}; y < MAX_CAVE_TILE_COUNT_Y; ++y)
         {
-            m_Tiles[x].emplace_back(Tile{tileTypes[x][y], Vector2i{x, y}, SpriteSheetManager::GetSingleton()});
+            m_Tiles[x].emplace_back(Tile{TileTypes::ground /*TODO: RemoveAfter*/, Vector2i{x, y}, SpriteSheetManager::GetSingleton()});
             if (tileTypes[x][y] == TileTypes::ground)
             {
                 m_Tiles[x][y].SetVariantIndex(variantIndexes[utils::Random(0, 3)]);
@@ -55,6 +55,7 @@ void Cave::GenerateLevel()
             }
         }
     }
+    m_Tiles[0][0] = Tile{TileTypes::air, Vector2i{0, 0}, SpriteSheetManager::GetSingleton()};
 }
 
 void Cave::Draw() const

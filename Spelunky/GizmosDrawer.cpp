@@ -3,6 +3,7 @@
 
 #include "Game.h"
 #include "GlobalValues.h"
+#include "PhysicsObject.h"
 #include "utils.h"
 
 std::vector<DrawHolder*> GizmosDrawer::m_Drawings;
@@ -75,7 +76,8 @@ void GizmosDrawer::Draw()
     {
         utils::SetColor(m_Drawings[i]->color);
         m_Drawings[i]->Draw();
-        if(m_Drawings[i]->timeToDelete < Game::currentTime)
+        
+        if(!PhysicsObject::pauseAllPhysicsDebug && m_Drawings[i]->timeToDelete < Game::currentTime)
         {
             delete m_Drawings[i];
             m_Drawings.erase(std::next(m_Drawings.begin(), i));

@@ -112,6 +112,10 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent &e )
 		float elapsedSeconds = std::chrono::duration<float>(std::chrono::steady_clock::now() - t2).count();
 		std::cout << "Took: " << elapsedSeconds << " sec. To generate level";
 	}
+	if(e.keysym.sym == SDLK_t)
+	{
+		PhysicsObject::pauseAllPhysicsDebug = !PhysicsObject::pauseAllPhysicsDebug;
+	}
 }
 
 void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
