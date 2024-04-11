@@ -19,7 +19,6 @@ void PlayerObject::Draw() const
 {
     // TODO: animation system
     m_SpriteSheetManager->GetCurrentPlayerTexture()->Draw(GetCollider()->GetOrigin() - Vector2f{40,40}, Rectf{0,0,80,80});
-    GetCollider()->DebugDraw();
 }
 
 void PlayerObject::Update(const float elapsedTimes)

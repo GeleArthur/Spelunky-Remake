@@ -39,12 +39,15 @@ void PhysicsObject::UpdatePhysics(const float elapsedTime)
         const RectCollider* rectCollider{reinterpret_cast<RectCollider*>(m_Collider)};
 
         std::vector<collision_helpers::RayVsRectInfo> results{};
-        
+
+        GizmosDrawer::SetColor({0,1,0});
+        GizmosDrawer::DrawLine(rectCollider->GetRect().GetCenter(), rectCollider->GetRect().GetCenter() + m_Velocity * elapsedTime);
+        GizmosDrawer::DrawRect(rectCollider->GetRect() + m_Velocity * elapsedTime);
+
         for (int i{}; i < int(m_WorldTiles->size()); ++i)
         {
             for (int j{}; j < int(m_WorldTiles->at(i).size()); ++j)
             {
-                // utils::SetColor({1,1,1,1});
                 const Tile* currentTile = &m_WorldTiles->at(i).at(j);
                 if(currentTile->GetTileType() == TileTypes::air) continue;
                 collision_helpers::RayVsRectInfo out;
@@ -54,13 +57,16 @@ void PhysicsObject::UpdatePhysics(const float elapsedTime)
                     currentTile->GetCollider()->GetRect(), out)
                     )
                 {
-                    GizmosDrawer::DrawCircle(rectCollider->GetRect().GetCenter() + m_Velocity, 10, 10);
+                    GizmosDrawer::SetColor({1,0,0});
+                    GizmosDrawer::DrawRect(currentTile->GetCollider()->GetRect());
+                    // GizmosDrawer::DrawCircle(out.pointHit, 10);
                     results.push_back(out);
                 }
             }
         }
 
         if(results.empty()) break;
+        
 
         collision_helpers::RayVsRectInfo closestCollider;
         float shortestDistance = std::numeric_limits<float>::max();

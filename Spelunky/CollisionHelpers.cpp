@@ -78,7 +78,6 @@ bool collision_helpers::CircleVsRect(const CircleCollider& circle, const RectCol
 
 bool collision_helpers::RayVsRect(const Rectf& rect, const Vector2f& rayOrigin, const Vector2f& rayDir, RayVsRectInfo& out )
 {
-    Vector2f rayDirNorm = rayDir.Normalized();
     float nearTimeX = (rect.left - rayOrigin.x) / rayDir.x;
     float nearTimeY = (rect.top - rayOrigin.y) / rayDir.y;
     

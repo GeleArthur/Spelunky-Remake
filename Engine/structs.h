@@ -18,6 +18,7 @@ struct Rectf
 	Rectf( );
 	explicit Rectf( float left, float bottom, float width, float height );
 	Vector2f GetCenter() const;
+	Rectf operator+(Vector2f rhs) const;
 	
 	float left;
 	float top;
@@ -30,7 +31,7 @@ struct Rectf
 struct Color4f
 {
 	Color4f( );
-	Color4f( float r, float g, float b, float a );
+	Color4f( float r, float g, float b, float a = 1 );
 	
 	float r;
 	float g;
