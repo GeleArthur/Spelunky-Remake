@@ -10,7 +10,6 @@ enum class PlayerAnimationState
 {
     idle,
     walk,
-    run,
     inAir,
     climbing,
     hanging
@@ -30,6 +29,5 @@ private:
     int m_AnimationFrame;
     float m_AnimationTimer;
 
-    bool m_OnGround;
     SpriteSheetManager* m_SpriteSheetManager;
 };

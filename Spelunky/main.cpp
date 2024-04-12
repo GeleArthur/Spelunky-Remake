@@ -1,5 +1,7 @@
 #include "pch.h"
 #include <ctime>
+#include <iostream>
+
 #include "Game.h"
 
 
@@ -31,15 +33,16 @@ void StartHeapControl()
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	// Set a breakpoint on the specified object allocation order number
-	//_CrtSetBreakAlloc( 156 );
+	// _CrtSetBreakAlloc( 156 );
 #endif
 }
 
 void DumpMemoryLeaks()
 {
-#if defined(DEBUG) | defined(_DEBUG)
+	// DONT THIS IS BAD AND REPORTS FALSE POSITIVES
+/*#if defined(DEBUG) | defined(_DEBUG)
 	_CrtDumpMemoryLeaks();
-#endif
+#endif*/
 }
 
 

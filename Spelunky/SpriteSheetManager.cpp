@@ -21,10 +21,11 @@ SpriteSheetManager::SpriteSheetManager()
 
 SpriteSheetManager::~SpriteSheetManager()
 {
-	delete m_CurrentPlayerTexture;
 	delete m_LevelTexture;
+	delete m_CurrentPlayerTexture;
 	delete m_BackGroundTexture;
 	delete m_ExitDoorsTexture;
+	delete m_ItemsTexture;
 }
 
 SpriteSheetManager* SpriteSheetManager::GetSingleton()

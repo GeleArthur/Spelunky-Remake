@@ -8,7 +8,8 @@ class Rock : public PhysicsObject, public Item
 {
 public:
     Rock(const Vector2f& position, const SpriteSheetManager* spriteSheetManager, const std::vector<std::vector<Tile>>* tiles);
-
+    virtual ~Rock() override;
+    
     void Update(float elapsedTime) override;
     void Draw() const override;
     

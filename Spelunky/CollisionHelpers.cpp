@@ -95,11 +95,6 @@ bool collision_helpers::RayVsRect(const Rectf& rect, const Vector2f& rayOrigin, 
     if (out.farHit < 0)
         return false;
     if(out.nearHit > 1.0) return false;
-
-    GizmosDrawer::DrawCircle(rayOrigin + rayDir * nearTimeY, 10);
-    GizmosDrawer::DrawCircle(rayOrigin + rayDir * nearTimeX, 10);
-    GizmosDrawer::DrawCircle(rayOrigin + rayDir * farTimeX, 10);
-    GizmosDrawer::DrawCircle(rayOrigin + rayDir * farTimeY, 10);
     
     out.pointHit = rayOrigin + (rayDir * out.nearHit);
 
@@ -128,16 +123,7 @@ bool collision_helpers::RectRayVsRect(const Rectf& movingRect, const Vector2f& r
     
     if(RayVsRect(extendedRect, Vector2f{movingRect.left + movingRect.width/2, movingRect.top + movingRect.height/2}, rayDirection, out))
     {
-        if(out.nearHit < 1.0)
-        {
-            GizmosDrawer::DrawCircle(Vector2f{movingRect.left + movingRect.width/2, movingRect.top + movingRect.height/2} + (rayDirection * out.nearHit), 10);
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-        
+        return out.nearHit < 1.0;
     }
     
     return false;

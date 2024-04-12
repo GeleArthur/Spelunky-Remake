@@ -1,7 +1,10 @@
 ﻿#include "pch.h"
-#include "RoomTemplates.h"
+
+#include <vector>
 
 #include "utils.h"
+#include "RoomTemplates.h"
+/*
 
 const std::vector<std::string> RoomTemplates::EXIT
 {
@@ -108,6 +111,7 @@ const std::vector<std::string> RoomTemplates::IDOLS
 {
     "22000000220000B0000000000000000000000000000000000000000000000000I000001111A01111",
 };
+
 const std::vector<std::string> RoomTemplates::ALTARS
 {
     "220000002200000000000000000000000000000000000000000000x0000002211112201111111111",
@@ -120,7 +124,7 @@ const std::unordered_map<PathTypes, std::vector<std::string>> RoomTemplates::PAT
     // {PathTypes::entrance, ENTRANCE_DOWN},
     // {PathTypes::, ENTRANCE_DOWN},
 };
-
+*/
 const std::string* RoomTemplates::GetRandomString(const std::vector<std::string>& strings)
 {
     return &strings[utils::Random(0, int(strings.size()-1))];

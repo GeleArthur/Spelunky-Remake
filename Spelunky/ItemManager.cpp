@@ -22,3 +22,11 @@ void ItemManager::UpdateItems(const float elapsedTime)
         item->Update(elapsedTime);
     }
 }
+
+ItemManager::~ItemManager()
+{
+	for (int i{}; i < m_Items.size(); ++i)
+	{
+		delete m_Items[i];
+	}
+}

@@ -1,6 +1,8 @@
 ﻿#include "pch.h"
 #include "PlayerObject.h"
 
+#include <complex>
+#include <iostream>
 #include <vector>
 
 #include "CircleCollider.h"
@@ -10,17 +12,17 @@
 #include "Tile.h"
 
 PlayerObject::PlayerObject(SpriteSheetManager* spriteSheetManager, const std::vector<std::vector<Tile>>* tiles):
-     PhysicsObject(new RectCollider{Rectf{0,0,64,64}}, tiles),
+    PhysicsObject(new RectCollider{Rectf{0, 0, 40, 63}}, tiles),
+    m_AnimationFrame(0),
+    m_AnimationTimer(0),
     m_SpriteSheetManager(spriteSheetManager)
 {
 }
 
 void PlayerObject::Draw() const
 {
-    // TODO: animation system
-
     Rectf animationSource{0,0,80,80};
-
+    
     //TODO: move hardcoded animation numbers
     switch (m_CurrentAnimation)
     {
@@ -29,7 +31,6 @@ void PlayerObject::Draw() const
         animationSource.top = 0;
         break;
     case PlayerAnimationState::walk:
-    case PlayerAnimationState::run:
         animationSource.top = 0;
         animationSource.left = 80.0f + static_cast<float>(m_AnimationFrame%7) * 80.0f;
         break;
@@ -53,38 +54,56 @@ void PlayerObject::Draw() const
     case PlayerAnimationState::hanging:
         break;
     }
-
+    
     glPushMatrix();
     glTranslatef(GetCollider()->GetOrigin().x, GetCollider()->GetOrigin().y, 0);
+    
+    glScalef(1, -1, 1);
+    TTF_Font* pFont = TTF_OpenFont( "arial.ttf", 16 );
+    Texture(m_Velocity.ToString(), pFont, {1,1,1}).Draw();
+    glScalef(1, -1, 1);
+    
     if(m_Velocity.x < 0)
     {
         glScalef(-1, 1, 1);
     }
     m_SpriteSheetManager->GetCurrentPlayerTexture()->Draw(-Vector2f{40,40}, animationSource);
+
+
+    
     glPopMatrix();
 }
 
 void PlayerObject::Update(const float elapsedTimes)
 {
     const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
+
+    Vector2f inputVelocity{};
     if ( pStates[SDL_SCANCODE_RIGHT] || pStates[SDL_SCANCODE_D] )
     {
-        m_Velocity += Vector2f{10, 0};
+        inputVelocity += Vector2f{1000, 0} * elapsedTimes;
     }
     if ( pStates[SDL_SCANCODE_LEFT] || pStates[SDL_SCANCODE_A] )
     {
-        m_Velocity += Vector2f{-10, 0};
+        inputVelocity += Vector2f{-1000, 0} * elapsedTimes;
     }
-    if ( pStates[SDL_SCANCODE_UP] || pStates[SDL_SCANCODE_W] )
+
+    if(inputVelocity.SquaredLength() < 0.001)
     {
-        m_Velocity += Vector2f{0, -10};
+        inputVelocity = -m_Velocity * elapsedTimes;
     }
-    if ( pStates[SDL_SCANCODE_DOWN] || pStates[SDL_SCANCODE_S] )
-    {
-        m_Velocity += Vector2f{0, 10};
-    }
+
+    m_Velocity += inputVelocity;
+    
+    
+    const float limitedVelocity = std::min(std::abs(m_Velocity.x), 500.0f);
+    if(m_Velocity.x > 0)
+        m_Velocity.x = limitedVelocity;
+    else
+        m_Velocity.x = -limitedVelocity;
     
     UpdatePhysics(elapsedTimes);
+    // std::cout <<std::boolalpha << m_IsOnGround << '\n';
     m_AnimationTimer += elapsedTimes;
     UpdateAnimationState();
 }
@@ -96,49 +115,61 @@ void PlayerObject::UpdateAnimationState()
     switch (m_CurrentAnimation)
     {
     case PlayerAnimationState::idle:
-        if(speed > 0.01)
+        if(m_IsOnGround == false)
+        {
+            m_CurrentAnimation = PlayerAnimationState::inAir;
+            m_AnimationTimer = 0;
+            m_AnimationFrame = 0;
+        }
+        else if(speed > 0.01)
         {
             m_CurrentAnimation = PlayerAnimationState::walk;
             m_AnimationTimer = 0;
             m_AnimationFrame = 0;
         }
+
         break;
-        
     case PlayerAnimationState::walk:
-        if(speed < 0.01)
+        if(m_IsOnGround == false)
         {
-            m_CurrentAnimation = PlayerAnimationState::idle;
+            m_CurrentAnimation = PlayerAnimationState::inAir;
             m_AnimationTimer = 0;
             m_AnimationFrame = 0;
         }
-        else if(speed > 5000)
+        else
         {
-            m_CurrentAnimation = PlayerAnimationState::run;
-            m_AnimationTimer = 0;
-            m_AnimationFrame = 0;
-        }
-        
-        if(m_AnimationTimer > 0.1f)
-        {
-            m_AnimationTimer = 0;
-            m_AnimationFrame++;
-        }
-        break;
-    case PlayerAnimationState::run:
-        if(speed < 5000)
-        {
-            m_CurrentAnimation = PlayerAnimationState::walk;
-            m_AnimationTimer = 0;
-            m_AnimationFrame = 0;
-        }
-        
-        if(m_AnimationTimer > 0.05f)
-        {
-            m_AnimationTimer = 0;
-            m_AnimationFrame++;
+            if(speed < 0.01)
+            {
+                m_CurrentAnimation = PlayerAnimationState::idle;
+                m_AnimationTimer = 0;
+                m_AnimationFrame = 0;
+            }
+            else if(speed < 1000)
+            {
+                if(m_AnimationTimer > 0.5f)
+                {
+                    m_AnimationTimer = 0;
+                    m_AnimationFrame++;
+                }
+            }
+            else
+            {
+                if(m_AnimationTimer > 0.1f)
+                {
+                    m_AnimationTimer = 0;
+                    m_AnimationFrame++;
+                }
+            }
         }
         break;
     case PlayerAnimationState::inAir:
+        if(m_IsOnGround)
+        {
+            m_CurrentAnimation = PlayerAnimationState::walk;
+            m_AnimationTimer = 0;
+            m_AnimationFrame = 0;
+            return;
+        }
         break;
     case PlayerAnimationState::climbing:
         break;

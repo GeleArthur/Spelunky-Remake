@@ -57,6 +57,7 @@ void Game::Cleanup( )
 	delete m_ItemManager;
 	delete m_WorldManager;
 	delete m_CameraSystem;
+	GizmosDrawer::Shutdown();
 }
 
 void Game::Update( float elapsedSec )
@@ -88,9 +89,9 @@ void Game::Draw( ) const
 	ClearBackground( );
 	m_CameraSystem->PushCamera();
 	
-	// glPushMatrix();
-	// m_MoveMatrix.GlMultiMatrix();
-	// m_ZoomMatrix.GlMultiMatrix();
+	glPushMatrix();
+	m_MoveMatrix.GlMultiMatrix();
+	m_ZoomMatrix.GlMultiMatrix();
 
 	// Background
 	for (int x{}; x < 64*10*4/256; ++x)
@@ -107,7 +108,7 @@ void Game::Draw( ) const
 	GizmosDrawer::Draw();
 	
 	m_CameraSystem->PopCamera();
-	// glPopMatrix();
+	glPopMatrix();
 }
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent &e )
@@ -115,14 +116,12 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent &e )
 	//std::cout << "KEYDOWN event: " << e.keysym.sym << std::endl;
 	if(e.keysym.sym == SDLK_r)
 	{
-		// delete m_Cave;
 		std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
 		m_Cave->GenerateLevel();
-		// m_Cave = new Cave{SpriteSheetManager::GetSingleton()};
 		float elapsedSeconds = std::chrono::duration<float>(std::chrono::steady_clock::now() - t2).count();
 		std::cout << "Took: " << elapsedSeconds << " sec. To generate level";
 
-		m_Player->Respawn(m_Cave->GetEntrance());
+		m_Player->Respawn(m_Cave->GetEntrance() + Vector2f{SpeluckyGlobals::g_TileSize/2.0f,SpeluckyGlobals::g_TileSize/2.0f});
 	}
 	if(e.keysym.sym == SDLK_t)
 	{

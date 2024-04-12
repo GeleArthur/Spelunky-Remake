@@ -93,6 +93,14 @@ void GizmosDrawer::SetColor(const Color4f& color)
     m_CurrentColor = color;
 }
 
+void GizmosDrawer::Shutdown()
+{
+    for (int i{}; i < m_Drawings.size(); ++i)
+    {
+        delete m_Drawings[i];
+    }
+}
+
 void GizmosDrawer::DrawCircle(const Vector2f& position, const float size, const float timeToDelete)
 {
     m_Drawings.push_back(new DrawCircleHolder{position, size, m_CurrentColor, Game::currentTime + timeToDelete});
