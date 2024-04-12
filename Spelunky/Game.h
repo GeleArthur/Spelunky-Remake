@@ -1,6 +1,7 @@
 #pragma once
 #include "BaseGame.h"
 #include "Matrix.h"
+class CameraSystem;
 class ItemManager;
 class WorldManager;
 class PlayerObject;
@@ -39,6 +40,7 @@ private:
 	PlayerObject* m_Player;
 	WorldManager* m_WorldManager;
 	ItemManager* m_ItemManager;
+	CameraSystem* m_CameraSystem;
 
 	Vector2f m_DebugStartPoint{};
 	Vector2f m_PrevMouse{0,0};

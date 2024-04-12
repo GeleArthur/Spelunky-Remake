@@ -44,7 +44,7 @@ void Cave::GenerateLevel()
     {
         for (int y{}; y < MAX_CAVE_TILE_COUNT_Y; ++y)
         {
-            m_Tiles[x].emplace_back(Tile{TileTypes::ground /*TODO: RemoveAfter*/, Vector2i{x, y}, SpriteSheetManager::GetSingleton()});
+            m_Tiles[x].emplace_back(Tile{tileTypes[x][y] /*TODO: RemoveAfter*/, Vector2i{x, y}, SpriteSheetManager::GetSingleton()});
             if (tileTypes[x][y] == TileTypes::ground)
             {
                 m_Tiles[x][y].SetVariantIndex(variantIndexes[utils::Random(0, 3)]);
@@ -55,7 +55,17 @@ void Cave::GenerateLevel()
             }
         }
     }
-    m_Tiles[0][0] = Tile{TileTypes::air, Vector2i{0, 0}, SpriteSheetManager::GetSingleton()};
+    // m_Tiles[0][0] = Tile{TileTypes::air, Vector2i{0, 0}, SpriteSheetManager::GetSingleton()};
+}
+
+Vector2f Cave::GetEntrance() const
+{
+    return m_EntranceLocation;
+}
+
+Vector2f Cave::GetExit() const
+{
+    return m_ExitLocation;
 }
 
 void Cave::Draw() const
@@ -309,7 +319,7 @@ void Cave::RoomStringToTileType(
             tileType = TileTypes::pushBlock;
             break;
         case '9':
-            if(m_EntranceLocation == Vector2f{-1,-1}) // Todo: replace this
+            if(m_EntranceLocation == Vector2f{-1,-1}) // Todo: Better check
             {
                 m_EntranceLocation = Vector2f{xLocation*64.0f, yLocation*64.0f};
                 tileType = TileTypes::entrance;

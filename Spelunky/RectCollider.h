@@ -14,6 +14,7 @@ public:
     
     const Rectf& GetRect() const;
     void SetRect(const Rectf& rect);
+    Vector2f GetTopLeft() const;
 
 private:
     Rectf m_Rect;

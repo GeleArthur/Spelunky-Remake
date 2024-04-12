@@ -21,6 +21,8 @@ public:
 	~Cave();
 	void Draw() const;
 	void GenerateLevel();
+	Vector2f GetEntrance() const;
+	Vector2f GetExit() const;
 	const std::vector<std::vector<Tile>>* GetTiles() const;
 	const static int MAX_ROOMS_X{4};
 	const static int MAX_ROOMS_Y{4};
@@ -37,7 +39,6 @@ private:
 	// TODO: Group these
 	Vector2f m_EntranceLocation;
 	Vector2f m_ExitLocation;
-	
 	
 	std::array<std::array<PathTypes, MAX_ROOMS_Y>, MAX_ROOMS_X> m_PathDebug;
 	ExtraPathInformation m_InfoDebug;

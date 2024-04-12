@@ -133,3 +133,10 @@ void PlayerObject::UpdateAnimationState()
 
     }
 }
+
+void PlayerObject::Respawn(const Vector2f& spawnLocation)
+{
+    GetCollider()->SetOrigin(spawnLocation);
+    m_AnimationFrame = 0;
+    m_AnimationTimer = 0;
+}

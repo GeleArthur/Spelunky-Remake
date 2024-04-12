@@ -23,6 +23,7 @@ public:
     void Draw() const;
     void Update(float elapsedTimes);
     void UpdateAnimationState();
+    void Respawn(const Vector2f& spawnLocation);
 
 private:
     PlayerAnimationState m_CurrentAnimation{PlayerAnimationState::idle};

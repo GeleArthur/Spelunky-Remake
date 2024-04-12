@@ -6,6 +6,7 @@
 #include <iostream>
 #include <ostream>
 
+#include "CameraSystem.h"
 #include "Cave.h"
 #include "CircleCollider.h"
 #include "GizmosDrawer.h"
@@ -41,8 +42,11 @@ void Game::Initialize( )
 	m_Player = new PlayerObject{m_SpriteSheetManager, m_Cave->GetTiles()};
 	m_ItemManager = new ItemManager{};
 	m_ItemManager->AddItem(new Rock{Vector2f{}, m_SpriteSheetManager, m_Cave->GetTiles()});
+	m_CameraSystem = new CameraSystem{m_Player};
 	
 	m_WorldManager->Init(m_Cave, m_Player, m_SpriteSheetManager, m_ItemManager);
+	
+	m_Player->Respawn(m_Cave->GetEntrance());
 }
 
 void Game::Cleanup( )
@@ -52,6 +56,7 @@ void Game::Cleanup( )
 	delete m_Player;
 	delete m_ItemManager;
 	delete m_WorldManager;
+	delete m_CameraSystem;
 }
 
 void Game::Update( float elapsedSec )
@@ -63,6 +68,8 @@ void Game::Update( float elapsedSec )
 	{
 		m_DebugStartPoint = Vector2f{m_PrevMouse};
 	}
+
+	m_CameraSystem->UpdateCamera();
 	
 	// Check keyboard state
 	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
@@ -79,10 +86,11 @@ void Game::Update( float elapsedSec )
 void Game::Draw( ) const
 {
 	ClearBackground( );
+	m_CameraSystem->PushCamera();
 	
-	glPushMatrix();
-	m_MoveMatrix.GlMultiMatrix();
-	m_ZoomMatrix.GlMultiMatrix();
+	// glPushMatrix();
+	// m_MoveMatrix.GlMultiMatrix();
+	// m_ZoomMatrix.GlMultiMatrix();
 
 	// Background
 	for (int x{}; x < 64*10*4/256; ++x)
@@ -97,7 +105,9 @@ void Game::Draw( ) const
 	m_ItemManager->DrawItems();
 	m_Player->Draw();
 	GizmosDrawer::Draw();
-	glPopMatrix();
+	
+	m_CameraSystem->PopCamera();
+	// glPopMatrix();
 }
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent &e )
@@ -111,6 +121,8 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent &e )
 		// m_Cave = new Cave{SpriteSheetManager::GetSingleton()};
 		float elapsedSeconds = std::chrono::duration<float>(std::chrono::steady_clock::now() - t2).count();
 		std::cout << "Took: " << elapsedSeconds << " sec. To generate level";
+
+		m_Player->Respawn(m_Cave->GetEntrance());
 	}
 	if(e.keysym.sym == SDLK_t)
 	{
@@ -193,8 +205,6 @@ void Game::ProcessWheelEvent(const SDL_MouseWheelEvent& e)
 	m_ZoomMatrix = m_ZoomMatrix * Matrix4X4::TranslationMatrix(Vector2f{m_MoveMatrix.m30 - e.mouseX, m_MoveMatrix.m31 - e.mouseY});
 	m_ZoomMatrix.m33 -= e.preciseY*0.2f * m_ZoomMatrix.m33;
 	m_ZoomMatrix = m_ZoomMatrix * Matrix4X4::TranslationMatrix(Vector2f{-(m_MoveMatrix.m30 - e.mouseX), -(m_MoveMatrix.m31 - e.mouseY)});
-
-	// std::cout << m_Zoom.x << '\n';
 }
 
 void Game::ClearBackground( ) const
