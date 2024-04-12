@@ -21,6 +21,7 @@ void PlayerObject::Draw() const
 
     Rectf animationSource{0,0,80,80};
 
+    //TODO: move hardcoded animation numbers
     switch (m_CurrentAnimation)
     {
     case PlayerAnimationState::idle:
@@ -32,7 +33,20 @@ void PlayerObject::Draw() const
         animationSource.top = 0;
         animationSource.left = 80.0f + static_cast<float>(m_AnimationFrame%7) * 80.0f;
         break;
-    case PlayerAnimationState::falling:
+    case PlayerAnimationState::inAir:
+        animationSource.top = 9*80.0f;
+        if(m_Velocity.y > 0 && m_Velocity.y < 5)
+        {
+            animationSource.left = 4*80.0f;
+        }
+        else if(m_Velocity.y > 5 && m_Velocity.y < 25)
+        {
+            animationSource.left = 5*80.0f;
+        }
+        else if(m_Velocity.y > 25)
+        {
+            animationSource.left = 7*80.0f;
+        }
         break;
     case PlayerAnimationState::climbing:
         break;
@@ -124,7 +138,7 @@ void PlayerObject::UpdateAnimationState()
             m_AnimationFrame++;
         }
         break;
-    case PlayerAnimationState::falling:
+    case PlayerAnimationState::inAir:
         break;
     case PlayerAnimationState::climbing:
         break;

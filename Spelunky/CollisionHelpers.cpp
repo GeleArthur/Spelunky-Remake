@@ -94,11 +94,12 @@ bool collision_helpers::RayVsRect(const Rectf& rect, const Vector2f& rayOrigin, 
 
     if (out.farHit < 0)
         return false;
+    if(out.nearHit > 1.0) return false;
 
-    // GizmosDrawer::DrawCircle(rayOrigin + rayDir * nearTimeY, 10);
-    // GizmosDrawer::DrawCircle(rayOrigin + rayDir * nearTimeX, 10);
-    // GizmosDrawer::DrawCircle(rayOrigin + rayDir * farTimeX, 10);
-    // GizmosDrawer::DrawCircle(rayOrigin + rayDir * farTimeY, 10);
+    GizmosDrawer::DrawCircle(rayOrigin + rayDir * nearTimeY, 10);
+    GizmosDrawer::DrawCircle(rayOrigin + rayDir * nearTimeX, 10);
+    GizmosDrawer::DrawCircle(rayOrigin + rayDir * farTimeX, 10);
+    GizmosDrawer::DrawCircle(rayOrigin + rayDir * farTimeY, 10);
     
     out.pointHit = rayOrigin + (rayDir * out.nearHit);
 

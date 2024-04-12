@@ -43,6 +43,7 @@ void PhysicsObject::UpdatePhysics(const float elapsedTime)
         const RectCollider* rectCollider{reinterpret_cast<RectCollider*>(m_Collider)};
 
         std::vector<collision_helpers::RayVsRectInfo> results{};
+        std::vector<const Tile*> tilePointer_DEBUG{};
 
         GizmosDrawer::SetColor({0,1,0});
         GizmosDrawer::DrawLine(rectCollider->GetRect().GetCenter(), rectCollider->GetRect().GetCenter() + m_Velocity * elapsedTime);
@@ -61,12 +62,13 @@ void PhysicsObject::UpdatePhysics(const float elapsedTime)
                     currentTile->GetCollider()->GetRect(), out)
                     )
                 {
-                    GizmosDrawer::SetColor({1,0,0});
-                    GizmosDrawer::DrawRect(currentTile->GetCollider()->GetRect());
+                    // GizmosDrawer::SetColor({1,0,0});
+                    // GizmosDrawer::DrawRect(currentTile->GetCollider()->GetRect());
                     // GizmosDrawer::DrawCircle(out.pointHit, 10);
-
-                    const float strengthInVelocity = out.normal.DotProduct(m_Velocity);
-                    m_Velocity -= out.normal * strengthInVelocity;
+                    
+                    // const float strengthInVelocity = out.normal.DotProduct(m_Velocity);
+                    // m_Velocity -= out.normal * strengthInVelocity;
+                    tilePointer_DEBUG.push_back(currentTile);
                     results.push_back(out);
                 }
             }
@@ -77,14 +79,45 @@ void PhysicsObject::UpdatePhysics(const float elapsedTime)
         // std::sort(results.begin(), results.end(),
         //     [](const collision_helpers::RayVsRectInfo& l, const collision_helpers::RayVsRectInfo& r)
         // {
-        //     return l.nearHit > r.nearHit;
+        //     return l.farHit < r.farHit;
         // });
-        //
-        // for (int i{}; i < int(results.size()); ++i)
-        // {
-        //     const float strengthInVelocity = results[i].normal.DotProduct(m_Velocity);
-        //     m_Velocity -= results[i].normal * strengthInVelocity;
-        // }
+
+        bool isSorting = true;
+        while (isSorting)
+        {
+            isSorting = false;
+            for (int i{}; i < results.size()-1; ++i)
+            {
+                if(results[i].nearHit > results[i+1].nearHit)
+                {
+                    std::swap(results[i], results[i+1]);
+                    std::swap(tilePointer_DEBUG[i], tilePointer_DEBUG[i+1]);
+                    isSorting = true;
+                }
+            }
+        }
+        
+        for (int i{}; i < int(results.size()); ++i)
+        {
+            if(i == 0 ) GizmosDrawer::SetColor({0,0,1});
+            if(i == 1 ) GizmosDrawer::SetColor({0,1,1});
+            if(i == 2 ) GizmosDrawer::SetColor({1,0,1});
+            GizmosDrawer::DrawRect(tilePointer_DEBUG[i]->GetCollider()->GetRect());
+            
+            std::cout << i << ": " << results[i].nearHit << " ";
+            collision_helpers::RayVsRectInfo out;
+            if (RectRayVsRect(
+                rectCollider->GetRect(),
+                m_Velocity * elapsedTime,
+                tilePointer_DEBUG[i]->GetCollider()->GetRect(), out)
+                )
+            {
+                // GizmosDrawer::DrawCircle(out.pointHit, 10);
+                const float strengthInVelocity = out.normal.DotProduct(m_Velocity);
+                m_Velocity -= out.normal * strengthInVelocity;
+            }
+        }
+        std::cout << '\n';
 
         // utils::SetColor({1,0,0,1});
         // rectCollider->DebugDraw();

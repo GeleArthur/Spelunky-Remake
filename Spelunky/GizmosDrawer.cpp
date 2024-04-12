@@ -72,11 +72,14 @@ struct DrawLineHolder final : public DrawHolder
 
 void GizmosDrawer::Draw()
 {
-    for (int i{int(m_Drawings.size()) -1}; i >= 0; --i)
+    for (int i{}; i < int(m_Drawings.size()); ++i)
     {
         utils::SetColor(m_Drawings[i]->color);
         m_Drawings[i]->Draw();
-        
+    }
+    
+    for (int i{int(m_Drawings.size()) -1}; i >= 0; --i)
+    {
         if(!PhysicsObject::pauseAllPhysicsDebug && m_Drawings[i]->timeToDelete < Game::currentTime)
         {
             delete m_Drawings[i];

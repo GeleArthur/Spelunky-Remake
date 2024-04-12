@@ -11,7 +11,7 @@ enum class PlayerAnimationState
     idle,
     walk,
     run,
-    falling,
+    inAir,
     climbing,
     hanging
 };
@@ -29,5 +29,7 @@ private:
     PlayerAnimationState m_CurrentAnimation{PlayerAnimationState::idle};
     int m_AnimationFrame;
     float m_AnimationTimer;
+
+    bool m_OnGround;
     SpriteSheetManager* m_SpriteSheetManager;
 };
