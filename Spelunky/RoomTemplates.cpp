@@ -4,8 +4,6 @@
 
 #include "utils.h"
 #include "RoomTemplates.h"
-/*
-
 const std::vector<std::string> RoomTemplates::EXIT
 {
     "00000000000000000000000000000000000000000008000000000000000000000000001111111111",
@@ -124,7 +122,7 @@ const std::unordered_map<PathTypes, std::vector<std::string>> RoomTemplates::PAT
     // {PathTypes::entrance, ENTRANCE_DOWN},
     // {PathTypes::, ENTRANCE_DOWN},
 };
-*/
+
 const std::string* RoomTemplates::GetRandomString(const std::vector<std::string>& strings)
 {
     return &strings[utils::Random(0, int(strings.size()-1))];

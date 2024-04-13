@@ -154,7 +154,7 @@ void Cave::GenerateTiles(std::array<std::array<TileTypes, MAX_CAVE_TILE_COUNT_Y>
                 switch (path[x][y])
                 {
                 case PathTypes::leftRight:
-                    roomString = RoomTemplates::GetRandomString(RoomTemplates::g_EntranceLeftRight);
+                    roomString = RoomTemplates::GetRandomString(RoomTemplates::ENTRANCE_LEFT_RIGHT);
                     break;
                 case PathTypes::bottom:
                     roomString = RoomTemplates::GetRandomString(RoomTemplates::ENTRANCE_DOWN);

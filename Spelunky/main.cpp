@@ -18,7 +18,6 @@ int SDL_main(int argv, char** args)
 	pGame->Run();
 	delete pGame;
 
-	DumpMemoryLeaks();
 	return 0;
 }
 
@@ -37,12 +36,13 @@ void StartHeapControl()
 #endif
 }
 
-void DumpMemoryLeaks()
-{
-	// DONT THIS IS BAD AND REPORTS FALSE POSITIVES
-/*#if defined(DEBUG) | defined(_DEBUG)
-	_CrtDumpMemoryLeaks();
-#endif*/
-}
+// !!!!!!!! DONT THIS IS BAD AND REPORTS FALSE POSITIVES
+// void DumpMemoryLeaks()
+// {
+// 	
+// #if defined(DEBUG) | defined(_DEBUG)
+// 	_CrtDumpMemoryLeaks();
+// #endif
+// }
 
 
