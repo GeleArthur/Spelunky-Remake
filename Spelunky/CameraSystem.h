@@ -11,6 +11,7 @@ public:
     void UpdateCamera();
     void PushCamera();
     void PopCamera();
+    Vector2f GetCameraPosition() const;
 
 private:
     const PlayerObject* m_Player;

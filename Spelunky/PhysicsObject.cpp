@@ -57,7 +57,7 @@ void PhysicsObject::UpdatePhysics(const float elapsedTime)
             for (int j{}; j < int(m_WorldTiles->at(i).size()); ++j)
             {
                 const Tile* currentTile = &m_WorldTiles->at(i).at(j);
-                if(currentTile->GetTileType() == TileTypes::air || currentTile->GetTileType() == TileTypes::entrance || currentTile->GetTileType() == TileTypes::exit) continue;
+                if(currentTile->GetTileType() != TileTypes::ground) continue;
                 collision_helpers::RayVsRectInfo out;
                 if (RectRayVsRect(
                     rectCollider->GetRect(),

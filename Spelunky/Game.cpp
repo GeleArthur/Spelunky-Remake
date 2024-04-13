@@ -41,7 +41,6 @@ void Game::Initialize( )
 	m_Cave->GenerateLevel();
 	m_Player = new PlayerObject{m_SpriteSheetManager, m_Cave->GetTiles()};
 	m_ItemManager = new ItemManager{};
-	m_ItemManager->AddItem(new Rock{Vector2f{}, m_SpriteSheetManager, m_Cave->GetTiles()});
 	m_CameraSystem = new CameraSystem{m_Player};
 	
 	m_WorldManager->Init(m_Cave, m_Player, m_SpriteSheetManager, m_ItemManager);
@@ -64,6 +63,7 @@ void Game::Update( float elapsedSec )
 {
 	currentTime += elapsedSec;
 	m_Player->Update(elapsedSec);
+	m_ItemManager->UpdateItems(elapsedSec);
 
 	if(m_MouseDown)
 	{
@@ -106,12 +106,13 @@ void Game::Draw( ) const
 	m_Cave->Draw();
 	m_ItemManager->DrawItems();
 	m_Player->Draw();
+	GizmosDrawer::SetColor({0,1.0f,0});
+	GizmosDrawer::DrawQText(-m_CameraSystem->GetCameraPosition(), std::to_string((1/m_PrevDeltaTime)));
 	GizmosDrawer::Draw();
 	
 	m_CameraSystem->PopCamera();
 	// glPopMatrix();
-
-	std::cout << 1/m_PrevDeltaTime << '\n';
+	
 
 }
 
@@ -122,9 +123,11 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent &e )
 	{
 		std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
 		m_Cave->GenerateLevel();
+		m_ItemManager->ClearItems();
 		float elapsedSeconds = std::chrono::duration<float>(std::chrono::steady_clock::now() - t2).count();
 		std::cout << "Took: " << elapsedSeconds << " sec. To generate level";
-		
+
+		m_ItemManager->AddItem(new Rock{m_Cave->GetEntrance() + Vector2f{30, -64}, m_SpriteSheetManager, m_Cave->GetTiles()});
 		m_Player->Respawn(m_Cave->GetEntrance() + Vector2f{SpeluckyGlobals::g_TileSize/2.0f,SpeluckyGlobals::g_TileSize/2.0f});
 	}
 	if(e.keysym.sym == SDLK_t)

@@ -10,6 +10,7 @@ public:
     void AddItem(Item* item);
     void DrawItems() const;
     void UpdateItems(float elapsedTime);
+    void ClearItems();
     ~ItemManager();
     
 private:

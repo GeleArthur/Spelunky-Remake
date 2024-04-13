@@ -42,3 +42,8 @@ void CameraSystem::PopCamera()
 {
     glPopMatrix();
 }
+
+Vector2f CameraSystem::GetCameraPosition() const
+{
+    return Vector2f{m_TranslateMatrix.m30, m_TranslateMatrix.m31};
+}
