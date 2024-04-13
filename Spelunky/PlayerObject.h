@@ -26,8 +26,9 @@ public:
 
 private:
     PlayerAnimationState m_CurrentAnimation{PlayerAnimationState::idle};
-    int m_AnimationFrame;
-    float m_AnimationTimer;
+    int m_AnimationFrame{};
+    float m_AnimationTimer{};
+    bool m_IsLookingToRight{true};
 
     SpriteSheetManager* m_SpriteSheetManager;
 };

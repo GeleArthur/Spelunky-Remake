@@ -4,10 +4,12 @@
 #include "Game.h"
 #include "GlobalValues.h"
 #include "PhysicsObject.h"
+#include "Texture.h"
 #include "utils.h"
 
 std::vector<DrawHolder*> GizmosDrawer::m_Drawings;
 Color4f GizmosDrawer::m_CurrentColor{1,1,1,1};
+TTF_Font* GizmosDrawer::m_QTextFont{};
 
 struct DrawHolder
 {
@@ -70,6 +72,25 @@ struct DrawLineHolder final : public DrawHolder
     }
 };
 
+struct DrawTextHolder final : public DrawHolder
+{
+    DrawTextHolder(const Vector2f& position, const std::string& text, TTF_Font* font, const Color4f& drawingColor, float timeToDelete):
+        DrawHolder(drawingColor, timeToDelete), position(position), texture(new Texture(text, font, drawingColor))
+    {
+    }
+    
+    Vector2f position;
+    Texture* texture;
+    virtual ~DrawTextHolder() override
+    {
+        delete texture;
+    }
+    virtual void Draw() override
+    {
+        texture->Draw(position, Rectf{0,0, texture->GetWidth(), texture->GetHeight()});
+    }
+};
+
 void GizmosDrawer::Draw()
 {
     for (int i{}; i < int(m_Drawings.size()); ++i)
@@ -99,6 +120,9 @@ void GizmosDrawer::Shutdown()
     {
         delete m_Drawings[i];
     }
+
+    // if(m_QTextFont != nullptr)
+        // delete m_QTextFont;
 }
 
 void GizmosDrawer::DrawCircle(const Vector2f& position, const float size, const float timeToDelete)
@@ -114,6 +138,13 @@ void GizmosDrawer::DrawRect(const Rectf& rect, const float timeToDelete)
 void GizmosDrawer::DrawLine(const Vector2f& startPos, const Vector2f& endPos, const float timeToDelete)
 {
     m_Drawings.push_back(new DrawLineHolder{startPos, endPos, m_CurrentColor, Game::currentTime + timeToDelete});
+}
+
+void GizmosDrawer::DrawQText(const Vector2f& position, const std::string& text, float timeToDelete)
+{
+    if(m_QTextFont == nullptr) m_QTextFont = TTF_OpenFont( "arial.ttf", 16 );
+    
+    m_Drawings.push_back(new DrawTextHolder{position, text, m_QTextFont, m_CurrentColor, timeToDelete});
 }
 
 

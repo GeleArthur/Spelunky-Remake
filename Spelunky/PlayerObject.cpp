@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "CircleCollider.h"
+#include "GizmosDrawer.h"
 #include "RectCollider.h"
 #include "SpriteSheetManager.h"
 #include "Texture.h"
@@ -13,8 +14,6 @@
 
 PlayerObject::PlayerObject(SpriteSheetManager* spriteSheetManager, const std::vector<std::vector<Tile>>* tiles):
     PhysicsObject(new RectCollider{Rectf{0, 0, 40, 63}}, tiles),
-    m_AnimationFrame(0),
-    m_AnimationTimer(0),
     m_SpriteSheetManager(spriteSheetManager)
 {
 }
@@ -58,18 +57,14 @@ void PlayerObject::Draw() const
     glPushMatrix();
     glTranslatef(GetCollider()->GetOrigin().x, GetCollider()->GetOrigin().y, 0);
     
-    glScalef(1, -1, 1);
-    TTF_Font* pFont = TTF_OpenFont( "arial.ttf", 16 );
-    Texture(m_Velocity.ToString(), pFont, {1,1,1}).Draw();
-    glScalef(1, -1, 1);
+    GizmosDrawer::SetColor({1,1,1});
+    GizmosDrawer::DrawQText(GetCollider()->GetOrigin(), m_Velocity.ToString());
     
     if(m_Velocity.x < 0)
     {
         glScalef(-1, 1, 1);
     }
     m_SpriteSheetManager->GetCurrentPlayerTexture()->Draw(-Vector2f{40,40}, animationSource);
-
-
     
     glPopMatrix();
 }
@@ -164,7 +159,7 @@ void PlayerObject::UpdateAnimationState()
                 m_AnimationTimer = 0;
                 m_AnimationFrame = 0;
             }
-            else if(speed < 1000)
+            else if(speed < 250)
             {
                 if(m_AnimationTimer > 0.5f)
                 {
