@@ -77,6 +77,7 @@ void PlayerObject::Draw() const
 void PlayerObject::Update(const float elapsedTimes)
 {
     const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
+    // 3000 run speed maybe???
 
     Vector2f inputVelocity{};
     if ( pStates[SDL_SCANCODE_RIGHT] || pStates[SDL_SCANCODE_D] )
@@ -87,10 +88,17 @@ void PlayerObject::Update(const float elapsedTimes)
     {
         inputVelocity += Vector2f{-1000, 0} * elapsedTimes;
     }
+    if(pStates[SDL_SCANCODE_SPACE])
+    {
+        if(m_IsOnGround)
+        {
+            inputVelocity.y -= 530;
+        }
+    }
 
     if(abs(inputVelocity.x) < 0.001)
     {
-        float slowDownLimit = 5000.0f * elapsedTimes;// std::min(10.0f, std::abs(m_Velocity.x));
+        float slowDownLimit = 3000.0f * elapsedTimes;// std::min(10.0f, std::abs(m_Velocity.x));
         if(slowDownLimit > std::abs(m_Velocity.x))
             slowDownLimit = std::abs(m_Velocity.x);
         
@@ -111,6 +119,8 @@ void PlayerObject::Update(const float elapsedTimes)
         m_Velocity.x = limitedVelocity;
     else
         m_Velocity.x = -limitedVelocity;
+
+    m_Velocity.y = std::min(m_Velocity.y, 1000.0f);
     
     UpdatePhysics(elapsedTimes);
     // std::cout <<std::boolalpha << m_IsOnGround << '\n';

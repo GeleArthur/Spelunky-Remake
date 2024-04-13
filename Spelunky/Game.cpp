@@ -124,7 +124,7 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent &e )
 		m_Cave->GenerateLevel();
 		float elapsedSeconds = std::chrono::duration<float>(std::chrono::steady_clock::now() - t2).count();
 		std::cout << "Took: " << elapsedSeconds << " sec. To generate level";
-
+		
 		m_Player->Respawn(m_Cave->GetEntrance() + Vector2f{SpeluckyGlobals::g_TileSize/2.0f,SpeluckyGlobals::g_TileSize/2.0f});
 	}
 	if(e.keysym.sym == SDLK_t)
