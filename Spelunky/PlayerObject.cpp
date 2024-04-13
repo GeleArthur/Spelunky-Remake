@@ -88,9 +88,19 @@ void PlayerObject::Update(const float elapsedTimes)
         inputVelocity += Vector2f{-1000, 0} * elapsedTimes;
     }
 
-    if(inputVelocity.SquaredLength() < 0.001)
+    if(abs(inputVelocity.x) < 0.001)
     {
-        inputVelocity = -m_Velocity * elapsedTimes;
+        float slowDownLimit = 5000.0f * elapsedTimes;// std::min(10.0f, std::abs(m_Velocity.x));
+        if(slowDownLimit > std::abs(m_Velocity.x))
+            slowDownLimit = std::abs(m_Velocity.x);
+        
+        if(m_Velocity.x > 0) slowDownLimit *= -1;
+        
+        inputVelocity.x += slowDownLimit;
+    }
+    if(std::abs(m_Velocity.x) < 0.1)
+    {
+        m_Velocity.x = 0;
     }
 
     m_Velocity += inputVelocity;

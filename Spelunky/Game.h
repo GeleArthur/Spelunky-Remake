@@ -30,8 +30,7 @@ public:
 	void ProcessMouseUpEvent( const SDL_MouseButtonEvent& e ) override;
 	void ProcessWheelEvent( const SDL_MouseWheelEvent& e ) override;
 
-	static float currentTime;
-
+	static float currentTime; // TODO: Move this
 	
 private:
 
@@ -47,6 +46,8 @@ private:
 	bool m_MouseDown{};
 	Matrix4X4 m_ZoomMatrix{Matrix4X4::IdentityMatrix()};
 	Matrix4X4 m_MoveMatrix{Matrix4X4::IdentityMatrix()};
+
+	float m_PrevDeltaTime;
 
 	// FUNCTIONS
 	void Initialize();

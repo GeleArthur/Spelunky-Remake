@@ -46,7 +46,7 @@ void Game::Initialize( )
 	
 	m_WorldManager->Init(m_Cave, m_Player, m_SpriteSheetManager, m_ItemManager);
 	
-	m_Player->Respawn(m_Cave->GetEntrance());
+	m_Player->Respawn(m_Cave->GetEntrance() + Vector2f{SpeluckyGlobals::g_TileSize/2.0f,SpeluckyGlobals::g_TileSize/2.0f});
 }
 
 void Game::Cleanup( )
@@ -71,7 +71,8 @@ void Game::Update( float elapsedSec )
 	}
 
 	m_CameraSystem->UpdateCamera();
-	
+
+	m_PrevDeltaTime = elapsedSec;
 	// Check keyboard state
 	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
 	//if ( pStates[SDL_SCANCODE_RIGHT] )
@@ -89,9 +90,9 @@ void Game::Draw( ) const
 	ClearBackground( );
 	m_CameraSystem->PushCamera();
 	
-	glPushMatrix();
-	m_MoveMatrix.GlMultiMatrix();
-	m_ZoomMatrix.GlMultiMatrix();
+	// glPushMatrix();
+	// m_MoveMatrix.GlMultiMatrix();
+	// m_ZoomMatrix.GlMultiMatrix();
 
 	// Background
 	for (int x{}; x < 64*10*4/256; ++x)
@@ -108,7 +109,10 @@ void Game::Draw( ) const
 	GizmosDrawer::Draw();
 	
 	m_CameraSystem->PopCamera();
-	glPopMatrix();
+	// glPopMatrix();
+
+	std::cout << 1/m_PrevDeltaTime << '\n';
+
 }
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent &e )

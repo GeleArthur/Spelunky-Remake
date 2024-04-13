@@ -216,23 +216,23 @@ void Texture::CreateFromSurface( SDL_Surface* pSurface )
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 }
 
-void Texture::Draw( const Vector2f& dstBottomLeft, const Rectf& srcRect ) const
+void Texture::Draw( const Vector2f& dstTopLeft, const Rectf& srcRect ) const
 {
 	const float epsilon{ 0.001f };
 	if ( !m_CreationOk )
 	{
 		if (!(srcRect.width > epsilon && srcRect.height > epsilon)) // No srcRect specified
 		{
-			DrawFilledRect(Rectf{ dstBottomLeft.x, dstBottomLeft.y, m_Width, m_Height });
+			DrawFilledRect(Rectf{ dstTopLeft.x, dstTopLeft.y, m_Width, m_Height });
 		}
 		else
 		{
-			DrawFilledRect(Rectf{ dstBottomLeft.x, dstBottomLeft.y, srcRect.width, srcRect.height });
+			DrawFilledRect(Rectf{ dstTopLeft.x, dstTopLeft.y, srcRect.width, srcRect.height });
 		}
 	}
 	else
 	{
-		Rectf dstRect{ dstBottomLeft.x, dstBottomLeft.y, srcRect.width, srcRect.height };
+		Rectf dstRect{ dstTopLeft.x, dstTopLeft.y, srcRect.width, srcRect.height };
 		if (!(srcRect.width > epsilon && srcRect.height > epsilon)) // No srcRect specified
 		{
 			dstRect.width = m_Width;
@@ -346,9 +346,9 @@ void Texture::DrawFilledRect(const Rectf& rect) const
 	glBegin(GL_POLYGON);
 	{
 		glVertex2f(rect.left, rect.top);
-		glVertex2f(rect.left + rect.width, rect.top);
-		glVertex2f(rect.left + rect.width, rect.top + rect.height);
 		glVertex2f(rect.left , rect.top + rect.height);
+		glVertex2f(rect.left + rect.width, rect.top + rect.height);
+		glVertex2f(rect.left + rect.width, rect.top);
 	}
 	glEnd();
 
