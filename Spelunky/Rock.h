@@ -4,11 +4,10 @@
 
 class SpriteSheetManager;
 
-class Rock : public PhysicsObject, public Item
+class Rock final : public PhysicsObject, public Item
 {
 public:
     Rock(const Vector2f& position, const SpriteSheetManager* spriteSheetManager, const std::vector<std::vector<Tile>>* tiles);
-    virtual ~Rock() override;
     
     virtual void Update(float elapsedTime) override;
     virtual void Draw() const override;

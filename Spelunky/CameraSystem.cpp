@@ -12,10 +12,6 @@ CameraSystem::CameraSystem(const PlayerObject* player):
 {
 }
 
-CameraSystem::~CameraSystem()
-{
-}
-
 void CameraSystem::UpdateCamera()
 {
     Vector2f cameraPos = m_Player->GetCollider()->GetOrigin();

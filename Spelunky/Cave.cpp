@@ -26,10 +26,6 @@ Cave::Cave(SpriteSheetManager* spriteSheet):
     }
 }
 
-Cave::~Cave()
-{
-}
-
 void Cave::GenerateLevel()
 {
     for (int i{}; i < MAX_CAVE_TILE_COUNT_X; ++i)

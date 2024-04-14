@@ -10,6 +10,9 @@ class PhysicsObject
 public:
     explicit PhysicsObject(Collider* collider, const std::vector<std::vector<Tile>>* tiles);
     virtual ~PhysicsObject();
+    PhysicsObject(const PhysicsObject& other);
+    PhysicsObject& operator=(const PhysicsObject& other);
+    
     Collider* GetCollider() const;
     virtual void UpdatePhysics(float elapsedTime);
 

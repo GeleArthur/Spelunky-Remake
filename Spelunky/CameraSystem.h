@@ -3,11 +3,10 @@
 
 class PlayerObject;
 
-class CameraSystem
+class CameraSystem final
 {
 public:
     explicit CameraSystem(const PlayerObject* player);
-    virtual ~CameraSystem();
     void UpdateCamera();
     void PushCamera();
     void PopCamera();

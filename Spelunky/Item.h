@@ -6,6 +6,10 @@ class Item
 {
 public:
     virtual ~Item() = default;
+    Item() = default;
+    Item(const Item&) = default;
+    Item& operator=(const Item& c) = default;
+    
     virtual void Draw() const = 0;
     virtual bool CanPickUp(const Collider* collider) const = 0;
     virtual bool IsPickedUp() const = 0;

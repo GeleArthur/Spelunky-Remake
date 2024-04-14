@@ -3,10 +3,10 @@
 #include <vector>
 #include "PathTypes.h"
 #include "Vector2i.h"
+#include "Tile.h"
 
 class SpriteSheetManager;
 enum class TileTypes;
-class Tile;
 
 struct ExtraPathInformation
 {
@@ -14,11 +14,10 @@ struct ExtraPathInformation
 	Vector2i exitLocation;
 };
 
-class Cave
+class Cave final
 {
 public:
 	explicit Cave(SpriteSheetManager* spriteSheet);
-	~Cave();
 	void Draw() const;
 	void GenerateLevel();
 	Vector2f GetEntrance() const;

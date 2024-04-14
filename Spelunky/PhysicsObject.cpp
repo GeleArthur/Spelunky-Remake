@@ -27,7 +27,38 @@ PhysicsObject::PhysicsObject(Collider* collider, const std::vector<std::vector<T
 PhysicsObject::~PhysicsObject()
 {
     delete m_Collider;
-    std::cout << "Yes deleted";
+}
+
+PhysicsObject::PhysicsObject(const PhysicsObject& other)
+{
+    switch (other.m_Collider->GetColliderType())
+    {
+    case ColliderTypes::circle:
+        m_Collider = new CircleCollider{*reinterpret_cast<CircleCollider*>(other.GetCollider())};
+        break;
+    case ColliderTypes::rect:
+        m_Collider = new RectCollider{*reinterpret_cast<RectCollider*>(other.GetCollider())};
+        break;
+    }
+    m_WorldTiles = other.m_WorldTiles;
+}
+
+PhysicsObject& PhysicsObject::operator=(const PhysicsObject& other)
+{
+    if(this != &other)
+    {
+        switch (other.m_Collider->GetColliderType())
+        {
+        case ColliderTypes::circle:
+            m_Collider = new CircleCollider{*reinterpret_cast<CircleCollider*>(other.GetCollider())};
+            break;
+        case ColliderTypes::rect:
+            m_Collider = new RectCollider{*reinterpret_cast<RectCollider*>(other.GetCollider())};
+            break;
+        }
+    }
+    
+    return *this;
 }
 
 void PhysicsObject::UpdatePhysics(const float elapsedTime)

@@ -12,6 +12,10 @@ class Collider
 {
 public:
     virtual ~Collider() = default;
+    Collider() = default;
+    Collider(const Collider&) = default;
+    Collider& operator=(const Collider& c) = default;
+    
     virtual ColliderTypes GetColliderType() const = 0;
     virtual void DebugDraw() const = 0;
     virtual void SetOrigin(Vector2f newPosition) = 0;

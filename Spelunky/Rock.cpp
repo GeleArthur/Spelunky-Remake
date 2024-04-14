@@ -13,8 +13,6 @@ Rock::Rock(const Vector2f& position, const SpriteSheetManager* spriteSheetManage
 {
 }
 
-Rock::~Rock() = default;
-
 void Rock::Update(const float elapsedTime)
 {
     if(!m_IsPickedUp)

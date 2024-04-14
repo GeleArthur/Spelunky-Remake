@@ -17,7 +17,17 @@ ColliderTypes CircleCollider::GetColliderType() const
 
 void CircleCollider::DebugDraw() const
 {
-    utils::DrawEllipse(GetCenterPosition(), m_Size, m_Size);
+    utils::DrawEllipse(GetOrigin(), m_Size, m_Size);
+}
+
+Vector2f CircleCollider::GetOrigin() const
+{
+    return m_CenterPosition;
+}
+
+void CircleCollider::SetOrigin(const Vector2f newPosition)
+{
+    m_CenterPosition = newPosition;
 }
 
 float CircleCollider::GetSize() const
@@ -29,15 +39,3 @@ void CircleCollider::SetSize(const float newSize)
 {
     m_Size = newSize;
 }
-
-const Vector2f& CircleCollider::GetCenterPosition() const
-{
-    return m_CenterPosition;
-}
-
-void CircleCollider::SetCenterPosition(const Vector2f& newPosition)
-{
-    m_CenterPosition = newPosition;
-}
-
-

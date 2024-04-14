@@ -51,3 +51,17 @@ ItemManager::~ItemManager()
 {
     ClearItems();
 }
+
+ItemManager::ItemManager(const ItemManager& other)
+{
+    m_Items.clear();
+}
+
+ItemManager& ItemManager::operator=(const ItemManager& other)
+{
+    if(this != &other)
+    {
+        m_Items.clear();
+    }
+    return *this;
+}
