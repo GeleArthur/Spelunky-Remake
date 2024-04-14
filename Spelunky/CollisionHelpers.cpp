@@ -13,12 +13,12 @@
 
 bool collision_helpers::CircleVsCircle(const CircleCollider& circle1, const CircleCollider& circle2, HitInfo& out)
 {
-    const Vector2f distance = (circle2.GetCenterPosition() - circle1.GetCenterPosition());
+    const Vector2f distance = (circle2.GetOrigin() - circle1.GetOrigin());
     if(distance.SquaredLength() > circle1.GetSize()*circle1.GetSize()+circle2.GetSize()*circle2.GetSize())
     {
         out.normal = distance.Normalized();
         // out.lambda = ??????
-        out.intersectPoint = circle1.GetCenterPosition() + distance/2; // Correct???
+        out.intersectPoint = circle1.GetOrigin() + distance/2; // Correct???
         
         return true;
     }
@@ -44,8 +44,8 @@ bool collision_helpers::RectVsRectOverLab(const RectCollider& rect1, const RectC
 
 bool collision_helpers::CircleVsRect(const CircleCollider& circle, const RectCollider& rect1, HitInfo& out)
 {
-    const Vector2f centerPosCircle = circle.GetCenterPosition();
-    Vector2f intersectPoint{circle.GetCenterPosition()};
+    const Vector2f centerPosCircle = circle.GetOrigin();
+    Vector2f intersectPoint{circle.GetOrigin()};
     const Rectf rectOther{rect1.GetRect()};
     
     if(centerPosCircle.x < rectOther.left) intersectPoint.x = rectOther.left;
