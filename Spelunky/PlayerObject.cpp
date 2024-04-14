@@ -91,7 +91,7 @@ void PlayerObject::Update(const float elapsedTimes)
             inputVelocity.y -= 530;
         }
     }
-    if(pStates[SDL_SCANCODE_DOWN] || pStates[SDL_SCANCODE_S]  && pStates[SDL_SCANCODE_E])
+    if(pStates[SDL_SCANCODE_LSHIFT])
     {
         std::vector<Item*> items = m_WorldManager->GetItemManager()->GetItems();
         for (int i{}; i < items.size(); ++i)
@@ -104,18 +104,12 @@ void PlayerObject::Update(const float elapsedTimes)
                 break;
             }
         }
-        m_CanThrowItem = false;
     }
-    else
-    {
-        m_CanThrowItem = true;
-    }
-    if(m_PickupItem != nullptr && m_CanThrowItem && pStates[SDL_SCANCODE_E])
+
+    if(m_PickupItem != nullptr && pStates[SDL_SCANCODE_E])
     {
         m_PickupItem->SetIsPickedUp(false);
-
         m_PickupItem->Throw(Vector2f{m_IsLookingToLeft ? -1000.0f: 1000.0f, -200});
-        
         m_PickupItem = nullptr;
     }
 

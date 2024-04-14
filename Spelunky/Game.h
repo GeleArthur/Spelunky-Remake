@@ -21,6 +21,7 @@ public:
 
 	void Update( float elapsedSec ) override;
 	void Draw( ) const override;
+	void Reset();
 
 	// Event handling
 	void ProcessKeyDownEvent( const SDL_KeyboardEvent& e ) override;

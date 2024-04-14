@@ -35,7 +35,6 @@ private:
 
     const float m_MaxSpeed{500};
     Item* m_PickupItem{};
-    bool m_CanThrowItem{};
 
     SpriteSheetManager* m_SpriteSheetManager;
     WorldManager* m_WorldManager;

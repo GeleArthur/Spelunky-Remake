@@ -11,7 +11,17 @@ void ItemManager::DrawItems() const
 {
     for (const Item* item : m_Items)
     {
-        item->Draw();
+        if(!item->IsPickedUp())
+            item->Draw();
+    }
+}
+
+void ItemManager::DrawPickupItems() const
+{
+    for (const Item* item : m_Items)
+    {
+        if(item->IsPickedUp())
+            item->Draw();
     }
 }
 

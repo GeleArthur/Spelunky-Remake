@@ -9,6 +9,7 @@ class ItemManager final
 public:
     void AddItem(Item* item);
     void DrawItems() const;
+    void DrawPickupItems() const;
     void UpdateItems(float elapsedTime);
     std::vector<Item*>& GetItems();
     void ClearItems();

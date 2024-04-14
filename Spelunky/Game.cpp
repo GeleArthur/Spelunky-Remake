@@ -38,14 +38,13 @@ void Game::Initialize( )
 	m_WorldManager = new WorldManager{};
 	m_SpriteSheetManager = new SpriteSheetManager{};
 	m_Cave = new Cave{m_SpriteSheetManager};
-	m_Cave->GenerateLevel();
 	m_Player = new PlayerObject{m_WorldManager, m_SpriteSheetManager, m_Cave->GetTiles()};
 	m_ItemManager = new ItemManager{};
 	m_CameraSystem = new CameraSystem{m_Player};
 	
 	m_WorldManager->Init(m_Cave, m_Player, m_SpriteSheetManager, m_ItemManager);
-	
-	m_Player->Respawn(m_Cave->GetEntrance() + Vector2f{SpeluckyGlobals::g_TileSize/2.0f,SpeluckyGlobals::g_TileSize/2.0f});
+
+	Reset();
 }
 
 void Game::Cleanup( )
@@ -106,6 +105,7 @@ void Game::Draw( ) const
 	m_Cave->Draw();
 	m_ItemManager->DrawItems();
 	m_Player->Draw();
+	m_ItemManager->DrawPickupItems();
 	GizmosDrawer::SetColor({0,1.0f,0});
 	GizmosDrawer::DrawQText(-m_CameraSystem->GetCameraPosition(), std::to_string((1/m_PrevDeltaTime)));
 	GizmosDrawer::Draw();
@@ -116,19 +116,24 @@ void Game::Draw( ) const
 
 }
 
+void Game::Reset()
+{
+	std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
+	m_Cave->GenerateLevel();
+	m_ItemManager->ClearItems();
+	float elapsedSeconds = std::chrono::duration<float>(std::chrono::steady_clock::now() - t2).count();
+	std::cout << "Took: " << elapsedSeconds << " sec. To generate level";
+
+	m_ItemManager->AddItem(new Rock{m_Cave->GetEntrance() + Vector2f{30, -64}, m_SpriteSheetManager, m_Cave->GetTiles()});
+	m_Player->Respawn(m_Cave->GetEntrance() + Vector2f{SpeluckyGlobals::g_TileSize/2.0f,SpeluckyGlobals::g_TileSize/2.0f});
+}
+
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent &e )
 {
 	//std::cout << "KEYDOWN event: " << e.keysym.sym << std::endl;
 	if(e.keysym.sym == SDLK_r)
 	{
-		std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
-		m_Cave->GenerateLevel();
-		m_ItemManager->ClearItems();
-		float elapsedSeconds = std::chrono::duration<float>(std::chrono::steady_clock::now() - t2).count();
-		std::cout << "Took: " << elapsedSeconds << " sec. To generate level";
-
-		m_ItemManager->AddItem(new Rock{m_Cave->GetEntrance() + Vector2f{30, -64}, m_SpriteSheetManager, m_Cave->GetTiles()});
-		m_Player->Respawn(m_Cave->GetEntrance() + Vector2f{SpeluckyGlobals::g_TileSize/2.0f,SpeluckyGlobals::g_TileSize/2.0f});
+		Reset();
 	}
 	if(e.keysym.sym == SDLK_t)
 	{
