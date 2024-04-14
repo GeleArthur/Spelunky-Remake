@@ -11,10 +11,12 @@
 #include "SpriteSheetManager.h"
 #include "Texture.h"
 #include "Tile.h"
+#include "WorldManager.h"
 
-PlayerObject::PlayerObject(SpriteSheetManager* spriteSheetManager, const std::vector<std::vector<Tile>>* tiles):
+PlayerObject::PlayerObject(WorldManager* worldManager, SpriteSheetManager* spriteSheetManager, const std::vector<std::vector<Tile>>* tiles):
     PhysicsObject(new RectCollider{Rectf{0, 0, 40, 63}}, tiles),
-    m_SpriteSheetManager(spriteSheetManager)
+    m_SpriteSheetManager(spriteSheetManager),
+    m_WorldManager(worldManager)
 {
 }
 
@@ -71,7 +73,7 @@ void PlayerObject::Draw() const
 void PlayerObject::Update(const float elapsedTimes)
 {
     const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
-    // 3000 run speed maybe???
+    // 3000 as run speed maybe
 
     Vector2f inputVelocity{};
     if ( pStates[SDL_SCANCODE_RIGHT] || pStates[SDL_SCANCODE_D] )
@@ -88,6 +90,33 @@ void PlayerObject::Update(const float elapsedTimes)
         {
             inputVelocity.y -= 530;
         }
+    }
+    if(pStates[SDL_SCANCODE_DOWN] || pStates[SDL_SCANCODE_S]  && pStates[SDL_SCANCODE_E])
+    {
+        std::vector<Item*> items = m_WorldManager->GetItemManager()->GetItems();
+        for (int i{}; i < items.size(); ++i)
+        {
+            //TODO Test for multiple objects by distance
+            if(items.at(i)->CanPickUp(GetCollider()))
+            {
+                m_PickupItem = items.at(i);
+                m_PickupItem->SetIsPickedUp(true);
+                break;
+            }
+        }
+        m_CanThrowItem = false;
+    }
+    else
+    {
+        m_CanThrowItem = true;
+    }
+    if(m_PickupItem != nullptr && m_CanThrowItem && pStates[SDL_SCANCODE_E])
+    {
+        m_PickupItem->SetIsPickedUp(false);
+
+        m_PickupItem->Throw(Vector2f{m_IsLookingToLeft ? -1000.0f: 1000.0f, -200});
+        
+        m_PickupItem = nullptr;
     }
 
     if(abs(inputVelocity.x) < 0.001)
@@ -122,6 +151,11 @@ void PlayerObject::Update(const float elapsedTimes)
     m_Velocity.y = std::min(m_Velocity.y, 1000.0f);
     
     UpdatePhysics(elapsedTimes);
+    if(m_PickupItem != nullptr)
+    {
+        m_PickupItem->Teleport(GetCollider()->GetOrigin());
+    }
+    
     // std::cout <<std::boolalpha << m_IsOnGround << '\n';
     m_AnimationTimer += elapsedTimes;
     UpdateAnimationState();
@@ -211,4 +245,5 @@ void PlayerObject::Respawn(const Vector2f& spawnLocation)
     GetCollider()->SetOrigin(spawnLocation);
     m_AnimationFrame = 0;
     m_AnimationTimer = 0;
+    m_PickupItem = nullptr;
 }

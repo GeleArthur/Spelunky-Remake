@@ -26,21 +26,16 @@ bool collision_helpers::CircleVsCircle(const CircleCollider& circle1, const Circ
     return false;
 }
 
-bool collision_helpers::RectVsRect(const RectCollider& rect1, const RectCollider& rect2, HitInfo& out)
+bool collision_helpers::RectVsRectOverLab(const RectCollider& rect1, const RectCollider& rect2)
 {
     Rectf rectData1 = rect1.GetRect();
     Rectf rectData2 = rect2.GetRect();
-
-    Vector2f centerRect1 = Vector2f{rectData1.left + rectData1.width/2, rectData1.top + rectData1.height/2};
     
     if(rectData1.left + rectData1.width >= rectData2.left &&    // r1 right edge past r2 left
       rectData1.left <= rectData2.left + rectData2.width &&    // r1 left edge past r2 right
       rectData1.top + rectData1.height >= rectData2.top &&    // r1 top edge past r2 bottom
       rectData1.top <= rectData2.top + rectData2.height)
     {
-        // out.intersectPoint =
-        
-        
         return true;
     }
     
@@ -135,5 +130,6 @@ bool collision_helpers::CircleRayVsRect(
     const Rectf& staticRect,
     RayVsRectInfo& out)
 {
+    //TODO
     return false;
 }

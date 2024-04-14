@@ -3,6 +3,8 @@
 
 #include "PhysicsObject.h"
 
+class WorldManager;
+class Item;
 class Tile;
 class SpriteSheetManager;
 
@@ -19,7 +21,7 @@ enum class PlayerAnimationState
 class PlayerObject final : public PhysicsObject
 {
 public:
-    explicit PlayerObject(SpriteSheetManager* spriteSheetManager, const std::vector<std::vector<Tile>>* tiles);
+    explicit PlayerObject(WorldManager* worldManager, SpriteSheetManager* spriteSheetManager, const std::vector<std::vector<Tile>>* tiles);
     void Draw() const;
     void Update(float elapsedTimes);
     void UpdateAnimationState();
@@ -32,6 +34,9 @@ private:
     bool m_IsLookingToLeft{true};
 
     const float m_MaxSpeed{500};
+    Item* m_PickupItem{};
+    bool m_CanThrowItem{};
 
     SpriteSheetManager* m_SpriteSheetManager;
+    WorldManager* m_WorldManager;
 };

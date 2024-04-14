@@ -23,6 +23,11 @@ void ItemManager::UpdateItems(const float elapsedTime)
     }
 }
 
+std::vector<Item*>& ItemManager::GetItems()
+{
+    return m_Items;
+}
+
 void ItemManager::ClearItems()
 {
     for (int i{}; i < m_Items.size(); ++i)

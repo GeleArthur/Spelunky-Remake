@@ -39,7 +39,7 @@ void Game::Initialize( )
 	m_SpriteSheetManager = new SpriteSheetManager{};
 	m_Cave = new Cave{m_SpriteSheetManager};
 	m_Cave->GenerateLevel();
-	m_Player = new PlayerObject{m_SpriteSheetManager, m_Cave->GetTiles()};
+	m_Player = new PlayerObject{m_WorldManager, m_SpriteSheetManager, m_Cave->GetTiles()};
 	m_ItemManager = new ItemManager{};
 	m_CameraSystem = new CameraSystem{m_Player};
 	

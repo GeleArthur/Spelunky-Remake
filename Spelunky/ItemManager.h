@@ -10,6 +10,7 @@ public:
     void AddItem(Item* item);
     void DrawItems() const;
     void UpdateItems(float elapsedTime);
+    std::vector<Item*>& GetItems();
     void ClearItems();
     ~ItemManager();
     

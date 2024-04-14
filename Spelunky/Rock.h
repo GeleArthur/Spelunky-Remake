@@ -10,9 +10,17 @@ public:
     Rock(const Vector2f& position, const SpriteSheetManager* spriteSheetManager, const std::vector<std::vector<Tile>>* tiles);
     virtual ~Rock() override;
     
-    void Update(float elapsedTime) override;
-    void Draw() const override;
+    virtual void Update(float elapsedTime) override;
+    virtual void Draw() const override;
+    virtual bool CanPickUp(const Collider* collider) const override;
+    virtual bool IsPickedUp() const override;
+    virtual void Teleport(const Vector2f& position) override;
+    virtual void Throw(const Vector2f& velocity) override;
+    virtual void SetIsPickedUp(bool pickedUp) override;
     
 private:
     const SpriteSheetManager* m_SpriteSheetManager;
+    bool m_IsPickedUp{};
 };
+
+
