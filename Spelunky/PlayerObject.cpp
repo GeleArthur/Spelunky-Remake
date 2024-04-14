@@ -60,10 +60,9 @@ void PlayerObject::Draw() const
     GizmosDrawer::SetColor({1,1,1});
     GizmosDrawer::DrawQText(GetCollider()->GetOrigin(), m_Velocity.ToString());
     
-    if(m_Velocity.x < 0)
-    {
-        glScalef(-1, 1, 1);
-    }
+
+    if(m_IsLookingToLeft)
+        glScalef(-1,1,1);
     m_SpriteSheetManager->GetCurrentPlayerTexture()->Draw(-Vector2f{40,40}, animationSource);
     
     glPopMatrix();
@@ -101,20 +100,25 @@ void PlayerObject::Update(const float elapsedTimes)
         
         inputVelocity.x += slowDownLimit;
     }
+    
     if(std::abs(m_Velocity.x) < 0.1)
     {
         m_Velocity.x = 0;
+    }
+    else
+    {
+        m_IsLookingToLeft = m_Velocity.x < 0;
     }
 
     m_Velocity += inputVelocity;
     
     
-    const float limitedVelocity = std::min(std::abs(m_Velocity.x), 500.0f);
+    const float limitedVelocity = std::min(std::abs(m_Velocity.x), m_MaxSpeed);
     if(m_Velocity.x > 0)
         m_Velocity.x = limitedVelocity;
     else
         m_Velocity.x = -limitedVelocity;
-
+    
     m_Velocity.y = std::min(m_Velocity.y, 1000.0f);
     
     UpdatePhysics(elapsedTimes);
@@ -159,22 +163,30 @@ void PlayerObject::UpdateAnimationState()
                 m_AnimationTimer = 0;
                 m_AnimationFrame = 0;
             }
-            else if(speed < 250)
-            {
-                if(m_AnimationTimer > 0.5f)
-                {
-                    m_AnimationTimer = 0;
-                    m_AnimationFrame++;
-                }
-            }
             else
             {
-                if(m_AnimationTimer > 0.1f)
+                if(m_AnimationTimer > 0.05+(1-(std::abs(m_Velocity.x)/m_MaxSpeed))*0.2)
                 {
                     m_AnimationTimer = 0;
                     m_AnimationFrame++;
                 }
             }
+            // else if(speed < 250)
+            // {
+            //     if(m_AnimationTimer > 0.5f)
+            //     {
+            //         m_AnimationTimer = 0;
+            //         m_AnimationFrame++;
+            //     }
+            // }
+            // else
+            // {
+            //     if(m_AnimationTimer > 0.1f)
+            //     {
+            //         m_AnimationTimer = 0;
+            //         m_AnimationFrame++;
+            //     }
+            // }
         }
         break;
     case PlayerAnimationState::inAir:

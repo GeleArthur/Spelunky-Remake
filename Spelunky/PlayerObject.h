@@ -15,6 +15,7 @@ enum class PlayerAnimationState
     hanging
 };
 
+
 class PlayerObject final : public PhysicsObject
 {
 public:
@@ -28,7 +29,9 @@ private:
     PlayerAnimationState m_CurrentAnimation{PlayerAnimationState::idle};
     int m_AnimationFrame{};
     float m_AnimationTimer{};
-    bool m_IsLookingToRight{true};
+    bool m_IsLookingToLeft{true};
+
+    const float m_MaxSpeed{500};
 
     SpriteSheetManager* m_SpriteSheetManager;
 };
