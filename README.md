@@ -68,7 +68,7 @@ This section gives a clear and detailed overview of which parts of the original 
 	- [x] Obstacles in rooms (step 3 of book)
 	- [ ] Items and enemy placement
 - [ ] World
-	- [ ] All "objects" need to have physics.
+	- [x] All "objects" need to have physics.
 	- [ ] All "items/monsters" need to be able to be picked up.
 	- [ ] All "items/monsters" need to be able to be thrown.
 	- [ ] Spiderwebs (slow down any object)
@@ -76,29 +76,28 @@ This section gives a clear and detailed overview of which parts of the original 
 	- [ ] Level destruction.
 	- [ ] Arrow traps.
 	- [ ] Spikes (If landed on instant death. Can be walked through)
-	- [ ] Exit door
-	- [ ] Light system
+	- [x] Exit door
 	- [ ] Tiles that can snap together.
 - [ ] Physics:
-	- [ ] Gravity, velocity, acceleration
+	- [x] Gravity, velocity, acceleration
 	- [ ] Impact damage
 	- [ ] Destroyed item if impact too large.
 	- [ ] Objects need to rotate when in air.
-	- [ ] Collision.
+	- [x] Collision.
 	- [ ] Reaction on collision.
 	- [ ] If object hit with enough impact it will get stunned.
 - [ ] Player
-	- [ ] Animated spritesheet
-	- [ ] Jumping
-	- [ ] Moving left right
-	- [ ] Failing
+	- [x] Animated spritesheet
+	- [x] Jumping
+	- [x] Moving left right
+	- [x] Failing
 	- [ ] Fall damage
 	- [ ] Sprinting
 	- [ ] Crouching
 	- [ ] Crouch walking
 	- [ ] Hanging off ledges 
-	- [ ] Pickup objects / holding objects.
-	- [ ] Throw object.
+	- [x] Pickup objects / holding objects.
+	- [x] Throw object.
 	- [ ] Put object back on floor.
 	- [ ] Whip (Can damage Objects)
 	- [ ] Jump on top of monsters.
@@ -175,13 +174,14 @@ Explain which project (version) must be run.
 
 <!-- HOW TO PLAY -->
 ## How to play
-
-Use this space to show useful examples of how a game can be played. 
-Additional screenshots and demos work well in this space. 
+![spelunky game](.github/CheckPoint_02.png)
 
 ### Controls
-* keys, .. 
-* .. 
+* R: generate new level + reset
+* WASD or ArrowKeys: move character
+* Space: Jump
+* Shift: PickUp Item
+* E: Throw item
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -189,14 +189,17 @@ Additional screenshots and demos work well in this space.
 
 <!-- CLASS STRUCTURE -->
 ## Class structure 
+[Click here for UML](https://mermaid.live/edit#pako:eNqdVMGOmzAQ_RXLp6QNUUIgu6Aoh2YrtYeq0W63lSouDgyNG2Mj27Sl2ey318GwMpL3Ug7BM_P8nnkz8RnnogCc4iAIMq6pZpCihxpYw09txrtszohSd5T8kKTKODLPTjBGC5Bo8xQEBn4ECUPOh7iHXI_r-2OraK4-H36aEgqCLfomJCu-UAaqRzDSmv1B8LQdo_0Eb9BY4KOG6tXNd6RSwOzZdhKIbiTYynsOVesrDNGrnGMXDEz4UK4TPoxFdY47jpxt-vp8NTAhn6_pZ5u9uHusa-eBaFxzpRzKt2hH-DvY0_wExWM9maKDEMyt_6JSN4Shx7ogGnqeF5xHavhER2WzoVyDLEkO261Dfk_anCg9mTq53RHyU8ehqOCTF8OENh5P0QeqKS-FR3fcBEd9PC51H_3mw7iMWNwm_S9Hf0bXZtu6sESdEcpEe2GWPgQXsiJuC0omiEaMVIeCeNSu0-5I-TrSz69_NLqx95fsf8Wt2cX1jWe4AnNSWpgbpNPPsGlRBRlOzbIg8pThjF8MjjRaPLQ8x6mWDcxw041Sf6sMyZrw70KYsCRM2RinZ_wHp6s4mS_iJEzidRyFyTqZ4RanyzCex1GSLJfmZxGuougyw387hsX8ZrVe3UYGurxNbsKF2QEFNfZ-shded-9d_gFUqJY2)
+
 
 ### Object composition 
-If you applied object composition (optional); explain where and how.
+`PhysicsObject.h` uses a composition to get a collider*. This collder is an interface which can be a rect collider or circle collider.
+
+
 
 ### Inheritance 
-Explain where you applied inheritance (mandatory).
+PlayerObject and Rock inherit from PhysicsObject so they have physics and can interact with the world.
 
-### ..
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -205,13 +208,13 @@ Explain where you applied inheritance (mandatory).
 ## Checklist
 
 - [x] Accept / set up github project
-- [ ] week 01 topics applied
-    - [ ] const keyword applied proactively (variables, functions,..)
-    - [ ] static keyword applied proactively (class variables, static functions,..)
-    - [ ] object composition (optional)
-- [ ] week 02 topics applied
-- [ ] week 03 topics applied
-- [ ] week 04 topics applied
+- [x] week 01 topics applied
+    - [x] const keyword applied proactively (variables, functions,..)
+    - [x] static keyword applied proactively (class variables, static functions,..)
+    - [x] object composition (optional)
+- [x] week 02 topics applied
+- [x] week 03 topics applied
+- [x] week 04 topics applied
 - [ ] week 05 topics applied
 - [ ] week 06 topics applied
 - [ ] week 07 topics applied
