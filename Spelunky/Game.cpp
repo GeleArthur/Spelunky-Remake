@@ -105,15 +105,13 @@ void Game::Draw( ) const
 	m_Cave->Draw();
 	m_ItemManager->DrawItems();
 	m_Player->Draw();
-	m_ItemManager->DrawPickupItems();
+	// m_ItemManager->DrawPickupItems();
 	GizmosDrawer::SetColor({0,1.0f,0});
 	GizmosDrawer::DrawQText(-m_CameraSystem->GetCameraPosition(), std::to_string((1/m_PrevDeltaTime)));
 	GizmosDrawer::Draw();
 	
 	m_CameraSystem->PopCamera();
 	// glPopMatrix();
-	
-
 }
 
 void Game::Reset()

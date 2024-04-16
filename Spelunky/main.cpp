@@ -44,5 +44,3 @@ void StartHeapControl()
 // 	_CrtDumpMemoryLeaks();
 // #endif
 // }
-
-

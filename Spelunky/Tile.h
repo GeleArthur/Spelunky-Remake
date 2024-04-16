@@ -4,7 +4,7 @@
 #include "TileTypes.h"
 #include "Vector2i.h"
 
-class Tile
+class Tile final
 {
 public:
     explicit Tile(TileTypes tileType, Vector2i tileIndex, SpriteSheetManager* spriteSheet);

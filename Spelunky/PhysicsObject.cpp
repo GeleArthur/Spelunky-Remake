@@ -101,7 +101,7 @@ void PhysicsObject::UpdatePhysics(const float elapsedTime)
                 }
             }
         }
-
+        
         if(results.empty()) break;
 
         bool isSorting = true;
@@ -135,8 +135,10 @@ void PhysicsObject::UpdatePhysics(const float elapsedTime)
             {
                 if(out.normal.y < 0)
                     m_IsOnGround = true;
+                
                 const float strengthInVelocity = out.normal.DotProduct(m_Velocity);
                 m_Velocity -= out.normal * strengthInVelocity;
+                // GetCollider()->SetOrigin(out.pointHit);
             }
         }
         

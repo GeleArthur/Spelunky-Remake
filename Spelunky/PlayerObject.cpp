@@ -68,6 +68,11 @@ void PlayerObject::Draw() const
     m_SpriteSheetManager->GetCurrentPlayerTexture()->Draw(-Vector2f{40,40}, animationSource);
     
     glPopMatrix();
+
+    if(m_PickupItem != nullptr)
+    {
+        m_PickupItem->Draw();
+    }
 }
 
 void PlayerObject::Update(const float elapsedTimes)
