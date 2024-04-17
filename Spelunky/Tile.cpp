@@ -11,7 +11,7 @@ using namespace SpeluckyGlobals;
 
 Tile::Tile(const TileTypes tileType, const Vector2i tileIndex, SpriteSheetManager* spriteSheet):
 	m_SpriteSheetManager(spriteSheet),
-	m_Collider(RectCollider{Rectf{static_cast<float>(tileIndex.x * g_TileSize), static_cast<float>(tileIndex.y * g_TileSize), g_TileSize, g_TileSize}}),
+	m_Collider(RectPhysicsCollider{Rectf{static_cast<float>(tileIndex.x * g_TileSize), static_cast<float>(tileIndex.y * g_TileSize), g_TileSize, g_TileSize}}),
 	m_TileType(tileType),
 	m_VariantIndex(0)
 {
@@ -75,7 +75,7 @@ TileTypes Tile::GetTileType() const
 	return m_TileType;
 }
 
-const RectCollider* Tile::GetCollider() const
+const RectPhysicsCollider* Tile::GetCollider() const
 {
 	return &m_Collider;
 }

@@ -1,14 +1,14 @@
 ﻿#include "pch.h"
 #include "Rock.h"
 
-#include "CircleCollider.h"
-#include "RectCollider.h"
+#include "CirclePhysicsCollider.h"
+#include "RectPhysicsCollider.h"
 #include "SpriteSheetManager.h"
 #include "Texture.h"
 
 
 Rock::Rock(const Vector2f& position, const SpriteSheetManager* spriteSheetManager ,const std::vector<std::vector<Tile>>* tiles):
-    PhysicsObject(new RectCollider{Rectf{position.x,position.y,30,30}}, tiles),
+    PhysicsObject(new RectPhysicsCollider{Rectf{position.x,position.y,30,30}}, tiles),
     m_SpriteSheetManager(spriteSheetManager)
 {
 }
@@ -37,7 +37,7 @@ bool Rock::CanPickUp(const Collider* collider) const
         // TODO
         break;
     case ColliderTypes::rect:
-        if(collision_helpers::RectVsRectOverLab(*reinterpret_cast<const RectCollider*>(GetCollider()), *reinterpret_cast<const RectCollider*>(collider)))
+        if(collision_helpers::RectVsRectOverLab(*reinterpret_cast<const RectPhysicsCollider*>(GetCollider()), *reinterpret_cast<const RectPhysicsCollider*>(collider)))
         {
             return true;
         }

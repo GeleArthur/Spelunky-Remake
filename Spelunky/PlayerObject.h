@@ -1,7 +1,9 @@
 ﻿#pragma once
 #include <vector>
 
+#include "PhysicsComponent.h"
 #include "PhysicsObject.h"
+#include "RectPhysicsCollider.h"
 
 class WorldManager;
 class Item;
@@ -18,7 +20,7 @@ enum class PlayerAnimationState
 };
 
 
-class PlayerObject final : public PhysicsObject
+class PlayerObject final : public PhysicsComponent
 {
 public:
     explicit PlayerObject(WorldManager* worldManager, SpriteSheetManager* spriteSheetManager, const std::vector<std::vector<Tile>>* tiles);
@@ -26,6 +28,9 @@ public:
     void Update(float elapsedTimes);
     void UpdateAnimationState();
     void Respawn(const Vector2f& spawnLocation);
+    
+    virtual ColliderTypes GetColliderType() const override;
+    virtual Collider* GetCollider() override;
 
 private:
     PlayerAnimationState m_CurrentAnimation{PlayerAnimationState::idle};
@@ -35,6 +40,7 @@ private:
 
     const float m_MaxSpeed{500};
     Item* m_PickupItem{};
+    RectPhysicsCollider m_PhysicsCollider;
 
     SpriteSheetManager* m_SpriteSheetManager;
     WorldManager* m_WorldManager;

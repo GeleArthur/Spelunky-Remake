@@ -5,11 +5,11 @@
 #include <iostream>
 #include <vector>
 
-#include "CircleCollider.h"
+#include "CirclePhysicsCollider.h"
 #include "Collider.h"
 #include "GizmosDrawer.h"
 #include "GlobalValues.h"
-#include "RectCollider.h"
+#include "RectPhysicsCollider.h"
 #include "Tile.h"
 #include "utils.h"
 
@@ -34,10 +34,10 @@ PhysicsObject::PhysicsObject(const PhysicsObject& other)
     switch (other.m_Collider->GetColliderType())
     {
     case ColliderTypes::circle:
-        m_Collider = new CircleCollider{*reinterpret_cast<CircleCollider*>(other.GetCollider())};
+        m_Collider = new CirclePhysicsCollider{*reinterpret_cast<CirclePhysicsCollider*>(other.GetCollider())};
         break;
     case ColliderTypes::rect:
-        m_Collider = new RectCollider{*reinterpret_cast<RectCollider*>(other.GetCollider())};
+        m_Collider = new RectPhysicsCollider{*reinterpret_cast<RectPhysicsCollider*>(other.GetCollider())};
         break;
     }
     m_WorldTiles = other.m_WorldTiles;
@@ -50,10 +50,10 @@ PhysicsObject& PhysicsObject::operator=(const PhysicsObject& other)
         switch (other.m_Collider->GetColliderType())
         {
         case ColliderTypes::circle:
-            m_Collider = new CircleCollider{*reinterpret_cast<CircleCollider*>(other.GetCollider())};
+            m_Collider = new CirclePhysicsCollider{*reinterpret_cast<CirclePhysicsCollider*>(other.GetCollider())};
             break;
         case ColliderTypes::rect:
-            m_Collider = new RectCollider{*reinterpret_cast<RectCollider*>(other.GetCollider())};
+            m_Collider = new RectPhysicsCollider{*reinterpret_cast<RectPhysicsCollider*>(other.GetCollider())};
             break;
         }
     }
@@ -72,7 +72,7 @@ void PhysicsObject::UpdatePhysics(const float elapsedTime)
         // TODO
         break;
     case ColliderTypes::rect:
-        const RectCollider* rectCollider{reinterpret_cast<RectCollider*>(m_Collider)};
+        const RectPhysicsCollider* rectCollider{reinterpret_cast<RectPhysicsCollider*>(m_Collider)};
 
         std::vector<collision_helpers::RayVsRectInfo> results{};
         std::vector<const Tile*> tilePointer_DEBUG{};

@@ -1,9 +1,9 @@
 ﻿#pragma once
 #include <vector>
 
-class RectCollider;
+class RectPhysicsCollider;
 class Collider;
-class CircleCollider;
+class CirclePhysicsCollider;
 
 namespace collision_helpers
 {
@@ -22,11 +22,11 @@ namespace collision_helpers
         float farHit;
     };
 
-    bool CircleVsCircle(const CircleCollider& circle1, const CircleCollider& circle2, HitInfo& out);
-    bool RectVsRectOverLab(const RectCollider& rect1, const RectCollider& rect2);
-    bool CircleVsRect(const CircleCollider& circle, const RectCollider& rect1, HitInfo& out);
+    bool CircleVsCircle(const CirclePhysicsCollider& circle1, const CirclePhysicsCollider& circle2, HitInfo& out);
+    bool RectVsRectOverLab(const RectPhysicsCollider& rect1, const RectPhysicsCollider& rect2);
+    bool CircleVsRect(const CirclePhysicsCollider& circle, const RectPhysicsCollider& rect1, HitInfo& out);
 
     bool RayVsRect(const Rectf& rect, const Vector2f& rayOrigin, const Vector2f& rayDir, RayVsRectInfo& out );
     bool RectRayVsRect(const Rectf& movingRect, const Vector2f& rayDirection, const Rectf& staticRect, RayVsRectInfo& out);
-    bool CircleRayVsRect(const CircleCollider& movingCircle, const Vector2f& rayDirection,  const Rectf& staticRect, RayVsRectInfo& out);
+    bool CircleRayVsRect(const CirclePhysicsCollider& movingCircle, const Vector2f& rayDirection,  const Rectf& staticRect, RayVsRectInfo& out);
 };

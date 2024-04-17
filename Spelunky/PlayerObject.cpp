@@ -5,16 +5,16 @@
 #include <iostream>
 #include <vector>
 
-#include "CircleCollider.h"
+#include "CirclePhysicsCollider.h"
 #include "GizmosDrawer.h"
-#include "RectCollider.h"
+#include "RectPhysicsCollider.h"
 #include "SpriteSheetManager.h"
 #include "Texture.h"
 #include "Tile.h"
 #include "WorldManager.h"
 
 PlayerObject::PlayerObject(WorldManager* worldManager, SpriteSheetManager* spriteSheetManager, const std::vector<std::vector<Tile>>* tiles):
-    PhysicsObject(new RectCollider{Rectf{0, 0, 40, 63}}, tiles),
+    m_PhysicsCollider(Rectf{0, 0, 40, 63}),
     m_SpriteSheetManager(spriteSheetManager),
     m_WorldManager(worldManager)
 {
@@ -23,7 +23,7 @@ PlayerObject::PlayerObject(WorldManager* worldManager, SpriteSheetManager* sprit
 void PlayerObject::Draw() const
 {
     Rectf animationSource{0,0,80,80};
-    
+
     //TODO: move hardcoded animation numbers
     switch (m_CurrentAnimation)
     {
@@ -36,18 +36,21 @@ void PlayerObject::Draw() const
         animationSource.left = 80.0f + static_cast<float>(m_AnimationFrame%7) * 80.0f;
         break;
     case PlayerAnimationState::inAir:
-        animationSource.top = 9*80.0f;
-        if(m_Velocity.y > 0 && m_Velocity.y < 5)
         {
-            animationSource.left = 4*80.0f;
-        }
-        else if(m_Velocity.y > 5 && m_Velocity.y < 25)
-        {
-            animationSource.left = 5*80.0f;
-        }
-        else if(m_Velocity.y > 25)
-        {
-            animationSource.left = 7*80.0f;
+            const Vector2f velocity = m_PhysicsCollider.GetVelocity();
+            animationSource.top = 9*80.0f;
+            if(velocity.y > 0 && velocity.y < 5)
+            {
+                animationSource.left = 4*80.0f;
+            }
+            else if(velocity.y > 5 && velocity.y < 25)
+            {
+                animationSource.left = 5*80.0f;
+            }
+            else if(velocity.y > 25)
+            {
+                animationSource.left = 7*80.0f;
+            }
         }
         break;
     case PlayerAnimationState::climbing:
@@ -57,10 +60,11 @@ void PlayerObject::Draw() const
     }
     
     glPushMatrix();
-    glTranslatef(GetCollider()->GetOrigin().x, GetCollider()->GetOrigin().y, 0);
+    const Vector2f position = m_PhysicsCollider.GetCenter();
+    glTranslatef(position.x, position.y, 0);
     
     GizmosDrawer::SetColor({1,1,1});
-    GizmosDrawer::DrawQText(GetCollider()->GetOrigin(), m_Velocity.ToString());
+    GizmosDrawer::DrawQText(position, m_PhysicsCollider.GetVelocity().ToString());
     
 
     if(m_IsLookingToLeft)
@@ -118,27 +122,29 @@ void PlayerObject::Update(const float elapsedTimes)
         m_PickupItem = nullptr;
     }
 
+    Vector2f velocity = m_PhysicsCollider.GetVelocity();
+
     if(abs(inputVelocity.x) < 0.001)
     {
         float slowDownLimit = 3000.0f * elapsedTimes;// std::min(10.0f, std::abs(m_Velocity.x));
-        if(slowDownLimit > std::abs(m_Velocity.x))
-            slowDownLimit = std::abs(m_Velocity.x);
+        if(slowDownLimit > std::abs(velocity.x))
+            slowDownLimit = std::abs(velocity.x);
         
-        if(m_Velocity.x > 0) slowDownLimit *= -1;
+        if(velocity.x > 0) slowDownLimit *= -1;
         
         inputVelocity.x += slowDownLimit;
     }
     
-    if(std::abs(m_Velocity.x) < 0.1)
+    if(std::abs(velocity.x) < 0.1)
     {
-        m_Velocity.x = 0;
+        velocity.x = 0;
     }
     else
     {
-        m_IsLookingToLeft = m_Velocity.x < 0;
+        m_IsLookingToLeft = velocity.x < 0;
     }
 
-    m_Velocity += inputVelocity;
+    m_PhysicsCollider.ApplyForce(inputVelocity);
     
     
     const float limitedVelocity = std::min(std::abs(m_Velocity.x), m_MaxSpeed);

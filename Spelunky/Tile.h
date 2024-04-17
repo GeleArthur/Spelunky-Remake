@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "RectCollider.h"
+#include "RectPhysicsCollider.h"
 #include "SpriteSheetManager.h"
 #include "TileTypes.h"
 #include "Vector2i.h"
@@ -12,12 +12,12 @@ public:
     void Draw() const;
     const Vector2i& GetIndexPosition() const;
     TileTypes GetTileType() const;
-    const RectCollider* GetCollider() const;
+    const RectPhysicsCollider* GetCollider() const;
 
 private:
     SpriteSheetManager* m_SpriteSheetManager;
     Vector2i m_IndexPosition;
-    RectCollider m_Collider;
+    RectPhysicsCollider m_Collider;
     TileTypes m_TileType;
     int m_VariantIndex;
 };

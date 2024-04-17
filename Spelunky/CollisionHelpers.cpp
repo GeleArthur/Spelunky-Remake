@@ -4,14 +4,14 @@
 #include <iostream>
 #include <vector>
 
-#include "CircleCollider.h"
+#include "CirclePhysicsCollider.h"
 #include "Collider.h"
 #include "GizmosDrawer.h"
-#include "RectCollider.h"
+#include "RectPhysicsCollider.h"
 #include "Tile.h"
 #include "utils.h"
 
-bool collision_helpers::CircleVsCircle(const CircleCollider& circle1, const CircleCollider& circle2, HitInfo& out)
+bool collision_helpers::CircleVsCircle(const CirclePhysicsCollider& circle1, const CirclePhysicsCollider& circle2, HitInfo& out)
 {
     const Vector2f distance = (circle2.GetOrigin() - circle1.GetOrigin());
     if(distance.SquaredLength() > circle1.GetSize()*circle1.GetSize()+circle2.GetSize()*circle2.GetSize())
@@ -26,7 +26,7 @@ bool collision_helpers::CircleVsCircle(const CircleCollider& circle1, const Circ
     return false;
 }
 
-bool collision_helpers::RectVsRectOverLab(const RectCollider& rect1, const RectCollider& rect2)
+bool collision_helpers::RectVsRectOverLab(const RectPhysicsCollider& rect1, const RectPhysicsCollider& rect2)
 {
     Rectf rectData1 = rect1.GetRect();
     Rectf rectData2 = rect2.GetRect();
@@ -42,7 +42,7 @@ bool collision_helpers::RectVsRectOverLab(const RectCollider& rect1, const RectC
     return false;
 }
 
-bool collision_helpers::CircleVsRect(const CircleCollider& circle, const RectCollider& rect1, HitInfo& out)
+bool collision_helpers::CircleVsRect(const CirclePhysicsCollider& circle, const RectPhysicsCollider& rect1, HitInfo& out)
 {
     const Vector2f centerPosCircle = circle.GetOrigin();
     Vector2f intersectPoint{circle.GetOrigin()};
@@ -125,7 +125,7 @@ bool collision_helpers::RectRayVsRect(const Rectf& movingRect, const Vector2f& r
 }
 
 bool collision_helpers::CircleRayVsRect(
-    const CircleCollider& movingCircle,
+    const CirclePhysicsCollider& movingCircle,
     const Vector2f& rayDirection,
     const Rectf& staticRect,
     RayVsRectInfo& out)
