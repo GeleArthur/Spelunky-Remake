@@ -4,7 +4,7 @@ struct Vector2f;
 enum class ColliderTypes
 {
     circle,
-    rect
+    rect,
 };
 
 class Collider

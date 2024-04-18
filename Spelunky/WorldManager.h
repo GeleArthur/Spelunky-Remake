@@ -12,16 +12,21 @@ class WorldManager final
 {
 public:
     explicit WorldManager();
-    
-    Cave* GetCave() const;
-    PlayerObject* GetPlayer() const;
-    SpriteSheetManager* GetSpriteSheet() const;
-    ItemManager* GetItemManager() const;
-    void Init(Cave* cave, PlayerObject* player, SpriteSheetManager* spriteSheet, ItemManager* itemManager);
     static WorldManager* GetSingleton();
+
+    void SetCave(Cave* cave);
+    Cave* GetCave() const;
+    
+    void SetPlayer(PlayerObject* player);
+    PlayerObject* GetPlayer() const;
+    
+    void SetSpriteSheetManager(SpriteSheetManager* spriteSheet);
+    SpriteSheetManager* GetSpriteSheet() const;
+    
+    void SetItemManager(ItemManager* itemManager);
+    ItemManager* GetItemManager() const;
     
 private:
-
     static WorldManager* m_WorldManager;
     Cave* m_Cave;
     PlayerObject* m_Player;

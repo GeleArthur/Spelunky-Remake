@@ -16,7 +16,7 @@ struct Window
 struct Rectf
 {
 	Rectf( );
-	explicit Rectf( float left, float bottom, float width, float height );
+	Rectf( float left, float bottom, float width, float height );
 	Vector2f GetCenter() const;
 	Rectf operator+(Vector2f rhs) const;
 	

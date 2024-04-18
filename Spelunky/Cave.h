@@ -17,7 +17,7 @@ struct ExtraPathInformation
 class Cave final
 {
 public:
-	explicit Cave(SpriteSheetManager* spriteSheet);
+	explicit Cave(WorldManager* worldManager);
 	void Draw() const;
 	void GenerateLevel();
 	Vector2f GetEntrance() const;

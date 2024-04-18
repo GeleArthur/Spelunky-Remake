@@ -1,13 +1,14 @@
 #pragma once
 // SMART POINTERS WHEN AAAAAAARGGGGGG
 
+class WorldManager;
 enum class TileTypes;
 class Texture;
 
 class SpriteSheetManager final
 {
 public:
-	SpriteSheetManager();
+	SpriteSheetManager(WorldManager* worldManager);
 	~SpriteSheetManager();
 	SpriteSheetManager(const SpriteSheetManager& other) = delete; // If we do this something went wrong 
 	SpriteSheetManager& operator=(const SpriteSheetManager& other) = delete;
@@ -20,8 +21,6 @@ public:
 	Texture* GetItemsTexture() const;
 
 private:
-	static SpriteSheetManager* m_pSpriteSheetManager;
-
 	Texture* m_CurrentPlayerTexture;
 	Texture* m_LevelTexture;
 	Texture* m_BackGroundTexture;

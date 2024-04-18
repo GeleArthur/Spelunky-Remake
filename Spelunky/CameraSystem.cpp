@@ -14,7 +14,7 @@ CameraSystem::CameraSystem(const PlayerObject* player):
 
 void CameraSystem::UpdateCamera()
 {
-    Vector2f cameraPos = m_Player->GetCollider()->GetOrigin();
+    Vector2f cameraPos = m_Player->GetPosition();
     
     cameraPos.x = std::clamp(cameraPos.x, float(SpeluckyGlobals::g_TileSize) * 8, float(SpeluckyGlobals::g_TileSize) * (Cave::MAX_CAVE_TILE_COUNT_X - 8));
     cameraPos.y = std::clamp(cameraPos.y, float(SpeluckyGlobals::g_TileSize) * 4, float(SpeluckyGlobals::g_TileSize) * (Cave::MAX_CAVE_TILE_COUNT_X - 8));

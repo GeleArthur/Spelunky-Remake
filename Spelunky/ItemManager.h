@@ -4,10 +4,12 @@
 
 #include "Item.h"
 
+class WorldManager;
+
 class ItemManager final
 {
 public:
-    ItemManager() = default;
+    explicit ItemManager(WorldManager* worldManager);
     ~ItemManager();
     ItemManager(const ItemManager& other);
     ItemManager& operator=(const ItemManager& other);

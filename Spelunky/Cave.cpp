@@ -13,17 +13,19 @@
 #include "TileTypes.h"
 #include "utils.h"
 #include "Vector2i.h"
+#include "WorldManager.h"
 
 // Each Cave or gird of rooms. Is 4x4
-Cave::Cave(SpriteSheetManager* spriteSheet):
+Cave::Cave(WorldManager* worldManager):
     m_Tiles(MAX_CAVE_TILE_COUNT_X),
-    m_SpriteSheetManager(spriteSheet),
+    m_SpriteSheetManager(worldManager->GetSpriteSheet()),
     m_PathDebug()
 {
     for (int x{}; x < MAX_CAVE_TILE_COUNT_X; ++x)
     {
         m_Tiles[x].reserve(MAX_CAVE_TILE_COUNT_Y);
     }
+    worldManager->SetCave(this);
 }
 
 void Cave::GenerateLevel()

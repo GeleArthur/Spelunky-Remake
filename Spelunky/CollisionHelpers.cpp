@@ -11,18 +11,57 @@
 #include "Tile.h"
 #include "utils.h"
 
-bool collision_helpers::CircleVsCircle(const CirclePhysicsCollider& circle1, const CirclePhysicsCollider& circle2, HitInfo& out)
+// bool collision_helpers::CircleVsCircle(const CirclePhysicsCollider& circle1, const CirclePhysicsCollider& circle2, HitInfo& out)
+// {
+//     const Vector2f distance = (circle2.GetOrigin() - circle1.GetOrigin());
+//     if(distance.SquaredLength() > circle1.GetSize()*circle1.GetSize()+circle2.GetSize()*circle2.GetSize())
+//     {
+//         out.normal = distance.Normalized();
+//         // out.lambda = ??????
+//         out.intersectPoint = circle1.GetOrigin() + distance/2; // Correct???
+//         
+//         return true;
+//     }
+//     
+//     return false;
+// }
+
+// bool collision_helpers::CircleVsRect(const CirclePhysicsCollider& circle, const RectPhysicsCollider& rect1, HitInfo& out)
+// {
+//     const Vector2f centerPosCircle = circle.GetOrigin();
+//     Vector2f intersectPoint{circle.GetOrigin()};
+//     const Rectf rectOther{rect1.GetRect()};
+//     
+//     if(centerPosCircle.x < rectOther.left) intersectPoint.x = rectOther.left;
+//     else if (centerPosCircle.x > rectOther.left + rectOther.width) intersectPoint.x = rectOther.left + rectOther.width;
+//
+//     if(centerPosCircle.y < rectOther.top) intersectPoint.y = rectOther.top;
+//     else if (centerPosCircle.y > rectOther.top + rectOther.height) intersectPoint.y = rectOther.top + rectOther.height;
+//     
+//     const Vector2f distance = intersectPoint - centerPosCircle;
+//     const float overlap = circle.GetSize() - distance.Length();
+//     
+//     if(overlap > 0)
+//     {
+//         if(distance.SquaredLength() <= 0)
+//         {
+//             std::cout << "Physics are going to fast!!!" << '\n';
+//         }
+//         out.intersectPoint = intersectPoint;
+//         out.normal = -distance.Normalized();
+//         out.lambda = overlap;
+//         return true;
+//     }
+//     return false;
+// }
+
+bool collision_helpers::CircleRayVsRect(
+    const CirclePhysicsCollider& movingCircle,
+    const Vector2f& rayDirection,
+    const Rectf& staticRect,
+    RayVsRectInfo& out)
 {
-    const Vector2f distance = (circle2.GetOrigin() - circle1.GetOrigin());
-    if(distance.SquaredLength() > circle1.GetSize()*circle1.GetSize()+circle2.GetSize()*circle2.GetSize())
-    {
-        out.normal = distance.Normalized();
-        // out.lambda = ??????
-        out.intersectPoint = circle1.GetOrigin() + distance/2; // Correct???
-        
-        return true;
-    }
-    
+    //TODO
     return false;
 }
 
@@ -42,34 +81,7 @@ bool collision_helpers::RectVsRectOverLab(const RectPhysicsCollider& rect1, cons
     return false;
 }
 
-bool collision_helpers::CircleVsRect(const CirclePhysicsCollider& circle, const RectPhysicsCollider& rect1, HitInfo& out)
-{
-    const Vector2f centerPosCircle = circle.GetOrigin();
-    Vector2f intersectPoint{circle.GetOrigin()};
-    const Rectf rectOther{rect1.GetRect()};
-    
-    if(centerPosCircle.x < rectOther.left) intersectPoint.x = rectOther.left;
-    else if (centerPosCircle.x > rectOther.left + rectOther.width) intersectPoint.x = rectOther.left + rectOther.width;
 
-    if(centerPosCircle.y < rectOther.top) intersectPoint.y = rectOther.top;
-    else if (centerPosCircle.y > rectOther.top + rectOther.height) intersectPoint.y = rectOther.top + rectOther.height;
-    
-    const Vector2f distance = intersectPoint - centerPosCircle;
-    const float overlap = circle.GetSize() - distance.Length();
-    
-    if(overlap > 0)
-    {
-        if(distance.SquaredLength() <= 0)
-        {
-            std::cout << "Physics are going to fast!!!" << '\n';
-        }
-        out.intersectPoint = intersectPoint;
-        out.normal = -distance.Normalized();
-        out.lambda = overlap;
-        return true;
-    }
-    return false;
-}
 
 bool collision_helpers::RayVsRect(const Rectf& rect, const Vector2f& rayOrigin, const Vector2f& rayDir, RayVsRectInfo& out )
 {
@@ -124,12 +136,3 @@ bool collision_helpers::RectRayVsRect(const Rectf& movingRect, const Vector2f& r
     return false;
 }
 
-bool collision_helpers::CircleRayVsRect(
-    const CirclePhysicsCollider& movingCircle,
-    const Vector2f& rayDirection,
-    const Rectf& staticRect,
-    RayVsRectInfo& out)
-{
-    //TODO
-    return false;
-}

@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "ItemManager.h"
 #include "Item.h"
+#include "WorldManager.h"
 
 void ItemManager::AddItem(Item* item)
 {
@@ -45,6 +46,11 @@ void ItemManager::ClearItems()
         delete m_Items[i];
     }
     m_Items.clear();
+}
+
+ItemManager::ItemManager(WorldManager* worldManager)
+{
+    worldManager->SetItemManager(this);
 }
 
 ItemManager::~ItemManager()

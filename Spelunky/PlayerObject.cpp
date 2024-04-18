@@ -13,9 +13,9 @@
 #include "Tile.h"
 #include "WorldManager.h"
 
-PlayerObject::PlayerObject(WorldManager* worldManager, SpriteSheetManager* spriteSheetManager, const std::vector<std::vector<Tile>>* tiles):
+PlayerObject::PlayerObject(WorldManager* worldManager):
     m_PhysicsCollider(Rectf{0, 0, 40, 63}),
-    m_SpriteSheetManager(spriteSheetManager),
+    m_SpriteSheetManager(worldManager->GetSpriteSheet()),
     m_WorldManager(worldManager)
 {
 }
@@ -126,7 +126,7 @@ void PlayerObject::Update(const float elapsedTimes)
 
     if(abs(inputVelocity.x) < 0.001)
     {
-        float slowDownLimit = 3000.0f * elapsedTimes;// std::min(10.0f, std::abs(m_Velocity.x));
+        float slowDownLimit = 3000.0f * elapsedTimes;
         if(slowDownLimit > std::abs(velocity.x))
             slowDownLimit = std::abs(velocity.x);
         
@@ -134,10 +134,11 @@ void PlayerObject::Update(const float elapsedTimes)
         
         inputVelocity.x += slowDownLimit;
     }
-    
+
+    // TODO: Maybe move this to physics class???
     if(std::abs(velocity.x) < 0.1)
     {
-        velocity.x = 0;
+        velocity.x = 0; 
     }
     else
     {
@@ -147,19 +148,22 @@ void PlayerObject::Update(const float elapsedTimes)
     m_PhysicsCollider.ApplyForce(inputVelocity);
     
     
-    const float limitedVelocity = std::min(std::abs(m_Velocity.x), m_MaxSpeed);
-    if(m_Velocity.x > 0)
-        m_Velocity.x = limitedVelocity;
+    const float limitedVelocity = std::min(std::abs(velocity.x), m_MaxSpeed);
+    if(velocity.x > 0)
+        m_PhysicsCollider.SetVelocity(limitedVelocity, velocity.y);
     else
-        m_Velocity.x = -limitedVelocity;
-    
-    m_Velocity.y = std::min(m_Velocity.y, 1000.0f);
-    
-    UpdatePhysics(elapsedTimes);
-    if(m_PickupItem != nullptr)
-    {
-        m_PickupItem->Teleport(GetCollider()->GetOrigin());
-    }
+        m_PhysicsCollider.SetVelocity(-limitedVelocity, velocity.y);
+
+    m_PhysicsCollider.SetVelocity(velocity.x, std::min(velocity.y, 1000.0f));
+
+    // m_PhysicsCollider.Update(); // ??? move to physics manager class
+    // UpdatePhysics(elapsedTimes);
+
+    // TODO: Let the item move it self
+    // if(m_PickupItem != nullptr)
+    // {
+    //     m_PickupItem->Teleport(GetCollider()->GetOrigin());
+    // }
     
     // std::cout <<std::boolalpha << m_IsOnGround << '\n';
     m_AnimationTimer += elapsedTimes;
@@ -168,7 +172,8 @@ void PlayerObject::Update(const float elapsedTimes)
 
 void PlayerObject::UpdateAnimationState()
 {
-    const float speed = m_Velocity.SquaredLength();
+    const Vector2f velocity = m_PhysicsCollider.GetVelocity();
+    const float speed = velocity.SquaredLength();
     
     switch (m_CurrentAnimation)
     {
@@ -204,7 +209,7 @@ void PlayerObject::UpdateAnimationState()
             }
             else
             {
-                if(m_AnimationTimer > 0.05+(1-(std::abs(m_Velocity.x)/m_MaxSpeed))*0.2)
+                if(m_AnimationTimer > 0.05+(1-(std::abs(velocity.x)/m_MaxSpeed))*0.2)
                 {
                     m_AnimationTimer = 0;
                     m_AnimationFrame++;
@@ -247,8 +252,23 @@ void PlayerObject::UpdateAnimationState()
 
 void PlayerObject::Respawn(const Vector2f& spawnLocation)
 {
-    GetCollider()->SetOrigin(spawnLocation);
+    m_PhysicsCollider.SetCenter(spawnLocation);
     m_AnimationFrame = 0;
     m_AnimationTimer = 0;
     m_PickupItem = nullptr;
+}
+
+ColliderTypes PlayerObject::GetColliderType() const
+{
+    return m_PhysicsCollider.GetColliderType();
+}
+
+Collider* PlayerObject::GetCollider()
+{
+    return &m_PhysicsCollider;
+}
+
+Vector2f PlayerObject::GetPosition() const
+{
+    return m_PhysicsCollider.GetCenter();
 }

@@ -28,16 +28,28 @@ ItemManager* WorldManager::GetItemManager() const
     return m_ItemManager;
 }
 
-void WorldManager::Init(Cave* cave, PlayerObject* player, SpriteSheetManager* spriteSheet, ItemManager* itemManager)
-{
-    m_Cave = cave;
-    m_Player = player;
-    m_SpriteSheetManager = spriteSheet;
-    m_ItemManager = itemManager;
-}
-
 WorldManager* WorldManager::GetSingleton()
 {
-    if(m_WorldManager == nullptr) throw;
+    if (m_WorldManager == nullptr) throw;
     return m_WorldManager;
+}
+
+void WorldManager::SetCave(Cave* cave)
+{
+    m_Cave = cave;
+}
+
+void WorldManager::SetPlayer(PlayerObject* player)
+{
+    m_Player = player;
+}
+
+void WorldManager::SetSpriteSheetManager(SpriteSheetManager* spriteSheet)
+{
+    m_SpriteSheetManager = spriteSheet;
+}
+
+void WorldManager::SetItemManager(ItemManager* itemManager)
+{
+    m_ItemManager = itemManager;
 }

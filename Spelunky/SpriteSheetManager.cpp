@@ -2,14 +2,10 @@
 #include "SpriteSheetManager.h"
 #include "Texture.h"
 #include "TileTypes.h"
+#include "WorldManager.h"
 
-SpriteSheetManager* SpriteSheetManager::m_pSpriteSheetManager{nullptr};
-
-SpriteSheetManager::SpriteSheetManager()
+SpriteSheetManager::SpriteSheetManager(WorldManager* worldManager)
 {
-	m_pSpriteSheetManager = this;
-
-
 	// 512x512 for each tile stack
 	// 64x64 for each tile
 	m_LevelTexture = new Texture{"ALLTILES/alltiles.png"};
@@ -17,6 +13,8 @@ SpriteSheetManager::SpriteSheetManager()
 	m_BackGroundTexture = new Texture{"MINE/minebg.jpg"};
 	m_ExitDoorsTexture = new Texture{"ANYLEVEL/TU_exitdoors.png"};
 	m_ItemsTexture = new Texture{"ITEMS/items.png"};
+	
+	worldManager->SetSpriteSheetManager(this);
 }
 
 SpriteSheetManager::~SpriteSheetManager()

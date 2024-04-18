@@ -35,15 +35,16 @@ Game::~Game( )
 
 void Game::Initialize( )
 {
+	// Warning don't change order otherwise will crash.
+	// I dont like that its not really clear what depends on what
 	m_WorldManager = new WorldManager{};
-	m_SpriteSheetManager = new SpriteSheetManager{};
-	m_Cave = new Cave{m_SpriteSheetManager};
-	m_Player = new PlayerObject{m_WorldManager, m_SpriteSheetManager, m_Cave->GetTiles()};
-	m_ItemManager = new ItemManager{};
-	m_CameraSystem = new CameraSystem{m_Player};
-	
-	m_WorldManager->Init(m_Cave, m_Player, m_SpriteSheetManager, m_ItemManager);
+	m_SpriteSheetManager = new SpriteSheetManager{m_WorldManager};
+	m_Cave = new Cave{m_WorldManager};
+	m_Player = new PlayerObject{m_WorldManager};
+	m_ItemManager = new ItemManager{m_WorldManager};
 
+	
+	m_CameraSystem = new CameraSystem{m_Player};
 	Reset();
 }
 
