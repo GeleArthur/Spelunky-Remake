@@ -29,11 +29,6 @@ Rectf::Rectf( float left, float bottom, float width, float height )
 {
 }
 
-Vector2f Rectf::GetCenter() const
-{
-	return Vector2f{left + width/2, top + height/2};
-}
-
 Rectf Rectf::operator+(const Vector2f rhs) const
 {
 	return Rectf{left + rhs.x, top + rhs.y, width, height};

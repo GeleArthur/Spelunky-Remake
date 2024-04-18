@@ -73,10 +73,10 @@ void PlayerObject::Draw() const
     
     glPopMatrix();
 
-    if(m_PickupItem != nullptr)
-    {
-        m_PickupItem->Draw();
-    }
+    // if(m_PickupItem != nullptr)
+    // {
+    //     m_PickupItem->Draw();
+    // }
 }
 
 void PlayerObject::Update(const float elapsedTimes)
@@ -102,25 +102,26 @@ void PlayerObject::Update(const float elapsedTimes)
     }
     if(pStates[SDL_SCANCODE_LSHIFT])
     {
-        std::vector<Item*> items = m_WorldManager->GetItemManager()->GetItems();
-        for (int i{}; i < items.size(); ++i)
-        {
-            //TODO Test for multiple objects by distance
-            if(items.at(i)->CanPickUp(this))
-            {
-                m_PickupItem = items.at(i);
-                m_PickupItem->SetIsPickedUp(true);
-                break;
-            }
-        }
+        
+        // std::vector<Entity*> items = m_WorldManager->GetItemManager()->GetItems();
+        // for (int i{}; i < items.size(); ++i)
+        // {
+        //     //TODO Test for multiple objects by distance
+        //     if(items.at(i)->CanPickUp(this))
+        //     {
+        //         m_PickupItem = items.at(i);
+        //         m_PickupItem->SetIsPickedUp(true);
+        //         break;
+        //     }
+        // }
     }
 
-    if(m_PickupItem != nullptr && pStates[SDL_SCANCODE_E])
-    {
-        m_PickupItem->SetIsPickedUp(false);
-        m_PickupItem->Throw(Vector2f{m_IsLookingToLeft ? -1000.0f: 1000.0f, -200});
-        m_PickupItem = nullptr;
-    }
+    // if(m_PickupItem != nullptr && pStates[SDL_SCANCODE_E])
+    // {
+    //     m_PickupItem->SetIsPickedUp(false);
+    //     m_PickupItem->Throw(Vector2f{m_IsLookingToLeft ? -1000.0f: 1000.0f, -200});
+    //     m_PickupItem = nullptr;
+    // }
 
     Vector2f velocity = GetVelocity();
 
@@ -261,4 +262,9 @@ void PlayerObject::Respawn(const Vector2f& spawnLocation)
 Vector2f PlayerObject::GetPosition() const
 {
     return GetCenter();
+}
+
+EntityType PlayerObject::GetEntityType() const
+{
+    return EntityType::player;
 }

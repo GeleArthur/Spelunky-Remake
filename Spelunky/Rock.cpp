@@ -8,9 +8,19 @@
 
 
 Rock::Rock(const Vector2f& position, const SpriteSheetManager* spriteSheetManager ,const std::vector<std::vector<Tile>>* tiles):
-    RectPhysicsCollider(Rectf{position.x, position.y, 30, 30}),
+    Entity(), RectPhysicsCollider(Rectf{position.x,position.y,40,40}),
     m_SpriteSheetManager(spriteSheetManager)
 {
+}
+
+EntityType Rock::GetEntityType() const
+{
+    return EntityType::rock;
+}
+
+bool Rock::Throw(Vector2f force)
+{
+    return false;
 }
 
 void Rock::Update(const float elapsedTime)
@@ -27,40 +37,9 @@ void Rock::Draw() const
     );
 }
 
-// TODO: rework physics so we dont reinterpret_cast everywhere
-bool Rock::CanPickUp(const Collider* collider) const
+bool Rock::CanBePickedUp()
 {
     return false;
-    // switch (collider->GetColliderType())
-    // {
-    // case ColliderTypes::circle:
-    //     // TODO
-    //     break;
-    // case ColliderTypes::rect:
-    //     if(collision_helpers::RectVsRectOverLab(*reinterpret_cast<const RectPhysicsCollider*>(GetCollider()), *reinterpret_cast<const RectPhysicsCollider*>(collider)))
-    //     {
-    //         return true;
-    //     }
-    //     break;
-    // }
-    // return false;
 }
 
-void Rock::Teleport(const Vector2f& position)
-{
-}
-
-void Rock::Throw(const Vector2f& velocity)
-{
-}
-
-bool Rock::IsPickedUp() const
-{
-    return m_IsPickedUp;
-}
-
-void Rock::SetIsPickedUp(const bool pickedUp)
-{
-    m_IsPickedUp = pickedUp;
-}
 

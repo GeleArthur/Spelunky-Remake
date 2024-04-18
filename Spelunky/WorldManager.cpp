@@ -23,7 +23,7 @@ SpriteSheetManager* WorldManager::GetSpriteSheet() const
     return m_SpriteSheetManager;
 }
 
-ItemManager* WorldManager::GetItemManager() const
+EntityManager* WorldManager::GetEntityManager() const
 {
     return m_ItemManager;
 }
@@ -49,7 +49,7 @@ void WorldManager::SetSpriteSheetManager(SpriteSheetManager* spriteSheet)
     m_SpriteSheetManager = spriteSheet;
 }
 
-void WorldManager::SetItemManager(ItemManager* itemManager)
+void WorldManager::SetEntityManager(EntityManager* entityManager)
 {
-    m_ItemManager = itemManager;
+    m_ItemManager = entityManager;
 }

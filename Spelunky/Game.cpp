@@ -8,7 +8,7 @@
 
 #include "CameraSystem.h"
 #include "Cave.h"
-#include "CirclePhysicsCollider.h"
+#include "EntityManager.h"
 #include "GizmosDrawer.h"
 #include "GlobalValues.h"
 #include "SpriteSheetManager.h"
@@ -17,7 +17,6 @@
 #include "RectPhysicsCollider.h"
 #include "Rock.h"
 #include "Texture.h"
-#include "utils.h"
 #include "WorldManager.h"
 
 float Game::currentTime{0};
@@ -41,7 +40,7 @@ void Game::Initialize( )
 	m_SpriteSheetManager = new SpriteSheetManager{m_WorldManager};
 	m_Cave = new Cave{m_WorldManager};
 	m_Player = new PlayerObject{m_WorldManager};
-	m_ItemManager = new ItemManager{m_WorldManager};
+	m_EntityManager = new EntityManager{m_WorldManager};
 
 	
 	m_CameraSystem = new CameraSystem{m_Player};
@@ -53,7 +52,7 @@ void Game::Cleanup( )
 	delete m_SpriteSheetManager;
 	delete m_Cave;
 	delete m_Player;
-	delete m_ItemManager;
+	delete m_EntityManager;
 	delete m_WorldManager;
 	delete m_CameraSystem;
 	GizmosDrawer::Shutdown();
@@ -63,7 +62,7 @@ void Game::Update( float elapsedSec )
 {
 	currentTime += elapsedSec;
 	m_Player->Update(elapsedSec);
-	m_ItemManager->UpdateItems(elapsedSec);
+	m_EntityManager->UpdateItems(elapsedSec);
 
 	if(m_MouseDown)
 	{
@@ -104,7 +103,7 @@ void Game::Draw( ) const
 	}
 	
 	m_Cave->Draw();
-	m_ItemManager->DrawItems();
+	m_EntityManager->DrawEntities();
 	m_Player->Draw();
 	// m_ItemManager->DrawPickupItems();
 	GizmosDrawer::SetColor({0,1.0f,0});
@@ -119,11 +118,12 @@ void Game::Reset()
 {
 	std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
 	m_Cave->GenerateLevel();
-	m_ItemManager->ClearItems();
+	m_EntityManager->ClearAllEntities();
 	float elapsedSeconds = std::chrono::duration<float>(std::chrono::steady_clock::now() - t2).count();
 	std::cout << "Took: " << elapsedSeconds << " sec. To generate level";
 
-	m_ItemManager->AddItem(new Rock{m_Cave->GetEntrance() + Vector2f{30, -64}, m_SpriteSheetManager, m_Cave->GetTiles()});
+	m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{30, -64}, m_SpriteSheetManager, m_Cave->GetTiles()});
+	GizmosDrawer::DrawCircle(m_Cave->GetEntrance() + Vector2f{SpeluckyGlobals::g_TileSize/2.0f,SpeluckyGlobals::g_TileSize/2.0f}, 3, 3);
 	m_Player->Respawn(m_Cave->GetEntrance() + Vector2f{SpeluckyGlobals::g_TileSize/2.0f,SpeluckyGlobals::g_TileSize/2.0f});
 }
 

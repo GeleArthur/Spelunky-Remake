@@ -1,30 +1,28 @@
 ﻿#pragma once
 #include <vector>
 
-#include "Item.h"
-#include "PhysicsComponent.h"
+#include "Entity.h"
+#include "PickupPickupItem.h"
 #include "RectPhysicsCollider.h"
 
 
 class Tile;
 class SpriteSheetManager;
 
-class Rock final : public RectPhysicsCollider, public Item
+class Rock final : public Entity, public RectPhysicsCollider, public PickupItem
 {
 public:
     Rock(const Vector2f& position, const SpriteSheetManager* spriteSheetManager,
          const std::vector<std::vector<Tile>>* tiles);
 
+    
+    virtual EntityType GetEntityType() const override;
+    virtual bool Throw(Vector2f force) override;
     virtual void Update(float elapsedTime) override;
     virtual void Draw() const override;
-    virtual bool IsPickedUp() const override;
-    virtual void SetIsPickedUp(bool pickedUp) override;
-
-    virtual bool CanPickUp(const Collider* collider) const override;
-    virtual void Teleport(const Vector2f& position) override;
-    virtual void Throw(const Vector2f& velocity) override;
+    virtual bool CanBePickedUp() override;
 
 private:
     const SpriteSheetManager* m_SpriteSheetManager;
-    bool m_IsPickedUp{};
+    // bool m_IsPickedUp{};
 };

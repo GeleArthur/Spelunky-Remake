@@ -1,12 +1,13 @@
 ﻿#pragma once
 #include <vector>
 
+#include "Entity.h"
 #include "PhysicsComponent.h"
 #include "PhysicsObject.h"
 #include "RectPhysicsCollider.h"
 
 class WorldManager;
-class Item;
+class Entity;
 class Tile;
 class SpriteSheetManager;
 
@@ -20,7 +21,7 @@ enum class PlayerAnimationState
 };
 
 
-class PlayerObject final : public RectPhysicsCollider
+class PlayerObject final : public RectPhysicsCollider, public Entity
 {
 public:
     explicit PlayerObject(WorldManager* worldManager);
@@ -29,10 +30,8 @@ public:
     void UpdateAnimationState();
     void Respawn(const Vector2f& spawnLocation);
     
-    // virtual ColliderTypes GetColliderType() const override;
-    // virtual Collider* GetCollider() override;
-
     Vector2f GetPosition() const;
+    virtual EntityType GetEntityType() const override;
 
 private:
     PlayerAnimationState m_CurrentAnimation{PlayerAnimationState::idle};
@@ -42,7 +41,7 @@ private:
 
     const float m_MaxSpeed{500}; // const member is dum
     bool m_IsOnGround{false};
-    Item* m_PickupItem{};
+    Entity* m_PickupItem{};
 
     SpriteSheetManager* m_SpriteSheetManager;
     WorldManager* m_WorldManager;

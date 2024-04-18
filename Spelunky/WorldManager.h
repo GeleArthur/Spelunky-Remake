@@ -1,9 +1,7 @@
 ﻿#pragma once
-#include "ItemManager.h"
 #include "PlayerObject.h"
-#include "SpriteSheetManager.h"
 
-class ItemManager;
+class EntityManager;
 class SpriteSheetManager;
 class PlayerObject;
 class Cave;
@@ -23,13 +21,13 @@ public:
     void SetSpriteSheetManager(SpriteSheetManager* spriteSheet);
     SpriteSheetManager* GetSpriteSheet() const;
     
-    void SetItemManager(ItemManager* itemManager);
-    ItemManager* GetItemManager() const;
+    void SetEntityManager(EntityManager* entityManager);
+    EntityManager* GetEntityManager() const;
     
 private:
     static WorldManager* m_WorldManager;
     Cave* m_Cave;
     PlayerObject* m_Player;
     SpriteSheetManager* m_SpriteSheetManager;
-    ItemManager* m_ItemManager;
+    EntityManager* m_ItemManager;
 };

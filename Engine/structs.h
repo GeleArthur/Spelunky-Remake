@@ -17,7 +17,6 @@ struct Rectf
 {
 	Rectf( );
 	Rectf( float left, float bottom, float width, float height );
-	Vector2f GetCenter() const;
 	Rectf operator+(Vector2f rhs) const;
 	
 	float left;

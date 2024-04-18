@@ -2,7 +2,7 @@
 #include "BaseGame.h"
 #include "Matrix.h"
 class CameraSystem;
-class ItemManager;
+class EntityManager;
 class WorldManager;
 class PlayerObject;
 class Cave;
@@ -39,7 +39,7 @@ private:
 	Cave* m_Cave;
 	PlayerObject* m_Player;
 	WorldManager* m_WorldManager;
-	ItemManager* m_ItemManager;
+	EntityManager* m_EntityManager;
 	CameraSystem* m_CameraSystem;
 
 	Vector2f m_DebugStartPoint{};

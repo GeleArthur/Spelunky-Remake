@@ -33,12 +33,12 @@ void RectPhysicsCollider::SetRect(const Rectf& rect)
 
 Vector2f RectPhysicsCollider::GetCenter() const
 {
-    return m_Rect.GetCenter();
+    return Vector2f{m_Rect.left + m_Rect.width/2.0f, m_Rect.top + m_Rect.height/2.0f};
 }
 
 void RectPhysicsCollider::SetCenter(const Vector2f& position)
 {
-    m_Rect = Rectf{position.x + m_Rect.width/2.0f, position.y + m_Rect.top/2.0f, m_Rect.width, m_Rect.width};
+    m_Rect = Rectf{position.x - m_Rect.width/2.0f, position.y - m_Rect.height/2.0f, m_Rect.width, m_Rect.height};
 }
 
 const Vector2f& RectPhysicsCollider::GetVelocity() const
