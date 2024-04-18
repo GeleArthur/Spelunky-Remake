@@ -13,7 +13,6 @@ public:
 	SpriteSheetManager(const SpriteSheetManager& other) = delete; // If we do this something went wrong 
 	SpriteSheetManager& operator=(const SpriteSheetManager& other) = delete;
 
-	static SpriteSheetManager* GetSingleton();
 	Texture* GetLevelTexture() const;
 	Texture* GetBackGroundTexture() const;
 	Texture* GetDoorsTexture() const;

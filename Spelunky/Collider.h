@@ -16,4 +16,5 @@ public:
     Collider& operator=(const Collider& c) = default;
     
     virtual ColliderTypes GetColliderType() const = 0;
+    
 };

@@ -20,7 +20,7 @@ enum class PlayerAnimationState
 };
 
 
-class PlayerObject final : public PhysicsComponent
+class PlayerObject final : public RectPhysicsCollider
 {
 public:
     explicit PlayerObject(WorldManager* worldManager);
@@ -29,8 +29,8 @@ public:
     void UpdateAnimationState();
     void Respawn(const Vector2f& spawnLocation);
     
-    virtual ColliderTypes GetColliderType() const override;
-    virtual Collider* GetCollider() override;
+    // virtual ColliderTypes GetColliderType() const override;
+    // virtual Collider* GetCollider() override;
 
     Vector2f GetPosition() const;
 
@@ -43,7 +43,6 @@ private:
     const float m_MaxSpeed{500}; // const member is dum
     bool m_IsOnGround{false};
     Item* m_PickupItem{};
-    RectPhysicsCollider m_PhysicsCollider;
 
     SpriteSheetManager* m_SpriteSheetManager;
     WorldManager* m_WorldManager;

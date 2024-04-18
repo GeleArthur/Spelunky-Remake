@@ -9,7 +9,6 @@
 RectPhysicsCollider::RectPhysicsCollider(const Rectf& rect):
     m_Rect(rect)
 {
-    // WorldManager::GetSingleton()::
 }
 
 ColliderTypes RectPhysicsCollider::GetColliderType() const
@@ -81,6 +80,7 @@ bool RectPhysicsCollider::IsOverlapping(const RectPhysicsCollider& other) const
 bool RectPhysicsCollider::IsOverlapping(const CirclePhysicsCollider& other) const
 {
     // TODO
+    return false;
 }
 
 bool RectPhysicsCollider::IsOverlapping(const Collider& other) const
@@ -99,9 +99,18 @@ bool RectPhysicsCollider::IsOverlapping(const Collider& other) const
 bool RectPhysicsCollider::PredictCollision(const RectPhysicsCollider& other)
 {
     
+    
+    return false;
 }
 
 bool RectPhysicsCollider::PredictCollision(const CirclePhysicsCollider& other)
 {
     
+    
+    return false;
 }
+
+void RectPhysicsCollider::UpdatePhysics()
+{
+}
+

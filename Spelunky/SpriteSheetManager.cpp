@@ -26,12 +26,6 @@ SpriteSheetManager::~SpriteSheetManager()
 	delete m_ItemsTexture;
 }
 
-SpriteSheetManager* SpriteSheetManager::GetSingleton()
-{
-	if(m_pSpriteSheetManager == nullptr) throw;
-	return m_pSpriteSheetManager;
-}
-
 Texture* SpriteSheetManager::GetLevelTexture() const
 {
 	return m_LevelTexture;

@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "Collider.h"
 
+/*
 class PhysicsComponent
 {
 public:
@@ -12,3 +13,4 @@ public:
     virtual ColliderTypes GetColliderType() const = 0;
     virtual Collider* GetCollider() = 0;
 };
+*/

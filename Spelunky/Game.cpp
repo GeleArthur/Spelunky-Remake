@@ -134,10 +134,6 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent &e )
 	{
 		Reset();
 	}
-	if(e.keysym.sym == SDLK_t)
-	{
-		PhysicsObject::pauseAllPhysicsDebug = !PhysicsObject::pauseAllPhysicsDebug;
-	}
 }
 
 void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )

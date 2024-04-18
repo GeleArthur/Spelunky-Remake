@@ -3,7 +3,7 @@
 
 #include "Game.h"
 #include "GlobalValues.h"
-#include "PhysicsObject.h"
+
 #include "Texture.h"
 #include "utils.h"
 
@@ -101,7 +101,7 @@ void GizmosDrawer::Draw()
     
     for (int i{int(m_Drawings.size()) -1}; i >= 0; --i)
     {
-        if(!PhysicsObject::pauseAllPhysicsDebug && m_Drawings[i]->timeToDelete < Game::currentTime)
+        if(m_Drawings[i]->timeToDelete < Game::currentTime)
         {
             delete m_Drawings[i];
             m_Drawings.erase(std::next(m_Drawings.begin(), i));

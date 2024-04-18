@@ -14,7 +14,7 @@
 #include "WorldManager.h"
 
 PlayerObject::PlayerObject(WorldManager* worldManager):
-    m_PhysicsCollider(Rectf{0, 0, 40, 63}),
+    RectPhysicsCollider(Rectf{0, 0, 40, 63}),
     m_SpriteSheetManager(worldManager->GetSpriteSheet()),
     m_WorldManager(worldManager)
 {
@@ -37,7 +37,7 @@ void PlayerObject::Draw() const
         break;
     case PlayerAnimationState::inAir:
         {
-            const Vector2f velocity = m_PhysicsCollider.GetVelocity();
+            const Vector2f velocity = GetVelocity();
             animationSource.top = 9*80.0f;
             if(velocity.y > 0 && velocity.y < 5)
             {
@@ -60,11 +60,11 @@ void PlayerObject::Draw() const
     }
     
     glPushMatrix();
-    const Vector2f position = m_PhysicsCollider.GetCenter();
+    const Vector2f position = GetCenter();
     glTranslatef(position.x, position.y, 0);
     
     GizmosDrawer::SetColor({1,1,1});
-    GizmosDrawer::DrawQText(position, m_PhysicsCollider.GetVelocity().ToString());
+    GizmosDrawer::DrawQText(position, GetVelocity().ToString());
     
 
     if(m_IsLookingToLeft)
@@ -106,7 +106,7 @@ void PlayerObject::Update(const float elapsedTimes)
         for (int i{}; i < items.size(); ++i)
         {
             //TODO Test for multiple objects by distance
-            if(items.at(i)->CanPickUp(GetCollider()))
+            if(items.at(i)->CanPickUp(this))
             {
                 m_PickupItem = items.at(i);
                 m_PickupItem->SetIsPickedUp(true);
@@ -122,7 +122,7 @@ void PlayerObject::Update(const float elapsedTimes)
         m_PickupItem = nullptr;
     }
 
-    Vector2f velocity = m_PhysicsCollider.GetVelocity();
+    Vector2f velocity = GetVelocity();
 
     if(abs(inputVelocity.x) < 0.001)
     {
@@ -145,18 +145,18 @@ void PlayerObject::Update(const float elapsedTimes)
         m_IsLookingToLeft = velocity.x < 0;
     }
 
-    m_PhysicsCollider.ApplyForce(inputVelocity);
+    ApplyForce(inputVelocity);
     
     
     const float limitedVelocity = std::min(std::abs(velocity.x), m_MaxSpeed);
     if(velocity.x > 0)
-        m_PhysicsCollider.SetVelocity(limitedVelocity, velocity.y);
+        SetVelocity(limitedVelocity, velocity.y);
     else
-        m_PhysicsCollider.SetVelocity(-limitedVelocity, velocity.y);
+        SetVelocity(-limitedVelocity, velocity.y);
 
-    m_PhysicsCollider.SetVelocity(velocity.x, std::min(velocity.y, 1000.0f));
+    SetVelocity(velocity.x, std::min(velocity.y, 1000.0f));
 
-    // m_PhysicsCollider.Update(); // ??? move to physics manager class
+    // Update(); // ??? move to physics manager class
     // UpdatePhysics(elapsedTimes);
 
     // TODO: Let the item move it self
@@ -172,7 +172,7 @@ void PlayerObject::Update(const float elapsedTimes)
 
 void PlayerObject::UpdateAnimationState()
 {
-    const Vector2f velocity = m_PhysicsCollider.GetVelocity();
+    const Vector2f velocity = GetVelocity();
     const float speed = velocity.SquaredLength();
     
     switch (m_CurrentAnimation)
@@ -252,23 +252,13 @@ void PlayerObject::UpdateAnimationState()
 
 void PlayerObject::Respawn(const Vector2f& spawnLocation)
 {
-    m_PhysicsCollider.SetCenter(spawnLocation);
+    SetCenter(spawnLocation);
     m_AnimationFrame = 0;
     m_AnimationTimer = 0;
     m_PickupItem = nullptr;
 }
 
-ColliderTypes PlayerObject::GetColliderType() const
-{
-    return m_PhysicsCollider.GetColliderType();
-}
-
-Collider* PlayerObject::GetCollider()
-{
-    return &m_PhysicsCollider;
-}
-
 Vector2f PlayerObject::GetPosition() const
 {
-    return m_PhysicsCollider.GetCenter();
+    return GetCenter();
 }

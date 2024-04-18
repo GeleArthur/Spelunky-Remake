@@ -2,7 +2,7 @@
 #include "CirclePhysicsCollider.h"
 
 #include "GizmosDrawer.h"
-#include "PhysicsObject.h"
+
 #include "utils.h"
 
 CirclePhysicsCollider::CirclePhysicsCollider(const Vector2f& position, const float size):

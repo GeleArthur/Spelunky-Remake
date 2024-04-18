@@ -1,9 +1,12 @@
 ﻿#pragma once
+#include <functional>
+
 #include "Collider.h"
+#include "PhysicsComponent.h"
 
 class CirclePhysicsCollider;
 
-class RectPhysicsCollider final : public Collider
+class RectPhysicsCollider : public Collider
 {
 public:
     explicit RectPhysicsCollider(const Rectf& rect);
@@ -29,6 +32,11 @@ public:
     bool PredictCollision(const RectPhysicsCollider& other /*TODO: out needed */);
     bool PredictCollision(const CirclePhysicsCollider& other /*TODO: out needed */);
     // bool PredictCollision(const Collider& other);
+
+    void UpdatePhysics();
+    // void SetOnCollisionStay(std::function<void()> function);
+    // void RemoveOnCollisionStay();
+    
 
     /// Update
     ///
