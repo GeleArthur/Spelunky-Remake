@@ -12,8 +12,7 @@ class SpriteSheetManager;
 class Rock final : public Entity, public RectPhysicsCollider, public PickupItem
 {
 public:
-    Rock(const Vector2f& position, const SpriteSheetManager* spriteSheetManager,
-         const std::vector<std::vector<Tile>>* tiles);
+    Rock(const Vector2f& position, WorldManager* worldManager);
 
     
     virtual EntityType GetEntityType() const override;

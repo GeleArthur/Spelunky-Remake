@@ -101,7 +101,7 @@ void GizmosDrawer::Draw()
     
     for (int i{int(m_Drawings.size()) -1}; i >= 0; --i)
     {
-        if(m_Drawings[i]->timeToDelete < Game::currentTime)
+        if(m_Drawings[i]->timeToDelete < Game::GetTime())
         {
             delete m_Drawings[i];
             m_Drawings.erase(std::next(m_Drawings.begin(), i));
@@ -127,17 +127,17 @@ void GizmosDrawer::Shutdown()
 
 void GizmosDrawer::DrawCircle(const Vector2f& position, const float size, const float timeToDelete)
 {
-    m_Drawings.push_back(new DrawCircleHolder{position, size, m_CurrentColor, Game::currentTime + timeToDelete});
+    m_Drawings.push_back(new DrawCircleHolder{position, size, m_CurrentColor, Game::GetTime() + timeToDelete});
 }
 
 void GizmosDrawer::DrawRect(const Rectf& rect, const float timeToDelete)
 {
-    m_Drawings.push_back(new DrawRectHolder{rect, m_CurrentColor, Game::currentTime + timeToDelete});
+    m_Drawings.push_back(new DrawRectHolder{rect, m_CurrentColor, Game::GetTime() + timeToDelete});
 }
 
 void GizmosDrawer::DrawLine(const Vector2f& startPos, const Vector2f& endPos, const float timeToDelete)
 {
-    m_Drawings.push_back(new DrawLineHolder{startPos, endPos, m_CurrentColor, Game::currentTime + timeToDelete});
+    m_Drawings.push_back(new DrawLineHolder{startPos, endPos, m_CurrentColor, Game::GetTime() + timeToDelete});
 }
 
 void GizmosDrawer::DrawQText(const Vector2f& position, const std::string& text, float timeToDelete)

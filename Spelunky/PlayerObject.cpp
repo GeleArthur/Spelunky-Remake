@@ -14,7 +14,7 @@
 #include "WorldManager.h"
 
 PlayerObject::PlayerObject(WorldManager* worldManager):
-    RectPhysicsCollider(Rectf{0, 0, 40, 63}),
+    RectPhysicsCollider(Rectf{0, 0, 40, 64}, worldManager),
     m_SpriteSheetManager(worldManager->GetSpriteSheet()),
     m_WorldManager(worldManager)
 {
@@ -93,6 +93,17 @@ void PlayerObject::Update(const float elapsedTimes)
     {
         inputVelocity += Vector2f{-1000, 0} * elapsedTimes;
     }
+    if ( pStates[SDL_SCANCODE_UP] || pStates[SDL_SCANCODE_W] )
+    {
+        inputVelocity += Vector2f{0, -1000} * elapsedTimes;
+    }
+    if ( pStates[SDL_SCANCODE_DOWN] || pStates[SDL_SCANCODE_S] )
+    {
+        inputVelocity += Vector2f{0, 1000} * elapsedTimes;
+    }
+
+
+    
     if(pStates[SDL_SCANCODE_SPACE])
     {
         if(m_IsOnGround)
@@ -125,16 +136,16 @@ void PlayerObject::Update(const float elapsedTimes)
 
     Vector2f velocity = GetVelocity();
 
-    if(abs(inputVelocity.x) < 0.001)
-    {
-        float slowDownLimit = 3000.0f * elapsedTimes;
-        if(slowDownLimit > std::abs(velocity.x))
-            slowDownLimit = std::abs(velocity.x);
-        
-        if(velocity.x > 0) slowDownLimit *= -1;
-        
-        inputVelocity.x += slowDownLimit;
-    }
+    // if(abs(inputVelocity.x) < 0.001)
+    // {
+    //     float slowDownLimit = 3000.0f * elapsedTimes;
+    //     if(slowDownLimit > std::abs(velocity.x))
+    //         slowDownLimit = std::abs(velocity.x);
+    //     
+    //     if(velocity.x > 0) slowDownLimit *= -1;
+    //     
+    //     inputVelocity.x += slowDownLimit;
+    // }
 
     // TODO: Maybe move this to physics class???
     if(std::abs(velocity.x) < 0.1)
@@ -149,24 +160,15 @@ void PlayerObject::Update(const float elapsedTimes)
     ApplyForce(inputVelocity);
     
     
-    const float limitedVelocity = std::min(std::abs(velocity.x), m_MaxSpeed);
-    if(velocity.x > 0)
-        SetVelocity(limitedVelocity, velocity.y);
-    else
-        SetVelocity(-limitedVelocity, velocity.y);
-
-    SetVelocity(velocity.x, std::min(velocity.y, 1000.0f));
-
-    // Update(); // ??? move to physics manager class
-    // UpdatePhysics(elapsedTimes);
-
-    // TODO: Let the item move it self
-    // if(m_PickupItem != nullptr)
-    // {
-    //     m_PickupItem->Teleport(GetCollider()->GetOrigin());
-    // }
+    // const float limitedVelocity = std::min(std::abs(velocity.x), m_MaxSpeed);
+    // if(velocity.x > 0)
+    //     SetVelocity(limitedVelocity, velocity.y);
+    // else
+    //     SetVelocity(-limitedVelocity, velocity.y);
+    //
+    // SetVelocity(velocity.x, std::min(velocity.y, 1000.0f));
+    UpdatePhysics(elapsedTimes);
     
-    // std::cout <<std::boolalpha << m_IsOnGround << '\n';
     m_AnimationTimer += elapsedTimes;
     UpdateAnimationState();
 }

@@ -19,7 +19,8 @@
 #include "Texture.h"
 #include "WorldManager.h"
 
-float Game::currentTime{0};
+float Game::m_CurrentTime{0};
+float Game::m_PrevDeltaTime{0};
 
 Game::Game( const Window& window ) 
 	:BaseGame{ window }
@@ -41,9 +42,9 @@ void Game::Initialize( )
 	m_Cave = new Cave{m_WorldManager};
 	m_Player = new PlayerObject{m_WorldManager};
 	m_EntityManager = new EntityManager{m_WorldManager};
-
 	
 	m_CameraSystem = new CameraSystem{m_Player};
+	m_CameraSystem->EnableDebugCamera(true);
 	Reset();
 }
 
@@ -60,18 +61,17 @@ void Game::Cleanup( )
 
 void Game::Update( float elapsedSec )
 {
-	currentTime += elapsedSec;
+	m_CurrentTime += elapsedSec;
 	m_Player->Update(elapsedSec);
-	m_EntityManager->UpdateItems(elapsedSec);
-
-	if(m_MouseDown)
-	{
-		m_DebugStartPoint = Vector2f{m_PrevMouse};
-	}
+	// m_EntityManager->UpdateItems(elapsedSec);
 
 	m_CameraSystem->UpdateCamera();
 
 	m_PrevDeltaTime = elapsedSec;
+	
+
+	GizmosDrawer::SetColor({0,1.0f,0});
+	GizmosDrawer::DrawQText(-m_CameraSystem->GetCameraPosition(), std::to_string((1/m_PrevDeltaTime)));
 	// Check keyboard state
 	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
 	//if ( pStates[SDL_SCANCODE_RIGHT] )
@@ -88,10 +88,6 @@ void Game::Draw( ) const
 {
 	ClearBackground( );
 	m_CameraSystem->PushCamera();
-	
-	// glPushMatrix();
-	// m_MoveMatrix.GlMultiMatrix();
-	// m_ZoomMatrix.GlMultiMatrix();
 
 	// Background
 	for (int x{}; x < 64*10*4/256; ++x)
@@ -106,12 +102,9 @@ void Game::Draw( ) const
 	m_EntityManager->DrawEntities();
 	m_Player->Draw();
 	// m_ItemManager->DrawPickupItems();
-	GizmosDrawer::SetColor({0,1.0f,0});
-	GizmosDrawer::DrawQText(-m_CameraSystem->GetCameraPosition(), std::to_string((1/m_PrevDeltaTime)));
+
 	GizmosDrawer::Draw();
-	
 	m_CameraSystem->PopCamera();
-	// glPopMatrix();
 }
 
 void Game::Reset()
@@ -119,12 +112,11 @@ void Game::Reset()
 	std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
 	m_Cave->GenerateLevel();
 	m_EntityManager->ClearAllEntities();
-	float elapsedSeconds = std::chrono::duration<float>(std::chrono::steady_clock::now() - t2).count();
+	const float elapsedSeconds = std::chrono::duration<float>(std::chrono::steady_clock::now() - t2).count();
 	std::cout << "Took: " << elapsedSeconds << " sec. To generate level";
 
-	m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{30, -64}, m_SpriteSheetManager, m_Cave->GetTiles()});
-	GizmosDrawer::DrawCircle(m_Cave->GetEntrance() + Vector2f{SpeluckyGlobals::g_TileSize/2.0f,SpeluckyGlobals::g_TileSize/2.0f}, 3, 3);
-	m_Player->Respawn(m_Cave->GetEntrance() + Vector2f{SpeluckyGlobals::g_TileSize/2.0f,SpeluckyGlobals::g_TileSize/2.0f});
+	m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{30, -64}, m_WorldManager});
+	m_Player->Respawn(m_Cave->GetEntrance() + Vector2f{spelucky_settings::g_TileSize/2.0f,spelucky_settings::g_TileSize/2.0f});
 }
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent &e )
@@ -156,22 +148,12 @@ void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 
 void Game::ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e )
 {
-	if(m_MouseDown)
-	{
-		const Vector2f mouseMove = Vector2f(static_cast<float>(e.x), static_cast<float>(e.y)) - m_PrevMouse;
-		m_MoveMatrix.m30 += mouseMove.x;
-		m_MoveMatrix.m31 += mouseMove.y;
-	}
-	m_PrevMouse.x = static_cast<float>(e.x);
-	m_PrevMouse.y = static_cast<float>(e.y);
+	m_CameraSystem->ProcessMouseMotionEvent(e);
 }
 
 void Game::ProcessMouseDownEvent( const SDL_MouseButtonEvent& e )
 {
-	if(e.button == 1)
-	{
-		m_MouseDown = true;
-	}
+	m_CameraSystem->ProcessMouseDownEvent(e);
 	//std::cout << "MOUSEBUTTONDOWN event: ";
 	//switch ( e.button )
 	//{
@@ -190,7 +172,7 @@ void Game::ProcessMouseDownEvent( const SDL_MouseButtonEvent& e )
 
 void Game::ProcessMouseUpEvent( const SDL_MouseButtonEvent& e )
 {
-	m_MouseDown = false;
+	m_CameraSystem->ProcessMouseUpEvent(e);
 	//std::cout << "MOUSEBUTTONUP event: ";
 	//switch ( e.button )
 	//{
@@ -208,9 +190,18 @@ void Game::ProcessMouseUpEvent( const SDL_MouseButtonEvent& e )
 
 void Game::ProcessWheelEvent(const SDL_MouseWheelEvent& e)
 {
-	m_ZoomMatrix = m_ZoomMatrix * Matrix4X4::TranslationMatrix(Vector2f{m_MoveMatrix.m30 - e.mouseX, m_MoveMatrix.m31 - e.mouseY});
-	m_ZoomMatrix.m33 -= e.preciseY*0.2f * m_ZoomMatrix.m33;
-	m_ZoomMatrix = m_ZoomMatrix * Matrix4X4::TranslationMatrix(Vector2f{-(m_MoveMatrix.m30 - e.mouseX), -(m_MoveMatrix.m31 - e.mouseY)});
+	m_CameraSystem->ProcessWheelEvent(e);
+
+}
+
+float Game::GetTime()
+{
+	return m_CurrentTime;
+}
+
+float Game::GetDeltaTime()
+{
+	return m_PrevDeltaTime;
 }
 
 void Game::ClearBackground( ) const

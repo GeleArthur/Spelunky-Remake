@@ -5,11 +5,12 @@
 #include "RectPhysicsCollider.h"
 #include "SpriteSheetManager.h"
 #include "Texture.h"
+#include "WorldManager.h"
 
 
-Rock::Rock(const Vector2f& position, const SpriteSheetManager* spriteSheetManager ,const std::vector<std::vector<Tile>>* tiles):
-    Entity(), RectPhysicsCollider(Rectf{position.x,position.y,40,40}),
-    m_SpriteSheetManager(spriteSheetManager)
+Rock::Rock(const Vector2f& position, WorldManager* worldManager):
+    Entity(), RectPhysicsCollider(Rectf{position.x,position.y,40,40}, worldManager),
+    m_SpriteSheetManager(worldManager->GetSpriteSheet())
 {
 }
 

@@ -65,7 +65,7 @@ bool collision_helpers::CircleRayVsRect(
     return false;
 }
 
-bool collision_helpers::RectVsRectOverLab(const RectPhysicsCollider& rect1, const RectPhysicsCollider& rect2)
+bool collision_helpers::RectVsRectOverlap(const RectPhysicsCollider& rect1, const RectPhysicsCollider& rect2)
 {
     Rectf rectData1 = rect1.GetRect();
     Rectf rectData2 = rect2.GetRect();

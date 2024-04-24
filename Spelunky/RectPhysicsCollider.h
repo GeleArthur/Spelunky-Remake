@@ -4,12 +4,23 @@
 #include "Collider.h"
 #include "PhysicsComponent.h"
 
+class WorldManager;
+class Entity;
+class Tile;
 class CirclePhysicsCollider;
+
+struct RayVsRectInfo
+{
+    Vector2f interSectionPoint;
+    Vector2f normal;
+    float nearTime;
+    float farTime;
+};
 
 class RectPhysicsCollider : public Collider
 {
 public:
-    explicit RectPhysicsCollider(const Rectf& rect);
+    explicit RectPhysicsCollider(const Rectf& rect, WorldManager* worldManager);
     virtual ColliderTypes GetColliderType() const override;
     
     void DebugDraw() const;
@@ -29,11 +40,13 @@ public:
     bool IsOverlapping(const CirclePhysicsCollider& other) const;
     bool IsOverlapping(const Collider& other) const;
 
-    bool PredictCollision(const RectPhysicsCollider& other /*TODO: out needed */);
+    bool PredictCollision(const Vector2f& startPoint, const Vector2f& moveDirection, const RectPhysicsCollider& other, RayVsRectInfo& out);
     bool PredictCollision(const CirclePhysicsCollider& other /*TODO: out needed */);
     // bool PredictCollision(const Collider& other);
 
-    void UpdatePhysics();
+    void UpdatePhysics(float elapsedTime);
+    virtual void CallBackHitTile(Tile* tileHit /*, TODO: How was the tile hit*/);
+    virtual void CallBackHitEntity(Entity* entityHit /*, TODO: How was the tile hit*/);
     // void SetOnCollisionStay(std::function<void()> function);
     // void RemoveOnCollisionStay();
     
@@ -59,4 +72,6 @@ public:
 private:
     Rectf m_Rect;
     Vector2f m_Velocity;
+
+    WorldManager* m_WorldManager;
 };

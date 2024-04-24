@@ -5,9 +5,9 @@
 
 void EntityManager::DrawEntities() const
 {
-    for (const Entity* item : m_Entities)
+    for (const Entity* entity : m_Entities)
     {
-        item->Draw();
+        entity->Draw();
     }
 }
 

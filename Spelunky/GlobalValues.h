@@ -1,6 +1,7 @@
 ﻿#pragma once
 
-namespace SpeluckyGlobals
+namespace spelucky_settings
 {
     constexpr int g_TileSize{64};
+    
 }

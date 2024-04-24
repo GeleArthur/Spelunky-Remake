@@ -31,7 +31,8 @@ public:
 	void ProcessMouseUpEvent( const SDL_MouseButtonEvent& e ) override;
 	void ProcessWheelEvent( const SDL_MouseWheelEvent& e ) override;
 
-	static float currentTime; // TODO: Move this
+	static float GetTime();
+	static float GetDeltaTime();
 	
 private:
 
@@ -42,13 +43,12 @@ private:
 	EntityManager* m_EntityManager;
 	CameraSystem* m_CameraSystem;
 
-	Vector2f m_DebugStartPoint{};
-	Vector2f m_PrevMouse{0,0};
-	bool m_MouseDown{};
+
 	Matrix4X4 m_ZoomMatrix{Matrix4X4::IdentityMatrix()};
 	Matrix4X4 m_MoveMatrix{Matrix4X4::IdentityMatrix()};
 
-	float m_PrevDeltaTime;
+	static float m_PrevDeltaTime;
+	static float m_CurrentTime;
 
 	// FUNCTIONS
 	void Initialize();

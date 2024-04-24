@@ -25,8 +25,8 @@ class PlayerObject final : public RectPhysicsCollider, public Entity
 {
 public:
     explicit PlayerObject(WorldManager* worldManager);
-    void Draw() const;
-    void Update(float elapsedTimes);
+    virtual void Draw() const override;
+    virtual void Update(float elapsedTimes) override;
     void UpdateAnimationState();
     void Respawn(const Vector2f& spawnLocation);
     

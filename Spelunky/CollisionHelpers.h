@@ -23,7 +23,7 @@ namespace collision_helpers
     };
 
     bool CircleVsCircle(const CirclePhysicsCollider& circle1, const CirclePhysicsCollider& circle2, HitInfo& out);
-    bool RectVsRectOverLab(const RectPhysicsCollider& rect1, const RectPhysicsCollider& rect2);
+    bool RectVsRectOverlap(const RectPhysicsCollider& rect1, const RectPhysicsCollider& rect2);
     bool CircleVsRect(const CirclePhysicsCollider& circle, const RectPhysicsCollider& rect1, HitInfo& out);
 
     bool RayVsRect(const Rectf& rect, const Vector2f& rayOrigin, const Vector2f& rayDir, RayVsRectInfo& out );

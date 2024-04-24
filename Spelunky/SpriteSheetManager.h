@@ -12,6 +12,8 @@ public:
 	~SpriteSheetManager();
 	SpriteSheetManager(const SpriteSheetManager& other) = delete; // If we do this something went wrong 
 	SpriteSheetManager& operator=(const SpriteSheetManager& other) = delete;
+	SpriteSheetManager(SpriteSheetManager&& other) = delete;
+	SpriteSheetManager& operator=(SpriteSheetManager&& other) = delete;
 
 	Texture* GetLevelTexture() const;
 	Texture* GetBackGroundTexture() const;
