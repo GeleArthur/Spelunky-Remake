@@ -14,7 +14,7 @@
 #include "WorldManager.h"
 
 PlayerObject::PlayerObject(WorldManager* worldManager):
-    RectPhysicsCollider(Rectf{0, 0, 40, 64}, worldManager),
+    RectPhysicsCollider(Rectf{0, 0, 40, 64}, 60, 0.3f, worldManager),
     m_SpriteSheetManager(worldManager->GetSpriteSheet()),
     m_WorldManager(worldManager)
 {
@@ -87,19 +87,19 @@ void PlayerObject::Update(const float elapsedTimes)
     Vector2f inputVelocity{};
     if ( pStates[SDL_SCANCODE_RIGHT] || pStates[SDL_SCANCODE_D] )
     {
-        inputVelocity += Vector2f{1000, 0} * elapsedTimes;
+        inputVelocity += Vector2f{100, 0} * elapsedTimes;
     }
     if ( pStates[SDL_SCANCODE_LEFT] || pStates[SDL_SCANCODE_A] )
     {
-        inputVelocity += Vector2f{-1000, 0} * elapsedTimes;
+        inputVelocity += Vector2f{-100, 0} * elapsedTimes;
     }
     if ( pStates[SDL_SCANCODE_UP] || pStates[SDL_SCANCODE_W] )
     {
-        inputVelocity += Vector2f{0, -1000} * elapsedTimes;
+        inputVelocity += Vector2f{0, -100} * elapsedTimes;
     }
     if ( pStates[SDL_SCANCODE_DOWN] || pStates[SDL_SCANCODE_S] )
     {
-        inputVelocity += Vector2f{0, 1000} * elapsedTimes;
+        inputVelocity += Vector2f{0, 100} * elapsedTimes;
     }
 
 

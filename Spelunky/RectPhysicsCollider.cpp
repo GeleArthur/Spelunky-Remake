@@ -9,8 +9,10 @@
 #include "utils.h"
 #include "WorldManager.h"
 
-RectPhysicsCollider::RectPhysicsCollider(const Rectf& rect, WorldManager* worldManager):
+RectPhysicsCollider::RectPhysicsCollider(const Rectf& rect, const float mass, const float bounciness, WorldManager* worldManager):
     m_Rect(rect),
+    m_Mass(mass),
+    m_Bounciness(bounciness),
     m_WorldManager(worldManager)
 {
 }
@@ -128,6 +130,13 @@ bool RectPhysicsCollider::PredictCollision(const Vector2f& startPoint, const Vec
     float farTimeX = ((extendedRect.left + extendedRect.width) - rayOrigin.x) / rayDirection.x;
     float farTimeY = ((extendedRect.top + extendedRect.height) - rayOrigin.y) / rayDirection.y;
 
+    if (std::isnan(nearTimeX))nearTimeX = 0;
+    if (std::isnan(nearTimeY)) nearTimeY = 0;
+    if (std::isnan(farTimeX)) farTimeX = 0;
+    if (std::isnan(farTimeY)) farTimeY = 0;
+    
+
+    
     if (nearTimeX > farTimeX) std::swap(nearTimeX, farTimeX);
     if (nearTimeY > farTimeY) std::swap(nearTimeY, farTimeY);
     
@@ -218,6 +227,7 @@ bool RectPhysicsCollider::PredictCollision(const CirclePhysicsCollider& other)
     return false;
 }
 
+
 void RectPhysicsCollider::UpdatePhysics(float elapsedTime)
 {
     const std::vector<std::vector<Tile>>* tiles = m_WorldManager->GetCave()->GetTiles();
@@ -233,13 +243,20 @@ void RectPhysicsCollider::UpdatePhysics(float elapsedTime)
     int limitCount = 10;
 
     Vector2f prevIntersection = collidedPosition;
+
+    // RayVsRectInfo rayResult;
+    // if(PredictCollision(collidedPosition, collidedVelocity, tiles->at(0).at(0), rayResult))
+    // {
+    //     GizmosDrawer::SetColor({1,0,0});
+    //     GizmosDrawer::DrawCircle(rayResult.interSectionPoint, 5);
+    // }
     
     while (isColliding && limitCount > 0)
     {
         isColliding = false;
         --limitCount;
 
-        std::vector<RayVsRectInfo> hits;
+        std::vector<std::pair<const Tile*, RayVsRectInfo>> hits;
         
         for (int i{}; i < int(tiles->size()); ++i)
         {
@@ -251,43 +268,62 @@ void RectPhysicsCollider::UpdatePhysics(float elapsedTime)
                 RayVsRectInfo rayResult;
                 if(PredictCollision(collidedPosition, collidedVelocity, currentTile, rayResult))
                 {
-                    hits.push_back(rayResult);
+                    hits.push_back(std::pair(&currentTile,rayResult));
                 }
             }
         }
         if (!hits.empty())
         {
-            std::sort(hits.begin(), hits.end(), [](const RayVsRectInfo& first, const RayVsRectInfo& second)
+            std::sort(hits.begin(), hits.end(), [](const std::pair<const Tile*, RayVsRectInfo>& first, const std::pair<const Tile*, RayVsRectInfo>& second)
             {
-                return first.nearTime < second.nearTime;
+                return first.second.nearTime < second.second.nearTime;
             });
 
-            RayVsRectInfo firstHit = hits.at(0);
+            std::pair<const Tile*, RayVsRectInfo> firstHit = hits.at(0);
+            
+            float t = 1 - firstHit.second.nearTime;
+            const Vector2f velocityThatLeft = collidedVelocity * t;
+            
+            float bounce = m_Bounciness;
+            float strengthInVelocity = (-(1+bounce) * velocityThatLeft).DotProduct(firstHit.second.normal);
+            
+            GizmosDrawer::DrawLine(collidedPosition + collidedVelocity, collidedPosition + collidedVelocity + firstHit.second.normal * strengthInVelocity);
+            
+            collidedVelocity += firstHit.second.normal * strengthInVelocity;
+            collidedPosition += collidedVelocity /*+ firstHit.second.normal * strengthInVelocity*/;
+            
+            // m_balls[j].velocity = m_balls[j].velocity - (1 / m_balls[j].mass) * scaledVelocityStrength *collisionNormal;
 
-            float t = 1 - firstHit.nearTime;
-            Vector2f reflectedVelocity = (collidedVelocity * t).Reflect(firstHit.normal);
+            // Old perfect bounce velocity
+            
+            // float t = 1 - firstHit.second.nearTime;
+            // Vector2f velocityThatLeft = collidedVelocity * t;
+            //
+            // Vector2f reflectedVelocity = velocityThatLeft.Reflect(firstHit.second.normal);
 
-            collidedPosition = firstHit.interSectionPoint;
-            collidedVelocity = reflectedVelocity;
-            isColliding = true;
+            // collidedPosition = firstHit.interSectionPoint;
+            // collidedVelocity = reflectedVelocity;
+            // isColliding = true;
 
             GizmosDrawer::SetColor({1,0,0});
-            // GizmosDrawer::DrawLine(firstHit.interSectionPoint, firstHit.interSectionPoint + reflectedVelocity);
-            GizmosDrawer::DrawLine(prevIntersection, firstHit.interSectionPoint);
+            GizmosDrawer::DrawCircle(firstHit.second.interSectionPoint, 5);
+            GizmosDrawer::DrawLine(prevIntersection, firstHit.second.interSectionPoint);
 
-            prevIntersection = firstHit.interSectionPoint;
+            prevIntersection = firstHit.second.interSectionPoint;
             
 
             // for (int i{}; i < int(hits.size()); ++i)
             // {
             //     GizmosDrawer::SetColor({0,std::abs((float(i)/float(hits.size())-1.0f)),0});
             //     GizmosDrawer::DrawCircle(hits.at(i).interSectionPoint, 5);
-            //     GizmosDrawer::DrawLine(hits.at(i).interSectionPoint, hits.at(i).interSectionPoint + hits.at(i).normal * 10);
+            //     // GizmosDrawer::DrawLine(hits.at(i).interSectionPoint, hits.at(i).interSectionPoint + hits.at(i).normal * 10);
             // }
         }
         else
         {
-            GizmosDrawer::DrawLine(prevIntersection, collidedPosition + collidedVelocity);
+            // GizmosDrawer::DrawCircle(collidedPosition + collidedVelocity, 10);
+            // GizmosDrawer::DrawQText(collidedPosition + collidedVelocity, std::to_string(limitCount));
+            // GizmosDrawer::DrawLine(prevIntersection, collidedPosition + collidedVelocity);
         }
 
         

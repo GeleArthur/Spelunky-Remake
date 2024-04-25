@@ -20,7 +20,7 @@ struct RayVsRectInfo
 class RectPhysicsCollider : public Collider
 {
 public:
-    explicit RectPhysicsCollider(const Rectf& rect, WorldManager* worldManager);
+    explicit RectPhysicsCollider(const Rectf& rect, float mass, float bounciness, WorldManager* worldManager);
     virtual ColliderTypes GetColliderType() const override;
     
     void DebugDraw() const;
@@ -71,7 +71,10 @@ public:
 
 private:
     Rectf m_Rect;
-    Vector2f m_Velocity;
+    Vector2f m_Velocity{};
+
+    float m_Mass;
+    float m_Bounciness;
 
     WorldManager* m_WorldManager;
 };

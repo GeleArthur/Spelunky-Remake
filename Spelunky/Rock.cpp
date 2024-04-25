@@ -9,7 +9,7 @@
 
 
 Rock::Rock(const Vector2f& position, WorldManager* worldManager):
-    Entity(), RectPhysicsCollider(Rectf{position.x,position.y,40,40}, worldManager),
+    Entity(), RectPhysicsCollider(Rectf{position.x,position.y,40,40}, 3, 0.8, worldManager),
     m_SpriteSheetManager(worldManager->GetSpriteSheet())
 {
 }

@@ -106,6 +106,11 @@ Vector2f Vector2f::Reflect( const Vector2f& surfaceNormal ) const
 	return (*this) - 2 * ( this->DotProduct( surfaceNormal ) * surfaceNormal );
 }
 
+Vector2f Vector2f::Right() const
+{
+	return Vector2f{-y, x};
+}
+
 void Vector2f::Set(float newX, float newY)
 {
 	x = newX;

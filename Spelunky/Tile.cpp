@@ -7,6 +7,7 @@
 #include "Texture.h"
 #include "Vector2i.h"
 #include "WorldManager.h"
+#include <limits>
 
 using namespace spelucky_settings;
 
@@ -16,6 +17,8 @@ Tile::Tile(const TileTypes tileType, const Vector2i tileIndex, WorldManager* wor
             static_cast<float>(tileIndex.x * g_TileSize), static_cast<float>(tileIndex.y * g_TileSize), g_TileSize,
             g_TileSize
         },
+        5000,
+        0,
         worldManager
     },
     m_SpriteSheetManager(worldManager->GetSpriteSheet()),
