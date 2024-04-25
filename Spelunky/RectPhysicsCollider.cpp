@@ -9,7 +9,8 @@
 #include "utils.h"
 #include "WorldManager.h"
 
-RectPhysicsCollider::RectPhysicsCollider(const Rectf& rect, const float mass, const float bounciness, WorldManager* worldManager):
+RectPhysicsCollider::RectPhysicsCollider(const Rectf& rect, const float mass, const float bounciness,
+                                         WorldManager* worldManager):
     m_Rect(rect),
     m_Mass(mass),
     m_Bounciness(bounciness),
@@ -101,11 +102,12 @@ bool RectPhysicsCollider::IsOverlapping(const Collider& other) const
     throw;
 }
 
-bool RectPhysicsCollider::PredictCollision(const Vector2f& startPoint, const Vector2f& moveDirection, const RectPhysicsCollider& otherPhysicsRect, RayVsRectInfo& out)
+bool RectPhysicsCollider::PredictCollision(const Vector2f& startPoint, const Vector2f& moveDirection,
+                                           const RectPhysicsCollider& otherPhysicsRect, RayVsRectInfo& out)
 {
-    if(moveDirection.x == 0 && moveDirection.y == 0)
+    if (moveDirection.x == 0 && moveDirection.y == 0)
         return false;
-    
+
     Rectf otherRect{otherPhysicsRect.GetRect()};
     Rectf thisRect{GetRect()};
 
@@ -116,30 +118,29 @@ bool RectPhysicsCollider::PredictCollision(const Vector2f& startPoint, const Vec
         otherRect.height + thisRect.height
     };
 
-    GizmosDrawer::SetColor({0,1,0});
-    GizmosDrawer::DrawRect(extendedRect);
-    
+    // GizmosDrawer::SetColor({0, 1, 0});
+    // GizmosDrawer::DrawRect(extendedRect);
+
     Vector2f rayOrigin = startPoint;
     Vector2f rayDirection = moveDirection;
     // GizmosDrawer::SetColor({1,0,0});
     // GizmosDrawer::DrawLine(rayOrigin, rayOrigin + rayDirection);
-    
+
     float nearTimeX = (extendedRect.left - rayOrigin.x) / rayDirection.x;
     float nearTimeY = (extendedRect.top - rayOrigin.y) / rayDirection.y;
 
     float farTimeX = ((extendedRect.left + extendedRect.width) - rayOrigin.x) / rayDirection.x;
     float farTimeY = ((extendedRect.top + extendedRect.height) - rayOrigin.y) / rayDirection.y;
 
-    if (std::isnan(nearTimeX))nearTimeX = 0;
-    if (std::isnan(nearTimeY)) nearTimeY = 0;
+    if (std::isnan(nearTimeX))nearTimeX = 1;
+    if (std::isnan(nearTimeY)) nearTimeY = 1;
     if (std::isnan(farTimeX)) farTimeX = 0;
     if (std::isnan(farTimeY)) farTimeY = 0;
-    
 
-    
+
     if (nearTimeX > farTimeX) std::swap(nearTimeX, farTimeX);
     if (nearTimeY > farTimeY) std::swap(nearTimeY, farTimeY);
-    
+
     /*
     GizmosDrawer::SetColor({1,0,0});
     GizmosDrawer::DrawCircle(rayOrigin + rayDirection * nearTimeX, 4);
@@ -154,7 +155,7 @@ bool RectPhysicsCollider::PredictCollision(const Vector2f& startPoint, const Vec
     GizmosDrawer::DrawQText(rayOrigin + rayDirection * farTimeY, "F Y" + std::to_string(farTimeY));
     */
 
-    
+
     float nearTime = std::max(nearTimeX, nearTimeY);
     float farTime = std::min(farTimeX, farTimeY);
 
@@ -165,37 +166,45 @@ bool RectPhysicsCollider::PredictCollision(const Vector2f& startPoint, const Vec
     // GizmosDrawer::SetColor({0,1,0});
     // GizmosDrawer::DrawCircle(rayOrigin + rayDirection * farTime, 4);
     // GizmosDrawer::DrawQText(rayOrigin + rayDirection * farTime, "Far " + std::to_string(farTime));
-    
-    if(farTime <= 0 && nearTime >= 1) // Check if line is in ray time
+
+    if (farTime <= 0 && nearTime >= 1) // Check if line is in ray time
         return false;
-    if(nearTime >= farTime || farTime <= 0 || nearTime >= 1) // If the outer points over shoot each other it doesn't hit
+    if (nearTime >= farTime || farTime <= 0 || nearTime >= 1)
+    // If the outer points over shoot each other it doesn't hit
     {
         return false;
     }
-    
+
+    // GizmosDrawer::SetColor({1,0,0});
+    // GizmosDrawer::DrawCircle(rayOrigin + rayDirection * nearTime, 4);
+    // GizmosDrawer::DrawQText(rayOrigin + rayDirection * nearTime, "Near " + std::to_string(nearTime));
+    //
+    // GizmosDrawer::SetColor({0,1,0});
+    // GizmosDrawer::DrawCircle(rayOrigin + rayDirection * farTime, 4);
+    // GizmosDrawer::DrawQText(rayOrigin + rayDirection * farTime, "Far " + std::to_string(farTime));
+
     out.nearTime = nearTime;
     out.farTime = farTime;
-    
+
     // GizmosDrawer::SetColor({1,0,0});
     // GizmosDrawer::DrawRect(extendedRect);
 
     out.interSectionPoint = rayOrigin + rayDirection * nearTime;
-    if(nearTimeX > nearTimeY) // We hit on the X side
+    if (nearTimeX > nearTimeY) // We hit on the X side
     {
-        if(rayDirection.x > 0) out.normal = Vector2f{-1, 0};
+        if (rayDirection.x > 0) out.normal = Vector2f{-1, 0};
         else out.normal = Vector2f{1, 0};
     }
     else
     {
-        if(rayDirection.y > 0) out.normal = Vector2f{0, -1};
+        if (rayDirection.y > 0) out.normal = Vector2f{0, -1};
         else out.normal = Vector2f{0, 1};
     }
 
     // GizmosDrawer::DrawCircle(out.interSectionPoint, 5);
     // GizmosDrawer::DrawLine(out.interSectionPoint, out.interSectionPoint + out.normal * 10);
 
-    
-    
+
     // if (nearTimeX >= farTimeY || nearTimeY >= farTimeX) return false;
     //
     // out.farHit = std::min(farTimeX, farTimeY);
@@ -236,11 +245,11 @@ void RectPhysicsCollider::UpdatePhysics(float elapsedTime)
 
     Vector2f collidedPosition = GetCenter();
     Vector2f collidedVelocity = m_Velocity;
-    
-    GizmosDrawer::SetColor({1,1,1});
+
+    GizmosDrawer::SetColor({1, 1, 1});
     GizmosDrawer::DrawLine(GetCenter(), GetCenter() + m_Velocity);
 
-    int limitCount = 10;
+    int limitCount = 2;
 
     Vector2f prevIntersection = collidedPosition;
 
@@ -250,15 +259,34 @@ void RectPhysicsCollider::UpdatePhysics(float elapsedTime)
     //     GizmosDrawer::SetColor({1,0,0});
     //     GizmosDrawer::DrawCircle(rayResult.interSectionPoint, 5);
     // }
-    
+
     while (isColliding && limitCount > 0)
     {
         isColliding = false;
         --limitCount;
 
         std::vector<std::pair<const Tile*, RayVsRectInfo>> hits;
+
+        RayVsRectInfo rayResult;
+        if(PredictCollision(collidedPosition, collidedVelocity, tiles->at(0).at(1), rayResult))
+        {
+            hits.emplace_back(&tiles->at(0).at(1), rayResult);
+        }
+        if(PredictCollision(collidedPosition, collidedVelocity, tiles->at(1).at(0), rayResult))
+        {
+            hits.emplace_back(&tiles->at(1).at(0), rayResult);
+        }
+
+        if(PredictCollision(collidedPosition, collidedVelocity, tiles->at(3).at(3), rayResult))
+        {
+            hits.emplace_back(&tiles->at(3).at(3), rayResult);
+        }
+        if(PredictCollision(collidedPosition, collidedVelocity, tiles->at(4).at(2), rayResult))
+        {
+            hits.emplace_back(&tiles->at(4).at(2), rayResult);
+        }
         
-        for (int i{}; i < int(tiles->size()); ++i)
+        /*for (int i{}; i < int(tiles->size()); ++i)
         {
             for (int j{}; j < int(tiles->at(i).size()); ++j)
             {
@@ -266,12 +294,12 @@ void RectPhysicsCollider::UpdatePhysics(float elapsedTime)
                 if (currentTile.GetTileType() != TileTypes::ground) continue;
 
                 RayVsRectInfo rayResult;
-                if(PredictCollision(collidedPosition, collidedVelocity, currentTile, rayResult))
+                if (PredictCollision(collidedPosition, collidedVelocity, currentTile, rayResult))
                 {
-                    hits.push_back(std::pair(&currentTile,rayResult));
+                    hits.emplace_back(&currentTile, rayResult);
                 }
             }
-        }
+        }*/
         if (!hits.empty())
         {
             std::sort(hits.begin(), hits.end(), [](const std::pair<const Tile*, RayVsRectInfo>& first, const std::pair<const Tile*, RayVsRectInfo>& second)
@@ -281,43 +309,27 @@ void RectPhysicsCollider::UpdatePhysics(float elapsedTime)
 
             std::pair<const Tile*, RayVsRectInfo> firstHit = hits.at(0);
             
-            float t = 1 - firstHit.second.nearTime;
+            const float t = 1 - firstHit.second.nearTime;
             const Vector2f velocityThatLeft = collidedVelocity * t;
-            
+
             float bounce = m_Bounciness;
-            float strengthInVelocity = (-(1+bounce) * velocityThatLeft).DotProduct(firstHit.second.normal);
-            
-            GizmosDrawer::DrawLine(collidedPosition + collidedVelocity, collidedPosition + collidedVelocity + firstHit.second.normal * strengthInVelocity);
-            
-            collidedVelocity += firstHit.second.normal * strengthInVelocity;
-            collidedPosition += collidedVelocity /*+ firstHit.second.normal * strengthInVelocity*/;
-            
-            // m_balls[j].velocity = m_balls[j].velocity - (1 / m_balls[j].mass) * scaledVelocityStrength *collisionNormal;
+            float strengthInVelocity = (-(1 + bounce) * velocityThatLeft).DotProduct(firstHit.second.normal);
 
-            // Old perfect bounce velocity
+            // if(strengthInVelocity < 0.01) strengthInVelocity = 0;
+            // GizmosDrawer::DrawLine(collidedPosition + collidedVelocity,
+            //                        collidedPosition + collidedVelocity + firstHit.second.normal * strengthInVelocity);
             
-            // float t = 1 - firstHit.second.nearTime;
-            // Vector2f velocityThatLeft = collidedVelocity * t;
-            //
-            // Vector2f reflectedVelocity = velocityThatLeft.Reflect(firstHit.second.normal);
-
-            // collidedPosition = firstHit.interSectionPoint;
-            // collidedVelocity = reflectedVelocity;
-            // isColliding = true;
-
-            GizmosDrawer::SetColor({1,0,0});
-            GizmosDrawer::DrawCircle(firstHit.second.interSectionPoint, 5);
-            GizmosDrawer::DrawLine(prevIntersection, firstHit.second.interSectionPoint);
-
-            prevIntersection = firstHit.second.interSectionPoint;
+            collidedVelocity = velocityThatLeft + firstHit.second.normal * strengthInVelocity;
+            collidedPosition = firstHit.second.interSectionPoint /*+ firstHit.second.normal * strengthInVelocity*/;
             
+            // GizmosDrawer::SetColor({1, 0, 0});
+            // GizmosDrawer::DrawCircle(collidedPosition, limitCount);
+            GizmosDrawer::SetColor({1, 0, 0});
+            GizmosDrawer::DrawCircle(collidedPosition, 3);
+            GizmosDrawer::DrawLine(collidedPosition, collidedPosition + collidedVelocity);
 
-            // for (int i{}; i < int(hits.size()); ++i)
-            // {
-            //     GizmosDrawer::SetColor({0,std::abs((float(i)/float(hits.size())-1.0f)),0});
-            //     GizmosDrawer::DrawCircle(hits.at(i).interSectionPoint, 5);
-            //     // GizmosDrawer::DrawLine(hits.at(i).interSectionPoint, hits.at(i).interSectionPoint + hits.at(i).normal * 10);
-            // }
+            // prevIntersection = firstHit.second.interSectionPoint;
+            isColliding = true;
         }
         else
         {
@@ -325,8 +337,6 @@ void RectPhysicsCollider::UpdatePhysics(float elapsedTime)
             // GizmosDrawer::DrawQText(collidedPosition + collidedVelocity, std::to_string(limitCount));
             // GizmosDrawer::DrawLine(prevIntersection, collidedPosition + collidedVelocity);
         }
-
-        
     }
 }
 

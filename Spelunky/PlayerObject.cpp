@@ -14,7 +14,7 @@
 #include "WorldManager.h"
 
 PlayerObject::PlayerObject(WorldManager* worldManager):
-    RectPhysicsCollider(Rectf{0, 0, 40, 64}, 60, 0.3f, worldManager),
+    RectPhysicsCollider(Rectf{0, 0, 40, 64}, 60, 0.0f, worldManager),
     m_SpriteSheetManager(worldManager->GetSpriteSheet()),
     m_WorldManager(worldManager)
 {
