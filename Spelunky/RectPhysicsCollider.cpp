@@ -118,8 +118,8 @@ bool RectPhysicsCollider::PredictCollision(const Vector2f& startPoint, const Vec
         otherRect.height + thisRect.height
     };
 
-    // GizmosDrawer::SetColor({0, 1, 0});
-    // GizmosDrawer::DrawRect(extendedRect);
+    GizmosDrawer::SetColor({0, 1, 0});
+    GizmosDrawer::DrawRect(extendedRect);
 
     Vector2f rayOrigin = startPoint;
     Vector2f rayDirection = moveDirection;
@@ -132,7 +132,7 @@ bool RectPhysicsCollider::PredictCollision(const Vector2f& startPoint, const Vec
     float farTimeX = ((extendedRect.left + extendedRect.width) - rayOrigin.x) / rayDirection.x;
     float farTimeY = ((extendedRect.top + extendedRect.height) - rayOrigin.y) / rayDirection.y;
 
-    if (std::isnan(nearTimeX))nearTimeX = 1;
+    if (std::isnan(nearTimeX)) nearTimeX = 1;
     if (std::isnan(nearTimeY)) nearTimeY = 1;
     if (std::isnan(farTimeX)) farTimeX = 0;
     if (std::isnan(farTimeY)) farTimeY = 0;
@@ -249,7 +249,7 @@ void RectPhysicsCollider::UpdatePhysics(float elapsedTime)
     GizmosDrawer::SetColor({1, 1, 1});
     GizmosDrawer::DrawLine(GetCenter(), GetCenter() + m_Velocity);
 
-    int limitCount = 2;
+    int limitCount = 10;
 
     Vector2f prevIntersection = collidedPosition;
 
@@ -276,7 +276,7 @@ void RectPhysicsCollider::UpdatePhysics(float elapsedTime)
         {
             hits.emplace_back(&tiles->at(1).at(0), rayResult);
         }
-
+        
         if(PredictCollision(collidedPosition, collidedVelocity, tiles->at(3).at(3), rayResult))
         {
             hits.emplace_back(&tiles->at(3).at(3), rayResult);
@@ -286,7 +286,7 @@ void RectPhysicsCollider::UpdatePhysics(float elapsedTime)
             hits.emplace_back(&tiles->at(4).at(2), rayResult);
         }
         
-        /*for (int i{}; i < int(tiles->size()); ++i)
+        for (int i{}; i < int(tiles->size()); ++i)
         {
             for (int j{}; j < int(tiles->at(i).size()); ++j)
             {
@@ -299,7 +299,7 @@ void RectPhysicsCollider::UpdatePhysics(float elapsedTime)
                     hits.emplace_back(&currentTile, rayResult);
                 }
             }
-        }*/
+        }
         if (!hits.empty())
         {
             std::sort(hits.begin(), hits.end(), [](const std::pair<const Tile*, RayVsRectInfo>& first, const std::pair<const Tile*, RayVsRectInfo>& second)
@@ -325,7 +325,7 @@ void RectPhysicsCollider::UpdatePhysics(float elapsedTime)
             // GizmosDrawer::SetColor({1, 0, 0});
             // GizmosDrawer::DrawCircle(collidedPosition, limitCount);
             GizmosDrawer::SetColor({1, 0, 0});
-            GizmosDrawer::DrawCircle(collidedPosition, 3);
+            GizmosDrawer::DrawCircle(collidedPosition + collidedVelocity, 3);
             GizmosDrawer::DrawLine(collidedPosition, collidedPosition + collidedVelocity);
 
             // prevIntersection = firstHit.second.interSectionPoint;
@@ -333,7 +333,8 @@ void RectPhysicsCollider::UpdatePhysics(float elapsedTime)
         }
         else
         {
-            // GizmosDrawer::DrawCircle(collidedPosition + collidedVelocity, 10);
+            GizmosDrawer::SetColor({0,1,1});
+            GizmosDrawer::DrawCircle(collidedPosition + collidedVelocity, 10);
             // GizmosDrawer::DrawQText(collidedPosition + collidedVelocity, std::to_string(limitCount));
             // GizmosDrawer::DrawLine(prevIntersection, collidedPosition + collidedVelocity);
         }
