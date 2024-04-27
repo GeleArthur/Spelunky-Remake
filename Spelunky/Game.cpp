@@ -11,6 +11,7 @@
 #include "EntityManager.h"
 #include "GizmosDrawer.h"
 #include "GlobalValues.h"
+#include "InputManager.h"
 #include "SpriteSheetManager.h"
 #include "Matrix.h"
 #include "PlayerObject.h"
@@ -62,6 +63,7 @@ void Game::Cleanup( )
 void Game::Update( float elapsedSec )
 {
 	m_CurrentTime += elapsedSec;
+	InputManager::Update();
 	m_Player->Update(elapsedSec);
 	// m_EntityManager->UpdateItems(elapsedSec);
 

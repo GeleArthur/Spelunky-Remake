@@ -40,7 +40,8 @@ private:
     float m_AnimationTimer{};
     bool m_IsLookingToLeft{true};
 
-    const float m_MaxSpeed{500}; // const member is dum
+    const float m_MaxSpeed{256.0f}; // const member is dum
+    
     bool m_IsOnGround{false};
     Entity* m_PickupItem{};
 

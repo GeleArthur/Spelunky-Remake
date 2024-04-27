@@ -247,8 +247,8 @@ void RectPhysicsCollider::UpdatePhysics()
     Vector2f collidedPosition = GetCenter();
     Vector2f collidedVelocity = m_Velocity * Game::GetDeltaTime();
 
-    GizmosDrawer::SetColor({1, 1, 1});
-    GizmosDrawer::DrawLine(GetCenter(), GetCenter() + m_Velocity);
+    // GizmosDrawer::SetColor({1, 1, 1});
+    // GizmosDrawer::DrawLine(GetCenter(), GetCenter() + m_Velocity);
 
     int limitCount = 10;
 

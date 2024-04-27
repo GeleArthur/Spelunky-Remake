@@ -6,7 +6,9 @@
 #include <vector>
 
 #include "CirclePhysicsCollider.h"
+#include "Game.h"
 #include "GizmosDrawer.h"
+#include "InputManager.h"
 #include "RectPhysicsCollider.h"
 #include "SpriteSheetManager.h"
 #include "Texture.h"
@@ -161,75 +163,41 @@ void PlayerObject::Draw() const
 
 void PlayerObject::Update(const float elapsedTimes)
 {
-    const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
-    // 3000 as run speed maybe
-
     Vector2f inputVelocity{};
-    if ( pStates[SDL_SCANCODE_RIGHT] || pStates[SDL_SCANCODE_D] )
+    const Vector2f moveInput = InputManager::GetMoveInput();
+    // std::cout << moveInput.x << '\n';
+
+    if(moveInput.x <= 0.1 && moveInput.x >= -0.1)
     {
-        inputVelocity += Vector2f{1000, 0} * elapsedTimes;
+        inputVelocity.x += -GetVelocity().x * 4 * elapsedTimes;
     }
-    if ( pStates[SDL_SCANCODE_LEFT] || pStates[SDL_SCANCODE_A] )
-    {
-        inputVelocity += Vector2f{-1000, 0} * elapsedTimes;
-    }
-    // if ( pStates[SDL_SCANCODE_UP] || pStates[SDL_SCANCODE_W] )
-    // {
-    //     inputVelocity += Vector2f{0, -10} * elapsedTimes;
-    // }
-    // if ( pStates[SDL_SCANCODE_DOWN] || pStates[SDL_SCANCODE_S] )
-    // {
-    //     inputVelocity += Vector2f{0, 10} * elapsedTimes;
-    // }
+
+    
+    // inputVelocity +=
+    std::cout << Game::GetTime() << '\n';
+    inputVelocity += Vector2f{moveInput.x * m_MaxSpeed/0.1f * elapsedTimes, 0};
     
     
-    if(pStates[SDL_SCANCODE_SPACE])
+    if(InputManager::PressedJumpThisFrame())
     {
         if(m_IsOnGround)
         {
             SetVelocity(GetVelocity().x, -500);
         }
     }
-    if(pStates[SDL_SCANCODE_LSHIFT])
-    {
-        
-        // std::vector<Entity*> items = m_WorldManager->GetItemManager()->GetItems();
-        // for (int i{}; i < items.size(); ++i)
-        // {
-        //     //TODO Test for multiple objects by distance
-        //     if(items.at(i)->CanPickUp(this))
-        //     {
-        //         m_PickupItem = items.at(i);
-        //         m_PickupItem->SetIsPickedUp(true);
-        //         break;
-        //     }
-        // }
-    }
-
-    // if(m_PickupItem != nullptr && pStates[SDL_SCANCODE_E])
-    // {
-    //     m_PickupItem->SetIsPickedUp(false);
-    //     m_PickupItem->Throw(Vector2f{m_IsLookingToLeft ? -1000.0f: 1000.0f, -200});
-    //     m_PickupItem = nullptr;
-    // }
 
     Vector2f velocity = GetVelocity();
 
-    // if(abs(inputVelocity.x) < 0.001)
-    // {
-    //     float slowDownLimit = 3000.0f * elapsedTimes;
-    //     if(slowDownLimit > std::abs(velocity.x))
-    //         slowDownLimit = std::abs(velocity.x);
-    //     
-    //     if(velocity.x > 0) slowDownLimit *= -1;
-    //     
-    //     inputVelocity.x += slowDownLimit;
-    // }
+    // const float limitedVelocity = std::min(std::abs(velocity.x), m_MaxSpeed);
+    // if(velocity.x > 0)
+    //     SetVelocity(limitedVelocity, velocity.y);
+    // else
+    //     SetVelocity(-limitedVelocity, velocity.y);
 
     // TODO: Maybe move this to physics class???
-    if(std::abs(velocity.x) < 0.1)
+    if(std::abs(velocity.x) < 0.0001)
     {
-        velocity.x = 0; 
+        SetVelocity(0, velocity.y);
     }
     else
     {
@@ -237,14 +205,17 @@ void PlayerObject::Update(const float elapsedTimes)
     }
 
     ApplyForce(inputVelocity);
+    if(std::abs(GetVelocity().x) > m_MaxSpeed)
+    {
+        if(GetVelocity().x > 0)
+            SetVelocity(m_MaxSpeed, GetVelocity().y);
+        else
+            SetVelocity(-m_MaxSpeed, GetVelocity().y);
+    }
+
+    
     ApplyForce(Vector2f{0,1000} * elapsedTimes);
     
-    // const float limitedVelocity = std::min(std::abs(velocity.x), m_MaxSpeed);
-    // if(velocity.x > 0)
-    //     SetVelocity(limitedVelocity, velocity.y);
-    // else
-    //     SetVelocity(-limitedVelocity, velocity.y);
-    //
     // SetVelocity(velocity.x, std::min(velocity.y, 1000.0f));
     m_IsOnGround = false;
     UpdatePhysics();
