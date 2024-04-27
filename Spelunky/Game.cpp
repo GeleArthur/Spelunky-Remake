@@ -94,7 +94,7 @@ void Game::Draw( ) const
 	{
 		for (int y{}; y < 64*8*4/256; ++y)
 		{
-			m_SpriteSheetManager->GetBackGroundTexture()->Draw(Vector2f{x*256.0f,y*256.f});
+			m_SpriteSheetManager->GetBackGroundTexture()->Draw(Vector2f{spelucky_settings::g_TileSize*2 + x*256.0f, spelucky_settings::g_TileSize*2 + y*256.f});
 		}
 	}
 	

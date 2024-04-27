@@ -44,8 +44,8 @@ public:
     bool PredictCollision(const CirclePhysicsCollider& other /*TODO: out needed */);
     // bool PredictCollision(const Collider& other);
 
-    void UpdatePhysics(float elapsedTime);
-    virtual void CallBackHitTile(Tile* tileHit /*, TODO: How was the tile hit*/);
+    void UpdatePhysics();
+    virtual void CallBackHitTile(std::pair<const Tile*, RayVsRectInfo> hitInfo);
     virtual void CallBackHitEntity(Entity* entityHit /*, TODO: How was the tile hit*/);
     // void SetOnCollisionStay(std::function<void()> function);
     // void RemoveOnCollisionStay();
@@ -73,7 +73,7 @@ private:
     Rectf m_Rect;
     Vector2f m_Velocity{};
 
-    float m_Mass;
+    float m_InverseMass;
     float m_Bounciness;
 
     WorldManager* m_WorldManager;

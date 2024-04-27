@@ -32,6 +32,7 @@ public:
     
     Vector2f GetPosition() const;
     virtual EntityType GetEntityType() const override;
+    virtual void CallBackHitTile(std::pair<const Tile*, RayVsRectInfo> hitInfo) override;
 
 private:
     PlayerAnimationState m_CurrentAnimation{PlayerAnimationState::idle};

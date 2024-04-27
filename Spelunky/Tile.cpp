@@ -14,14 +14,15 @@ using namespace spelucky_settings;
 Tile::Tile(const TileTypes tileType, const Vector2i tileIndex, WorldManager* worldManager):
     RectPhysicsCollider{
         Rectf{
-            static_cast<float>(tileIndex.x * g_TileSize), static_cast<float>(tileIndex.y * g_TileSize), g_TileSize,
-            g_TileSize
+            static_cast<float>((tileIndex.x * g_TileSize)), static_cast<float>((tileIndex.y * g_TileSize)),
+            g_TileSize, g_TileSize
         },
-        5000,
+        0,
         0,
         worldManager
     },
     m_SpriteSheetManager(worldManager->GetSpriteSheet()),
+    m_IndexPosition(tileIndex),
     m_TileType(tileType)
 {
 }
@@ -52,6 +53,13 @@ void Tile::Draw() const
             levelTexture->Draw(position, Rectf{variantX, g_TileSize + variantY, g_TileSize, g_TileSize});
         }
         break;
+    case TileTypes::border:
+        {
+            const float variantX = float(m_VariantIndex % 2) * g_TileSize;
+            const float variantY = float(m_VariantIndex / 2) * g_TileSize;
+            levelTexture->Draw(position, Rectf{1536 + variantX, 512 + variantY, g_TileSize, g_TileSize});
+        }
+        break;
     case TileTypes::ladderTop:
         levelTexture->Draw(position, Rectf{192.0f, 0.0f, g_TileSize, g_TileSize});
         break;
@@ -74,12 +82,19 @@ void Tile::Draw() const
     case TileTypes::unknown:
         levelTexture->Draw(position, Rectf{15 * g_TileSize, 26 * g_TileSize, g_TileSize, g_TileSize});
         break;
+    default:
+        throw;
     }
 }
 
 const Vector2i& Tile::GetIndexPosition() const
 {
     return m_IndexPosition;
+}
+
+void Tile::SetTileType(const TileTypes newTileType)
+{
+    m_TileType = newTileType;
 }
 
 TileTypes Tile::GetTileType() const

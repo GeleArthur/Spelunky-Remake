@@ -16,8 +16,8 @@ void CameraSystem::UpdateCamera()
 {
     Vector2f cameraPos = m_Player->GetPosition();
     
-    cameraPos.x = std::clamp(cameraPos.x, float(spelucky_settings::g_TileSize) * 8, float(spelucky_settings::g_TileSize) * (Cave::MAX_CAVE_TILE_COUNT_X - 8));
-    cameraPos.y = std::clamp(cameraPos.y, float(spelucky_settings::g_TileSize) * 4, float(spelucky_settings::g_TileSize) * (Cave::MAX_CAVE_TILE_COUNT_X - 8));
+    cameraPos.x = std::clamp(cameraPos.x, float(spelucky_settings::g_TileSize) * 10, float(spelucky_settings::g_TileSize) * (Cave::CAVE_TILE_COUNT_X - 10));
+    cameraPos.y = std::clamp(cameraPos.y, float(spelucky_settings::g_TileSize) * 6, float(spelucky_settings::g_TileSize) * (Cave::CAVE_TILE_COUNT_Y - 6));
     
     cameraPos.x -= 1280/2; // TODO: Make screen size reference
     cameraPos.y -= 720/2;

@@ -5,6 +5,7 @@
 
 #include "Cave.h"
 #include "CirclePhysicsCollider.h"
+#include "Game.h"
 #include "GizmosDrawer.h"
 #include "utils.h"
 #include "WorldManager.h"
@@ -12,7 +13,7 @@
 RectPhysicsCollider::RectPhysicsCollider(const Rectf& rect, const float mass, const float bounciness,
                                          WorldManager* worldManager):
     m_Rect(rect),
-    m_Mass(mass),
+    m_InverseMass(1/mass),
     m_Bounciness(bounciness),
     m_WorldManager(worldManager)
 {
@@ -118,8 +119,8 @@ bool RectPhysicsCollider::PredictCollision(const Vector2f& startPoint, const Vec
         otherRect.height + thisRect.height
     };
 
-    GizmosDrawer::SetColor({0, 1, 0});
-    GizmosDrawer::DrawRect(extendedRect);
+    // GizmosDrawer::SetColor({0, 1, 0});
+    // GizmosDrawer::DrawRect(extendedRect);
 
     Vector2f rayOrigin = startPoint;
     Vector2f rayDirection = moveDirection;
@@ -237,61 +238,35 @@ bool RectPhysicsCollider::PredictCollision(const CirclePhysicsCollider& other)
 }
 
 
-void RectPhysicsCollider::UpdatePhysics(float elapsedTime)
+void RectPhysicsCollider::UpdatePhysics()
 {
     const std::vector<std::vector<Tile>>* tiles = m_WorldManager->GetCave()->GetTiles();
 
     bool isColliding = true;
 
     Vector2f collidedPosition = GetCenter();
-    Vector2f collidedVelocity = m_Velocity;
+    Vector2f collidedVelocity = m_Velocity * Game::GetDeltaTime();
 
     GizmosDrawer::SetColor({1, 1, 1});
     GizmosDrawer::DrawLine(GetCenter(), GetCenter() + m_Velocity);
 
     int limitCount = 10;
 
-    Vector2f prevIntersection = collidedPosition;
-
-    // RayVsRectInfo rayResult;
-    // if(PredictCollision(collidedPosition, collidedVelocity, tiles->at(0).at(0), rayResult))
-    // {
-    //     GizmosDrawer::SetColor({1,0,0});
-    //     GizmosDrawer::DrawCircle(rayResult.interSectionPoint, 5);
-    // }
-
     while (isColliding && limitCount > 0)
     {
         isColliding = false;
         --limitCount;
 
+        // TODO: Move to a static varible so we don't reallocate every frame
         std::vector<std::pair<const Tile*, RayVsRectInfo>> hits;
 
-        RayVsRectInfo rayResult;
-        if(PredictCollision(collidedPosition, collidedVelocity, tiles->at(0).at(1), rayResult))
-        {
-            hits.emplace_back(&tiles->at(0).at(1), rayResult);
-        }
-        if(PredictCollision(collidedPosition, collidedVelocity, tiles->at(1).at(0), rayResult))
-        {
-            hits.emplace_back(&tiles->at(1).at(0), rayResult);
-        }
-        
-        if(PredictCollision(collidedPosition, collidedVelocity, tiles->at(3).at(3), rayResult))
-        {
-            hits.emplace_back(&tiles->at(3).at(3), rayResult);
-        }
-        if(PredictCollision(collidedPosition, collidedVelocity, tiles->at(4).at(2), rayResult))
-        {
-            hits.emplace_back(&tiles->at(4).at(2), rayResult);
-        }
-        
+        // TODO: Optimise so it only checks around the collider based on the velocity
         for (int i{}; i < int(tiles->size()); ++i)
         {
             for (int j{}; j < int(tiles->at(i).size()); ++j)
             {
                 const Tile& currentTile = tiles->at(i).at(j);
-                if (currentTile.GetTileType() != TileTypes::ground) continue;
+                if (currentTile.GetTileType() != TileTypes::ground && currentTile.GetTileType() != TileTypes::border) continue;
 
                 RayVsRectInfo rayResult;
                 if (PredictCollision(collidedPosition, collidedVelocity, currentTile, rayResult))
@@ -309,39 +284,31 @@ void RectPhysicsCollider::UpdatePhysics(float elapsedTime)
 
             std::pair<const Tile*, RayVsRectInfo> firstHit = hits.at(0);
             
+            // GizmosDrawer::DrawCircle(firstHit.second.interSectionPoint, limitCount, 3);
+            
             const float t = 1 - firstHit.second.nearTime;
             const Vector2f velocityThatLeft = collidedVelocity * t;
 
-            float bounce = m_Bounciness;
-            float strengthInVelocity = (-(1 + bounce) * velocityThatLeft).DotProduct(firstHit.second.normal);
+            const float strengthInVelocity = (-(1 + m_Bounciness) * velocityThatLeft).DotProduct(firstHit.second.normal);
 
-            // if(strengthInVelocity < 0.01) strengthInVelocity = 0;
-            // GizmosDrawer::DrawLine(collidedPosition + collidedVelocity,
-            //                        collidedPosition + collidedVelocity + firstHit.second.normal * strengthInVelocity);
-            
+            m_Velocity += firstHit.second.normal * strengthInVelocity / Game::GetDeltaTime();
             collidedVelocity = velocityThatLeft + firstHit.second.normal * strengthInVelocity;
-            collidedPosition = firstHit.second.interSectionPoint /*+ firstHit.second.normal * strengthInVelocity*/;
-            
-            // GizmosDrawer::SetColor({1, 0, 0});
-            // GizmosDrawer::DrawCircle(collidedPosition, limitCount);
-            GizmosDrawer::SetColor({1, 0, 0});
-            GizmosDrawer::DrawCircle(collidedPosition + collidedVelocity, 3);
-            GizmosDrawer::DrawLine(collidedPosition, collidedPosition + collidedVelocity);
-
-            // prevIntersection = firstHit.second.interSectionPoint;
+            collidedPosition = firstHit.second.interSectionPoint;
             isColliding = true;
-        }
-        else
-        {
-            GizmosDrawer::SetColor({0,1,1});
-            GizmosDrawer::DrawCircle(collidedPosition + collidedVelocity, 10);
-            // GizmosDrawer::DrawQText(collidedPosition + collidedVelocity, std::to_string(limitCount));
-            // GizmosDrawer::DrawLine(prevIntersection, collidedPosition + collidedVelocity);
+
+            CallBackHitTile(firstHit);
         }
     }
+    
+    // m_Velocity = collidedVelocity; // TODO: wrong stops you when failing
+    collidedPosition += collidedVelocity;
+    SetCenter(collidedPosition);
+    
+    GizmosDrawer::SetColor({1,1,1});
+    GizmosDrawer::DrawCircle(collidedPosition, 3);
 }
 
-void RectPhysicsCollider::CallBackHitTile(Tile* tileHit)
+void RectPhysicsCollider::CallBackHitTile(std::pair<const Tile*, RayVsRectInfo> hitInfo)
 {
 }
 

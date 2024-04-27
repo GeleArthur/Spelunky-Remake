@@ -11,6 +11,7 @@ public:
     void SetVariantIndex(int index);
     void Draw() const;
     const Vector2i& GetIndexPosition() const;
+    void SetTileType(TileTypes newTileType);
     TileTypes GetTileType() const;
 
 private:
