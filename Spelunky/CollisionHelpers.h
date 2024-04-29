@@ -5,6 +5,7 @@ class RectPhysicsCollider;
 class Collider;
 class CirclePhysicsCollider;
 
+//TODO Delete
 namespace collision_helpers
 {
     struct HitInfo

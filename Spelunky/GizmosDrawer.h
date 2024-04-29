@@ -4,7 +4,7 @@
 
 struct DrawHolder;
 
-class GizmosDrawer
+class GizmosDrawer final
 {
 public:
     static void Draw();

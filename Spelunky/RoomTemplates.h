@@ -3,7 +3,7 @@
 #include <vector>
 #include "PathTypes.h"
 
-class RoomTemplates
+class RoomTemplates final
 {
 public:
     // static void GetRoom(std::string& out, const std::vector<std::string>& array1, const std::vector<std::string>& array2);

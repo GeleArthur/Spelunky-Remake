@@ -11,9 +11,11 @@ class EntityManager final
 {
 public:
     explicit EntityManager(WorldManager* worldManager);
-    ~EntityManager();
-    EntityManager(const EntityManager& other);
-    EntityManager& operator=(const EntityManager& other);
+    virtual ~EntityManager();
+    EntityManager(const EntityManager& other) = delete;
+    EntityManager& operator=(const EntityManager& other) = delete;
+    EntityManager(EntityManager && other) = delete;
+    EntityManager& operator=(const EntityManager&& other) = delete;
     
     void AddEntity(Entity* item);
     void DrawEntities() const;

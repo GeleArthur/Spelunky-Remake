@@ -8,7 +8,7 @@ class PlayerObject;
 class Cave;
 class SpriteSheetManager;
 
-class Game : public BaseGame
+class Game final : public BaseGame
 {
 public:
 	explicit Game( const Window& window );
@@ -17,19 +17,19 @@ public:
 	Game( Game&& other) = delete;
 	Game& operator=(Game&& other) = delete;
 	// http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rh-override
-	~Game() override;
+	virtual ~Game() override;
 
-	void Update( float elapsedSec ) override;
-	void Draw( ) const override;
+	virtual void Update( float elapsedSec ) override;
+	virtual void Draw( ) const override;
 	void Reset();
 
 	// Event handling
-	void ProcessKeyDownEvent( const SDL_KeyboardEvent& e ) override;
-	void ProcessKeyUpEvent( const SDL_KeyboardEvent& e ) override;
-	void ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e ) override;
-	void ProcessMouseDownEvent( const SDL_MouseButtonEvent& e ) override;
-	void ProcessMouseUpEvent( const SDL_MouseButtonEvent& e ) override;
-	void ProcessWheelEvent( const SDL_MouseWheelEvent& e ) override;
+	virtual void ProcessKeyDownEvent( const SDL_KeyboardEvent& e ) override;
+	virtual void ProcessKeyUpEvent( const SDL_KeyboardEvent& e ) override;
+	virtual void ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e ) override;
+	virtual void ProcessMouseDownEvent( const SDL_MouseButtonEvent& e ) override;
+	virtual void ProcessMouseUpEvent( const SDL_MouseButtonEvent& e ) override;
+	virtual void ProcessWheelEvent( const SDL_MouseWheelEvent& e ) override;
 
 	static float GetTime();
 	static float GetDeltaTime();

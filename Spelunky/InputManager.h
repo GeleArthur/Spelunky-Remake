@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-class InputManager
+class InputManager final
 {
 public:
     static const Vector2f& GetMoveInput();

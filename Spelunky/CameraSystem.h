@@ -11,6 +11,7 @@ public:
     void PushCamera() const;
     void PopCamera();
     Vector2f GetCameraPosition() const;
+    
     void EnableDebugCamera(bool enabled);
     void ProcessMouseMotionEvent(const SDL_MouseMotionEvent& e);
     void ProcessMouseDownEvent(const SDL_MouseButtonEvent& e);
@@ -23,8 +24,9 @@ private:
     Matrix4X4 m_RotateMatrix{Matrix4X4::IdentityMatrix()};
     Matrix4X4 m_ScaleMatrix{Matrix4X4::IdentityMatrix()};
 
-    bool m_IsDebugCamera{false};
+
     
+    bool m_IsDebugCamera{false};
     bool m_MouseDown{false};
     Vector2f m_DebugStartPoint{};
     Vector2f m_PrevMouse{0,0};

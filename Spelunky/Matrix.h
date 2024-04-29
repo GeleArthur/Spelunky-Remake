@@ -3,7 +3,7 @@
 #include "Vector2f.h"
 
 // Row major matrix
-struct Matrix4X4
+struct Matrix4X4 final
 {
 	float m00;
 	float m10;

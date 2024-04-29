@@ -155,7 +155,6 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="CollisionHelpers.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GizmosDrawer.cpp" />
-    <ClCompile Include="GlobalValues.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="InputManager.cpp" />

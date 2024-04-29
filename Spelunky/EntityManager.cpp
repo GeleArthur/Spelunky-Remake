@@ -43,20 +43,6 @@ EntityManager::~EntityManager()
     ClearAllEntities();
 }
 
-EntityManager::EntityManager(const EntityManager& other)
-{
-    m_Entities.clear();
-}
-
-EntityManager& EntityManager::operator=(const EntityManager& other)
-{
-    if(this != &other)
-    {
-        m_Entities.clear();
-    }
-    return *this;
-}
-
 void EntityManager::AddEntity(Entity* item)
 {
     m_Entities.push_back(item);
