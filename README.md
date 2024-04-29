@@ -178,8 +178,8 @@ Explain which project (version) must be run.
 
 ### Controls
 * R: generate new level + reset
-* WASD or ArrowKeys: move character
-* Space: Jump
+* ArrowKeys: move character
+* Z: Jump
 * Shift: PickUp Item
 * E: Throw item
 
@@ -242,6 +242,7 @@ Use this space to list resources you find helpful and would like to give credit 
 
 * [Example 1: cpp reference on std::vector](https://en.cppreference.com/w/cpp/container/vector)
 * [Spelunky by Derek Yu (book)](https://bossfightbooks.com/products/spelunky-by-derek-yu)
+* [One Lone Coder Rect vs Rect Collision](https://github.com/OneLoneCoder/Javidx9/blob/master/PixelGameEngine/SmallerProjects/OneLoneCoder_PGE_Rectangles.cpp)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

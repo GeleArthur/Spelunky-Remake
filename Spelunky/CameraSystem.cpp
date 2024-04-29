@@ -37,15 +37,15 @@ void CameraSystem::UpdateCamera()
 void CameraSystem::PushCamera() const
 {
     glPushMatrix();
-    m_TranslateMatrix.GlMultiMatrix();
-    m_RotateMatrix.GlMultiMatrix();
-    m_ScaleMatrix.GlMultiMatrix();
-
     if(m_IsDebugCamera)
     {
         m_DebugTranslateMatrix.GlMultiMatrix();
         m_DebugZoomMatrix.GlMultiMatrix();
     }
+    
+    m_TranslateMatrix.GlMultiMatrix();
+    m_RotateMatrix.GlMultiMatrix();
+    m_ScaleMatrix.GlMultiMatrix();
 }
 
 void CameraSystem::PopCamera()
@@ -90,7 +90,7 @@ void CameraSystem::ProcessMouseUpEvent(const SDL_MouseButtonEvent& e)
 
 void CameraSystem::ProcessWheelEvent(const SDL_MouseWheelEvent& e)
 {
-    m_DebugZoomMatrix = m_DebugZoomMatrix * Matrix4X4::TranslationMatrix(Vector2f{(m_DebugTranslateMatrix.m30 + m_TranslateMatrix.m30) - e.mouseX, (m_DebugTranslateMatrix.m31 + m_TranslateMatrix.m31) - e.mouseY});
+    m_DebugZoomMatrix = m_DebugZoomMatrix * Matrix4X4::TranslationMatrix(Vector2f{(m_DebugTranslateMatrix.m30) - e.mouseX, (m_DebugTranslateMatrix.m31) - e.mouseY});
     m_DebugZoomMatrix.m33 -= e.preciseY*0.2f * m_DebugZoomMatrix.m33;
-    m_DebugZoomMatrix = m_DebugZoomMatrix * Matrix4X4::TranslationMatrix(Vector2f{-((m_DebugTranslateMatrix.m30 + m_TranslateMatrix.m30) - e.mouseX), -((m_DebugTranslateMatrix.m31 + m_TranslateMatrix.m31) - e.mouseY)});
+    m_DebugZoomMatrix = m_DebugZoomMatrix * Matrix4X4::TranslationMatrix(Vector2f{-((m_DebugTranslateMatrix.m30) - e.mouseX), -((m_DebugTranslateMatrix.m31) - e.mouseY)});
 }

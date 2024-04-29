@@ -4,6 +4,8 @@
 #include <complex>
 #include <iostream>
 #include <vector>
+#include <algorithm>
+#include <iomanip>
 
 #include "CirclePhysicsCollider.h"
 #include "Game.h"
@@ -165,17 +167,28 @@ void PlayerObject::Update(const float elapsedTimes)
 {
     Vector2f inputVelocity{};
     const Vector2f moveInput = InputManager::GetMoveInput();
-    // std::cout << moveInput.x << '\n';
-
-    if(moveInput.x <= 0.1 && moveInput.x >= -0.1)
-    {
-        inputVelocity.x += -GetVelocity().x * 4 * elapsedTimes;
-    }
+    
+    std::cout << Game::GetTime() << '\n';
 
     
-    // inputVelocity +=
-    std::cout << Game::GetTime() << '\n';
-    inputVelocity += Vector2f{moveInput.x * m_MaxSpeed/0.1f * elapsedTimes, 0};
+    if(/*std::abs(moveInput.x) < 0.1f || */(moveInput.x > 0 != GetVelocity().x > 0))
+    {
+        float velocityABS = std::abs(GetVelocity().x);
+        float deAccelration = m_MaxSpeed * Game::GetDeltaTime() / 0.1f;
+        float diffrence = velocityABS - deAccelration;
+        if(diffrence < 0)
+        {
+            deAccelration += diffrence;
+        }
+        
+        float deAcceleration = GetVelocity().x > 0 ? -1 : 1 * deAccelration;
+        GizmosDrawer::SetColor({1,0,1});
+        GizmosDrawer::DrawLine(GetPosition(), GetPosition() + Vector2f{deAcceleration, 0});
+        // deAcceleration = std::min(deAcceleration, )
+        inputVelocity.x += deAcceleration;
+    }
+    // Accelerating
+    inputVelocity += Vector2f{moveInput.x * m_MaxSpeed/0.2f * elapsedTimes, 0};
     
     
     if(InputManager::PressedJumpThisFrame())
