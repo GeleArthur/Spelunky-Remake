@@ -168,25 +168,22 @@ void PlayerObject::Update(const float elapsedTimes)
     Vector2f inputVelocity{};
     const Vector2f moveInput = InputManager::GetMoveInput();
     
-    std::cout << Game::GetTime() << '\n';
+    // std::cout << Game::GetTime() << '\n';
 
-    
-    if(/*std::abs(moveInput.x) < 0.1f || */(moveInput.x > 0 != GetVelocity().x > 0))
+    // std::cout << std::setw(2);
+
+    // std::cout << moveInput.x << '\n';
+    // std::cout << GetVelocity().x << '\n';
+
+    if(moveInput.x != 0 && moveInput.x > 0 != GetVelocity().x > 0)
     {
-        float velocityABS = std::abs(GetVelocity().x);
-        float deAccelration = m_MaxSpeed * Game::GetDeltaTime() / 0.1f;
-        float diffrence = velocityABS - deAccelration;
-        if(diffrence < 0)
-        {
-            deAccelration += diffrence;
-        }
+        float SlowDownSpeed = m_MaxSpeed * Game::GetDeltaTime() / 0.2f;
+        float direction = GetVelocity().x > 0 ? -1 : 1;
+        inputVelocity.x += direction * SlowDownSpeed;
         
-        float deAcceleration = GetVelocity().x > 0 ? -1 : 1 * deAccelration;
-        GizmosDrawer::SetColor({1,0,1});
-        GizmosDrawer::DrawLine(GetPosition(), GetPosition() + Vector2f{deAcceleration, 0});
-        // deAcceleration = std::min(deAcceleration, )
-        inputVelocity.x += deAcceleration;
+        std::cout << elapsedTimes <<"\n";
     }
+    
     // Accelerating
     inputVelocity += Vector2f{moveInput.x * m_MaxSpeed/0.2f * elapsedTimes, 0};
     

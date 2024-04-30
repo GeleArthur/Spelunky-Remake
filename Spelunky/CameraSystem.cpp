@@ -19,8 +19,8 @@ void CameraSystem::UpdateCamera()
     cameraPos.x = std::clamp(cameraPos.x, float(spelucky_settings::g_TileSize) * 10, float(spelucky_settings::g_TileSize) * (Cave::CAVE_TILE_COUNT_X - 10));
     cameraPos.y = std::clamp(cameraPos.y, float(spelucky_settings::g_TileSize) * 6, float(spelucky_settings::g_TileSize) * (Cave::CAVE_TILE_COUNT_Y - 6));
     
-    cameraPos.x -= 1280/2; // TODO: Make screen size reference
-    cameraPos.y -= 720/2;
+    cameraPos.x -= 1280.0f/2; // TODO: Make screen size reference
+    cameraPos.y -= 720.0f/2;
     
     m_TranslateMatrix.m30 = -cameraPos.x;
     m_TranslateMatrix.m31 = -cameraPos.y;

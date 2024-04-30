@@ -290,8 +290,9 @@ void RectPhysicsCollider::UpdatePhysics()
             const Vector2f velocityThatLeft = collidedVelocity * t;
 
             const float strengthInVelocity = (-(1 + m_Bounciness) * velocityThatLeft).DotProduct(firstHit.second.normal);
-
-            m_Velocity += firstHit.second.normal * strengthInVelocity / Game::GetDeltaTime();
+            const float strengthInVelocityFull = (-(1 + m_Bounciness) * m_Velocity).DotProduct(firstHit.second.normal);
+            
+            m_Velocity += firstHit.second.normal * strengthInVelocityFull;
             collidedVelocity = velocityThatLeft + firstHit.second.normal * strengthInVelocity;
             collidedPosition = firstHit.second.interSectionPoint;
             isColliding = true;
