@@ -10,6 +10,7 @@
 std::vector<DrawHolder*> GizmosDrawer::m_Drawings;
 Color4f GizmosDrawer::m_CurrentColor{1,1,1,1};
 TTF_Font* GizmosDrawer::m_QTextFont{};
+float* GizmosDrawer::m_CurrentTime{};
 
 struct DrawHolder
 {
@@ -91,6 +92,11 @@ struct DrawTextHolder final : public DrawHolder
     }
 };
 
+void GizmosDrawer::SetTimePointer(float* currentTime)
+{
+    m_CurrentTime = currentTime;
+}
+
 void GizmosDrawer::Draw()
 {
     for (int i{}; i < int(m_Drawings.size()); ++i)
@@ -101,7 +107,7 @@ void GizmosDrawer::Draw()
     
     for (int i{int(m_Drawings.size()) -1}; i >= 0; --i)
     {
-        if(m_Drawings[i]->timeToDelete < Game::GetTime())
+        if(m_Drawings[i]->timeToDelete < *m_CurrentTime)
         {
             delete m_Drawings[i];
             m_Drawings.erase(std::next(m_Drawings.begin(), i));
@@ -120,24 +126,21 @@ void GizmosDrawer::Shutdown()
     {
         delete m_Drawings[i];
     }
-
-    // if(m_QTextFont != nullptr)
-        // delete m_QTextFont;
 }
 
 void GizmosDrawer::DrawCircle(const Vector2f& position, const float size, const float timeToDelete)
 {
-    m_Drawings.push_back(new DrawCircleHolder{position, size, m_CurrentColor, Game::GetTime() + timeToDelete});
+    m_Drawings.push_back(new DrawCircleHolder{position, size, m_CurrentColor, *m_CurrentTime + timeToDelete});
 }
 
 void GizmosDrawer::DrawRect(const Rectf& rect, const float timeToDelete)
 {
-    m_Drawings.push_back(new DrawRectHolder{rect, m_CurrentColor, Game::GetTime() + timeToDelete});
+    m_Drawings.push_back(new DrawRectHolder{rect, m_CurrentColor, *m_CurrentTime + timeToDelete});
 }
 
 void GizmosDrawer::DrawLine(const Vector2f& startPos, const Vector2f& endPos, const float timeToDelete)
 {
-    m_Drawings.push_back(new DrawLineHolder{startPos, endPos, m_CurrentColor, Game::GetTime() + timeToDelete});
+    m_Drawings.push_back(new DrawLineHolder{startPos, endPos, m_CurrentColor, *m_CurrentTime + timeToDelete});
 }
 
 void GizmosDrawer::DrawQText(const Vector2f& position, const std::string& text, float timeToDelete)

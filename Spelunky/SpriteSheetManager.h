@@ -8,9 +8,9 @@ class Texture;
 class SpriteSheetManager final
 {
 public:
-	SpriteSheetManager(WorldManager* worldManager);
+	explicit SpriteSheetManager(WorldManager* worldManager);
 	~SpriteSheetManager();
-	SpriteSheetManager(const SpriteSheetManager& other) = delete; // If we do this something went wrong 
+	SpriteSheetManager(const SpriteSheetManager& other) = delete;
 	SpriteSheetManager& operator=(const SpriteSheetManager& other) = delete;
 	SpriteSheetManager(SpriteSheetManager&& other) = delete;
 	SpriteSheetManager& operator=(SpriteSheetManager&& other) = delete;

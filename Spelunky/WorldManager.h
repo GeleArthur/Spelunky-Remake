@@ -10,6 +10,12 @@ class WorldManager final
 {
 public:
     explicit WorldManager();
+    virtual ~WorldManager() = default;
+    WorldManager(const WorldManager& other) = delete;
+    WorldManager& operator=(const WorldManager& other) = delete;
+    WorldManager( WorldManager&& other) = delete;
+    WorldManager& operator=(WorldManager&& other) = delete;
+    
     static WorldManager* GetSingleton();
 
     void SetCave(Cave* cave);
@@ -23,6 +29,9 @@ public:
     
     void SetEntityManager(EntityManager* entityManager);
     EntityManager* GetEntityManager() const;
+
+    void SetInputManager(InputManager* inputManager);
+    InputManager* GetInputManager() const;
     
 private:
     static WorldManager* m_WorldManager;
@@ -30,4 +39,5 @@ private:
     PlayerObject* m_Player;
     SpriteSheetManager* m_SpriteSheetManager;
     EntityManager* m_ItemManager;
+    InputManager* m_InputManager;
 };

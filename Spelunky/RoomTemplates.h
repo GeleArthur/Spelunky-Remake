@@ -3,6 +3,7 @@
 #include <vector>
 #include "PathTypes.h"
 
+//TODO: Move to CAVE
 class RoomTemplates final
 {
 public:

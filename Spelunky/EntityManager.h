@@ -9,7 +9,7 @@ class WorldManager;
 
 class EntityManager final
 {
-public:x
+public:
     explicit EntityManager(WorldManager* worldManager);
     virtual ~EntityManager();
     EntityManager(const EntityManager& other) = delete;

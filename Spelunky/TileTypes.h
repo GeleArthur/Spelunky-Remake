@@ -12,5 +12,5 @@ enum class TileTypes
     entrance,
     exit,
 
-    unknown, // temp variable
+    unknown,
 };

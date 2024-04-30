@@ -1,38 +1,34 @@
 ﻿#include "pch.h"
 #include "InputManager.h"
 
-Vector2f InputManager::m_MoveInput{};
-bool InputManager::m_HoldingJump{};
-bool InputManager::m_HoldingSprint{};
+#include "WorldManager.h"
 
-bool InputManager::m_PressedJumpThisFrame{};
-bool InputManager::m_PressedJumpPrevState{};
+InputManager::InputManager(WorldManager* worldManager)
+{
+    worldManager->SetInputManager(this);
+}
 
-bool InputManager::m_PressedGrabThisFrame{};
-bool InputManager::m_PressedGrabPrevState{};
-
-
-const Vector2f& InputManager::GetMoveInput()
+const Vector2f& InputManager::GetMoveInput() const
 {
     return m_MoveInput;
 }
 
-bool InputManager::PressedJumpThisFrame()
+bool InputManager::PressedJumpThisFrame() const
 {
     return m_PressedJumpThisFrame;
 }
 
-bool InputManager::IsHoldingJump()
+bool InputManager::IsHoldingJump() const
 {
     return m_HoldingJump;
 }
 
-bool InputManager::IsHoldingSprint()
+bool InputManager::IsHoldingSprint() const
 {
     return m_HoldingSprint;
 }
 
-bool InputManager::PressedGrabItemThisFrame()
+bool InputManager::PressedGrabItemThisFrame() const
 {
     return m_PressedGrabThisFrame;
 }

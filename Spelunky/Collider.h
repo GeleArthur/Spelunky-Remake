@@ -10,10 +10,12 @@ enum class ColliderTypes
 class Collider
 {
 public:
-    virtual ~Collider() = default;
     Collider() = default;
+    virtual ~Collider() = default;
     Collider(const Collider&) = default;
     Collider& operator=(const Collider& c) = default;
+    Collider(Collider&& other) = default;
+    Collider& operator=(Collider&& c) = default;
     
     virtual ColliderTypes GetColliderType() const = 0;
 };

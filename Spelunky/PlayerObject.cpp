@@ -20,6 +20,7 @@
 PlayerObject::PlayerObject(WorldManager* worldManager):
     RectPhysicsCollider(Rectf{0, 0, 40, 56}, 60, 0.0f, worldManager),
     m_SpriteSheetManager(worldManager->GetSpriteSheet()),
+    m_InputManager(worldManager->GetInputManager()),
     m_WorldManager(worldManager)
 {
 }
@@ -166,7 +167,7 @@ void PlayerObject::Draw() const
 void PlayerObject::Update(const float elapsedTimes)
 {
     Vector2f inputVelocity{};
-    const Vector2f moveInput = InputManager::GetMoveInput();
+    const Vector2f moveInput = m_InputManager->GetMoveInput();
     
     // std::cout << Game::GetTime() << '\n';
 
@@ -177,7 +178,7 @@ void PlayerObject::Update(const float elapsedTimes)
 
     if(moveInput.x != 0 && moveInput.x > 0 != GetVelocity().x > 0)
     {
-        float SlowDownSpeed = m_MaxSpeed * Game::GetDeltaTime() / 0.2f;
+        float SlowDownSpeed = m_MaxSpeed * elapsedTimes / 0.2f;
         float direction = GetVelocity().x > 0 ? -1 : 1;
         inputVelocity.x += direction * SlowDownSpeed;
         
@@ -188,7 +189,7 @@ void PlayerObject::Update(const float elapsedTimes)
     inputVelocity += Vector2f{moveInput.x * m_MaxSpeed/0.2f * elapsedTimes, 0};
     
     
-    if(InputManager::PressedJumpThisFrame())
+    if(m_InputManager->PressedJumpThisFrame())
     {
         if(m_IsOnGround)
         {
@@ -228,7 +229,7 @@ void PlayerObject::Update(const float elapsedTimes)
     
     // SetVelocity(velocity.x, std::min(velocity.y, 1000.0f));
     m_IsOnGround = false;
-    UpdatePhysics();
+    UpdatePhysics(elapsedTimes);
     
     m_AnimationTimer += elapsedTimes;
     UpdateAnimationState();

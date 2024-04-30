@@ -238,14 +238,14 @@ bool RectPhysicsCollider::PredictCollision(const CirclePhysicsCollider& other)
 }
 
 
-void RectPhysicsCollider::UpdatePhysics()
+void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
 {
     const std::vector<std::vector<Tile>>* tiles = m_WorldManager->GetCave()->GetTiles();
 
     bool isColliding = true;
 
     Vector2f collidedPosition = GetCenter();
-    Vector2f collidedVelocity = m_Velocity * Game::GetDeltaTime();
+    Vector2f collidedVelocity = m_Velocity * elapsedTime;
 
     // GizmosDrawer::SetColor({1, 1, 1});
     // GizmosDrawer::DrawLine(GetCenter(), GetCenter() + m_Velocity);

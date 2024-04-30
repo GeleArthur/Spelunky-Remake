@@ -7,6 +7,12 @@ class CameraSystem final
 {
 public:
     explicit CameraSystem(const PlayerObject* player);
+    virtual ~CameraSystem() = default;
+    CameraSystem(const CameraSystem& other) = delete;
+    CameraSystem& operator=(const CameraSystem& other) = delete;
+    CameraSystem(CameraSystem && other) = delete;
+    CameraSystem& operator=(CameraSystem&& other) = delete;
+    
     void UpdateCamera();
     void PushCamera() const;
     void PopCamera();

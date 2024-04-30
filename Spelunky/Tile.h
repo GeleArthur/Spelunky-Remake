@@ -8,6 +8,13 @@ class Tile final : public RectPhysicsCollider
 {
 public:
     explicit Tile(TileTypes tileType, Vector2i tileIndex, WorldManager* worldManager);
+    
+    virtual ~Tile() override = default;
+    Tile(const Tile& other) = default;
+    Tile& operator=(const Tile& other) = default;
+    Tile(Tile && other) = default;
+    Tile& operator=(Tile&& other) = default;
+    
     void SetVariantIndex(int index);
     void Draw() const;
     const Vector2i& GetIndexPosition() const;

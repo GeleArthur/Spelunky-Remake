@@ -18,6 +18,13 @@ class Cave final
 {
 public:
 	explicit Cave(WorldManager* worldManager);
+	virtual ~Cave() = default;
+	Cave(const Cave& other) = delete;
+	Cave& operator=(const Cave& other) = delete;
+	Cave(Cave && other) = delete;
+	Cave& operator=(Cave&& other) = delete;
+
+	
 	void Draw() const;
 	void GenerateLevel();
 	Vector2f GetEntrance() const;

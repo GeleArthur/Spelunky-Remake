@@ -28,6 +28,16 @@ EntityManager* WorldManager::GetEntityManager() const
     return m_ItemManager;
 }
 
+void WorldManager::SetInputManager(InputManager* inputManager)
+{
+    m_InputManager = inputManager;
+}
+
+InputManager* WorldManager::GetInputManager() const
+{
+    return m_InputManager;
+}
+
 WorldManager* WorldManager::GetSingleton()
 {
     if (m_WorldManager == nullptr) throw;

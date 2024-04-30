@@ -2,7 +2,6 @@
 #include <functional>
 
 #include "Collider.h"
-#include "PhysicsComponent.h"
 
 class WorldManager;
 class Entity;
@@ -21,6 +20,12 @@ class RectPhysicsCollider : public Collider
 {
 public:
     explicit RectPhysicsCollider(const Rectf& rect, float mass, float bounciness, WorldManager* worldManager);
+    virtual ~RectPhysicsCollider() override = default;
+    RectPhysicsCollider(const RectPhysicsCollider& other) = default;
+    RectPhysicsCollider& operator=(const RectPhysicsCollider& other) = default;
+    RectPhysicsCollider(RectPhysicsCollider && other) = default;
+    RectPhysicsCollider& operator=(RectPhysicsCollider&& other) = default;
+    
     virtual ColliderTypes GetColliderType() const override;
     
     void DebugDraw() const;
@@ -44,7 +49,7 @@ public:
     bool PredictCollision(const CirclePhysicsCollider& other /*TODO: out needed */);
     // bool PredictCollision(const Collider& other);
 
-    void UpdatePhysics();
+    void UpdatePhysics(float elapsedTime);
     virtual void CallBackHitTile(std::pair<const Tile*, RayVsRectInfo> hitInfo);
     virtual void CallBackHitEntity(Entity* entityHit /*, TODO: How was the tile hit*/);
     // void SetOnCollisionStay(std::function<void()> function);

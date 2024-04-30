@@ -2,10 +2,9 @@
 #include <vector>
 
 #include "Entity.h"
-#include "PhysicsComponent.h"
-#include "PhysicsObject.h"
 #include "RectPhysicsCollider.h"
 
+class InputManager;
 class WorldManager;
 class Entity;
 class Tile;
@@ -25,6 +24,13 @@ class PlayerObject final : public RectPhysicsCollider, public Entity
 {
 public:
     explicit PlayerObject(WorldManager* worldManager);
+    virtual ~PlayerObject() override = default;
+    PlayerObject(const PlayerObject& other) = delete;
+    PlayerObject& operator=(const PlayerObject& other) = delete;
+    PlayerObject(PlayerObject && other) = delete;
+    PlayerObject& operator=(PlayerObject&& other) = delete;
+    
+
     virtual void Draw() const override;
     virtual void Update(float elapsedTimes) override;
     void UpdateAnimationState();
@@ -46,5 +52,6 @@ private:
     Entity* m_PickupItem{};
 
     SpriteSheetManager* m_SpriteSheetManager;
+    InputManager* m_InputManager;
     WorldManager* m_WorldManager;
 };
