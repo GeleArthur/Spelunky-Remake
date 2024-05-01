@@ -45,8 +45,9 @@ private:
     int m_AnimationFrame{};
     float m_AnimationTimer{};
     bool m_IsLookingToLeft{true};
-
+    
     float m_MaxSpeed{256.0f};
+    float m_MaxSprintSpeed{512};
     float m_StopSpeed{256.0f};
     
     bool m_IsOnGround{false};

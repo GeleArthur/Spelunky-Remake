@@ -168,7 +168,8 @@ void PlayerObject::Update(const float elapsedTimes)
 {
     Vector2f inputVelocity{};
     const Vector2f moveInput = m_InputManager->GetMoveInput();
-    
+
+    // No player input
     if(std::abs(moveInput.x) < 0.1f)
     {
         float slowDownSpeed = m_StopSpeed * elapsedTimes / 0.1f;
@@ -182,16 +183,16 @@ void PlayerObject::Update(const float elapsedTimes)
         inputVelocity.x += direction * slowDownSpeed;
     }
 
+    // DeAcceleration to help the player turn
     if(std::abs(moveInput.x) > 0.1f && moveInput.x > 0 != GetVelocity().x > 0)
     {
         const float slowDownSpeed = m_StopSpeed * elapsedTimes / 0.1f;
         const float direction = GetVelocity().x > 0 ? -1.f : 1.f;
         inputVelocity.x += direction * slowDownSpeed;
-        
-        std::cout << elapsedTimes <<"\n";
     }
     
     // Accelerating
+    
     inputVelocity += Vector2f{moveInput.x * m_MaxSpeed/0.2f * elapsedTimes, 0};
     
 
@@ -215,10 +216,9 @@ void PlayerObject::Update(const float elapsedTimes)
     
     if(m_IsJumping)
     {
-        // ApplyForce(Vector2f{0,500} * elapsedTimes);
-        
         if(m_InputManager->IsHoldingJump() == false)
         {
+            ApplyForce(Vector2f{0, -GetVelocity().y * 0.7f});
             m_IsJumping = false;
         }
         
@@ -242,15 +242,17 @@ void PlayerObject::Update(const float elapsedTimes)
 
     ApplyForce(inputVelocity);
 
-    // Limit walking speed
-    if(std::abs(GetVelocity().x) > m_MaxSpeed)
+    // Limit speed
+    const float currentMaxSpeed = m_InputManager->IsHoldingSprint() ? m_MaxSprintSpeed : m_MaxSpeed;
+    if(std::abs(GetVelocity().x) > currentMaxSpeed)
     {
         if(GetVelocity().x > 0)
-            SetVelocity(m_MaxSpeed, GetVelocity().y);
+            SetVelocity(currentMaxSpeed, GetVelocity().y);
         else
-            SetVelocity(-m_MaxSpeed, GetVelocity().y);
+            SetVelocity(-currentMaxSpeed, GetVelocity().y);
     }
 
+    // Limit falling/up speed
     if(std::abs(GetVelocity().y) > 960)
     {
         if(GetVelocity().y > 0)

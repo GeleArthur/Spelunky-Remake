@@ -12,8 +12,8 @@ enum class EntityType
 class Entity
 {
 public:
-    virtual ~Entity() = default;
     Entity() = default;
+    virtual ~Entity() = default;
     Entity(const Entity&) = default;
     Entity& operator=(const Entity& c) = default;
     Entity(Entity&& other) = default;
