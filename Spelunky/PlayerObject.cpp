@@ -124,15 +124,15 @@ void PlayerObject::Draw() const
         {
             const Vector2f velocity = GetVelocity();
             animationSource.top = 9*80.0f;
-            if(velocity.y > 0 && velocity.y < 5)
+            if(velocity.y > 0 && velocity.y < 50)
             {
                 animationSource.left = 4*80.0f;
             }
-            else if(velocity.y > 5 && velocity.y < 25)
+            else if(velocity.y > 50 && velocity.y < 200)
             {
                 animationSource.left = 5*80.0f;
             }
-            else if(velocity.y > 25)
+            else if(velocity.y > 200)
             {
                 animationSource.left = 7*80.0f;
             }
@@ -169,18 +169,24 @@ void PlayerObject::Update(const float elapsedTimes)
     Vector2f inputVelocity{};
     const Vector2f moveInput = m_InputManager->GetMoveInput();
     
-    // std::cout << Game::GetTime() << '\n';
-
-    // std::cout << std::setw(2);
-
-    // std::cout << moveInput.x << '\n';
-    // std::cout << GetVelocity().x << '\n';
-
-    if(moveInput.x != 0 && moveInput.x > 0 != GetVelocity().x > 0)
+    if(std::abs(moveInput.x) < 0.1f)
     {
-        float SlowDownSpeed = m_MaxSpeed * elapsedTimes / 0.2f;
-        float direction = GetVelocity().x > 0 ? -1 : 1;
-        inputVelocity.x += direction * SlowDownSpeed;
+        float slowDownSpeed = m_StopSpeed * elapsedTimes / 0.1f;
+        const float overShooting = std::abs(GetVelocity().x) - slowDownSpeed;
+        if(overShooting < 0)
+        {
+            slowDownSpeed += overShooting;
+        }
+        
+        const float direction = GetVelocity().x > 0 ? -1.f : 1.f;
+        inputVelocity.x += direction * slowDownSpeed;
+    }
+
+    if(std::abs(moveInput.x) > 0.1f && moveInput.x > 0 != GetVelocity().x > 0)
+    {
+        const float slowDownSpeed = m_StopSpeed * elapsedTimes / 0.1f;
+        const float direction = GetVelocity().x > 0 ? -1.f : 1.f;
+        inputVelocity.x += direction * slowDownSpeed;
         
         std::cout << elapsedTimes <<"\n";
     }
@@ -188,34 +194,55 @@ void PlayerObject::Update(const float elapsedTimes)
     // Accelerating
     inputVelocity += Vector2f{moveInput.x * m_MaxSpeed/0.2f * elapsedTimes, 0};
     
+
+    // If full jump reach top in 0.3 sec or 0.31
+    // Full jump 1.5 blocks high.
+    // Get to the ground in 0.26666 sec
+    // Dropping 1 block takes 0.25 sec
+    // Dropping 2 blocks takes 0.36 sec
+    // Dropping 3 blocks takes 0.42 sec
+    // Dropping 4 blocks takes 0.5 sec
+
     
     if(m_InputManager->PressedJumpThisFrame())
     {
         if(m_IsOnGround)
         {
-            SetVelocity(GetVelocity().x, -500);
+            m_IsJumping = true;
+            SetVelocity(GetVelocity().x, -630);
         }
     }
-
-    Vector2f velocity = GetVelocity();
-
-    // const float limitedVelocity = std::min(std::abs(velocity.x), m_MaxSpeed);
-    // if(velocity.x > 0)
-    //     SetVelocity(limitedVelocity, velocity.y);
-    // else
-    //     SetVelocity(-limitedVelocity, velocity.y);
-
-    // TODO: Maybe move this to physics class???
-    if(std::abs(velocity.x) < 0.0001)
+    
+    if(m_IsJumping)
     {
-        SetVelocity(0, velocity.y);
+        // ApplyForce(Vector2f{0,500} * elapsedTimes);
+        
+        if(m_InputManager->IsHoldingJump() == false)
+        {
+            m_IsJumping = false;
+        }
+        
+        if(GetVelocity().y >= 0)
+        {
+            m_IsJumping = false;
+        }
+    }
+    
+    ApplyForce(Vector2f{0,2048} * elapsedTimes);
+
+    
+    if(std::abs(GetVelocity().x) < 0.0001)
+    {
+        SetVelocity(0, GetVelocity().y);
     }
     else
     {
-        m_IsLookingToLeft = velocity.x < 0;
+        m_IsLookingToLeft = GetVelocity().x < 0;
     }
 
     ApplyForce(inputVelocity);
+
+    // Limit walking speed
     if(std::abs(GetVelocity().x) > m_MaxSpeed)
     {
         if(GetVelocity().x > 0)
@@ -224,10 +251,15 @@ void PlayerObject::Update(const float elapsedTimes)
             SetVelocity(-m_MaxSpeed, GetVelocity().y);
     }
 
+    if(std::abs(GetVelocity().y) > 960)
+    {
+        if(GetVelocity().y > 0)
+            SetVelocity(GetVelocity().x, 960);
+        else
+            SetVelocity(GetVelocity().x, -960);
+    }
+
     
-    ApplyForce(Vector2f{0,1000} * elapsedTimes);
-    
-    // SetVelocity(velocity.x, std::min(velocity.y, 1000.0f));
     m_IsOnGround = false;
     UpdatePhysics(elapsedTimes);
     

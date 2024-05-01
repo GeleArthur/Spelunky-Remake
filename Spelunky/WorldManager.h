@@ -38,6 +38,6 @@ private:
     Cave* m_Cave;
     PlayerObject* m_Player;
     SpriteSheetManager* m_SpriteSheetManager;
-    EntityManager* m_ItemManager;
+    EntityManager* m_EntityManager;
     InputManager* m_InputManager;
 };

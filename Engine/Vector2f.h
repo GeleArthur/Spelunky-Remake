@@ -73,6 +73,8 @@ struct Vector2f final
 
 	Vector2f Right() const;
 
+	static Vector2f Lerp(Vector2f start, Vector2f stop, float amount);
+
 	// Sets the values of x and y
 	void Set( float newX, float newY );
 

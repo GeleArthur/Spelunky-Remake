@@ -257,7 +257,7 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
         isColliding = false;
         --limitCount;
 
-        // TODO: Move to a static varible so we don't reallocate every frame
+        // TODO: Move to a static variable so we don't reallocate every frame
         std::vector<std::pair<const Tile*, RayVsRectInfo>> hits;
 
         // TODO: Optimise so it only checks around the collider based on the velocity
@@ -301,7 +301,6 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
         }
     }
     
-    // m_Velocity = collidedVelocity; // TODO: wrong stops you when failing
     collidedPosition += collidedVelocity;
     SetCenter(collidedPosition);
     

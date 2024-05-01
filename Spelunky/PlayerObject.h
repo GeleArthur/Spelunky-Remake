@@ -46,9 +46,11 @@ private:
     float m_AnimationTimer{};
     bool m_IsLookingToLeft{true};
 
-    const float m_MaxSpeed{256.0f}; // const member is dum
+    float m_MaxSpeed{256.0f};
+    float m_StopSpeed{256.0f};
     
     bool m_IsOnGround{false};
+    bool m_IsJumping{false};
     Entity* m_PickupItem{};
 
     SpriteSheetManager* m_SpriteSheetManager;

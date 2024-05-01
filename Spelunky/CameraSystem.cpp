@@ -21,9 +21,11 @@ void CameraSystem::UpdateCamera()
     
     cameraPos.x -= 1280.0f/2; // TODO: Make screen size reference
     cameraPos.y -= 720.0f/2;
+
+    m_CameraPosition = Vector2f::Lerp(m_CameraPosition, cameraPos, 0.05f);
     
-    m_TranslateMatrix.m30 = -cameraPos.x;
-    m_TranslateMatrix.m31 = -cameraPos.y;
+    m_TranslateMatrix.m30 = -m_CameraPosition.x;
+    m_TranslateMatrix.m31 = -m_CameraPosition.y;
 
     if(m_IsDebugCamera)
     {

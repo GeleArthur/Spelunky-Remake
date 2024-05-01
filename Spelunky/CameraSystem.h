@@ -26,10 +26,11 @@ public:
 
 private:
     const PlayerObject* m_Player;
+    Vector2f m_CameraPosition{};
     Matrix4X4 m_TranslateMatrix{Matrix4X4::IdentityMatrix()};
     Matrix4X4 m_RotateMatrix{Matrix4X4::IdentityMatrix()};
     Matrix4X4 m_ScaleMatrix{Matrix4X4::IdentityMatrix()};
-
+    
 
     
     bool m_IsDebugCamera{false};

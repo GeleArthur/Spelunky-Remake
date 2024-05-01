@@ -111,6 +111,11 @@ Vector2f Vector2f::Right() const
 	return Vector2f{-y, x};
 }
 
+Vector2f Vector2f::Lerp(Vector2f start, Vector2f stop, float amount)
+{
+	return Vector2f{start + (stop-start) * amount};
+}
+
 void Vector2f::Set(float newX, float newY)
 {
 	x = newX;

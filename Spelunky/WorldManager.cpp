@@ -25,7 +25,7 @@ SpriteSheetManager* WorldManager::GetSpriteSheet() const
 
 EntityManager* WorldManager::GetEntityManager() const
 {
-    return m_ItemManager;
+    return m_EntityManager;
 }
 
 void WorldManager::SetInputManager(InputManager* inputManager)
@@ -61,5 +61,5 @@ void WorldManager::SetSpriteSheetManager(SpriteSheetManager* spriteSheet)
 
 void WorldManager::SetEntityManager(EntityManager* entityManager)
 {
-    m_ItemManager = entityManager;
+    m_EntityManager = entityManager;
 }

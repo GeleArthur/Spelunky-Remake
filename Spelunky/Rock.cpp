@@ -11,7 +11,7 @@
 Rock::Rock(const Vector2f& position, WorldManager* worldManager):
     Entity(),
     PickupItem(),
-    RectPhysicsCollider(Rectf{position.x, position.y, 40, 40}, 3, 0.8f, worldManager),
+    RectPhysicsCollider(Rectf{position.x, position.y, 40, 40}, 3, 1.0f, worldManager),
     m_SpriteSheetManager(worldManager->GetSpriteSheet())
 {
 }
@@ -28,6 +28,7 @@ bool Rock::Throw(Vector2f force)
 
 void Rock::Update(const float elapsedTime)
 {
+    ApplyForce(Vector2f{0,1000} * elapsedTime);
     UpdatePhysics(elapsedTime);
 }
 
