@@ -19,7 +19,7 @@ public:
     
     void AddEntity(Entity* item);
     void DrawEntities() const;
-    void UpdateItems(float elapsedTime);
+    void UpdateEntity(float elapsedTime);
     std::vector<Entity*>& GetAllEntities();
     void ClearAllEntities();
     

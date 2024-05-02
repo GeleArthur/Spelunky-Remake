@@ -18,6 +18,12 @@ enum class PlayerAnimationState
     climbing,
     hanging
 };
+enum class PlayerState
+{
+    normal,
+    hanging,
+    ragdoll
+};
 
 
 class PlayerObject final : public RectPhysicsCollider, public Entity
@@ -29,7 +35,6 @@ public:
     PlayerObject& operator=(const PlayerObject& other) = delete;
     PlayerObject(PlayerObject && other) = delete;
     PlayerObject& operator=(PlayerObject&& other) = delete;
-    
 
     virtual void Draw() const override;
     virtual void Update(float elapsedTimes) override;
@@ -42,6 +47,8 @@ public:
 
 private:
     PlayerAnimationState m_CurrentAnimation{PlayerAnimationState::idle};
+    PlayerState m_PlayerState{PlayerState::normal};
+    
     int m_AnimationFrame{};
     float m_AnimationTimer{};
     bool m_IsLookingToLeft{true};
@@ -52,6 +59,11 @@ private:
     
     bool m_IsOnGround{false};
     bool m_IsJumping{false};
+    
+    // bool m_IsHanging{false};
+    bool m_IsTouchingWall{false};
+    bool m_IsTouchingLeftWall{false};
+    
     Entity* m_PickupItem{};
 
     SpriteSheetManager* m_SpriteSheetManager;

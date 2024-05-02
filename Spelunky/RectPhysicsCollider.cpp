@@ -205,36 +205,64 @@ bool RectPhysicsCollider::PredictCollision(const Vector2f& startPoint, const Vec
     // GizmosDrawer::DrawCircle(out.interSectionPoint, 5);
     // GizmosDrawer::DrawLine(out.interSectionPoint, out.interSectionPoint + out.normal * 10);
 
-
-    // if (nearTimeX >= farTimeY || nearTimeY >= farTimeX) return false;
-    //
-    // out.farHit = std::min(farTimeX, farTimeY);
-    // out.farHit = std::min(farTimeX, farTimeY);
-    //
-    // if (out.farHit < 0)
-    //     return false;
-    // if (out.nearHit > 1.0)
-    //     return false;
-    //
-    // out.pointHit = rayOrigin + (rayDir * out.nearHit);
-    //
-    // if (nearTimeX > nearTimeY)
-    // {
-    //     if (rayDir.x < 0) out.normal = Vector2f{1, 0};
-    //     else out.normal = Vector2f{-1, 0};
-    // }
-    // else
-    // {
-    //     if (rayDir.y < 0) out.normal = Vector2f{0, 1};
-    //     else out.normal = Vector2f{0, -1};
-    // }
-
     return true;
 }
 
 bool RectPhysicsCollider::PredictCollision(const CirclePhysicsCollider& other)
 {
     return false;
+}
+
+bool RectPhysicsCollider::RayCastCollision(const Vector2f& startPoint, const Vector2f& moveDirection,
+    const RectPhysicsCollider& other, RayVsRectInfo& out)
+{
+    if (moveDirection.x == 0 && moveDirection.y == 0)
+        return false;
+    
+    const Rectf& rect{other.GetRect()};
+    
+    float nearTimeX = (rect.left - startPoint.x) / moveDirection.x;
+    float nearTimeY = (rect.top - startPoint.y) / moveDirection.y;
+
+    float farTimeX = ((rect.left + rect.width) - startPoint.x) / moveDirection.x;
+    float farTimeY = ((rect.top + rect.height) - startPoint.y) / moveDirection.y;
+
+    if (std::isnan(nearTimeX)) nearTimeX = 1;
+    if (std::isnan(nearTimeY)) nearTimeY = 1;
+    if (std::isnan(farTimeX)) farTimeX = 0;
+    if (std::isnan(farTimeY)) farTimeY = 0;
+
+
+    if (nearTimeX > farTimeX) std::swap(nearTimeX, farTimeX);
+    if (nearTimeY > farTimeY) std::swap(nearTimeY, farTimeY);
+
+    const float nearTime = std::max(nearTimeX, nearTimeY);
+    const float farTime = std::min(farTimeX, farTimeY);
+    
+    if (farTime <= 0 && nearTime >= 1) // Check if line is in ray time
+        return false;
+    if (nearTime >= farTime || farTime <= 0 || nearTime >= 1)
+    // If the outer points over shoot each other it doesn't hit
+    {
+        return false;
+    }
+
+    out.nearTime = nearTime;
+    out.farTime = farTime;
+    
+    out.interSectionPoint = startPoint + moveDirection * nearTime;
+    if (nearTimeX > nearTimeY) // We hit on the X side
+    {
+        if (moveDirection.x > 0) out.normal = Vector2f{-1, 0};
+        else out.normal = Vector2f{1, 0};
+    }
+    else
+    {
+        if (moveDirection.y > 0) out.normal = Vector2f{0, -1};
+        else out.normal = Vector2f{0, 1};
+    }
+
+    return true;
 }
 
 

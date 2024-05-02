@@ -425,3 +425,8 @@ const std::vector<std::vector<Tile>>* Cave::GetTiles() const
 {
     return &m_Tiles;
 }
+
+const Tile& Cave::GetTile(const int x, const int y)
+{
+    return m_Tiles.at(x).at(y);
+}

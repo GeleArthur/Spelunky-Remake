@@ -11,7 +11,7 @@ void EntityManager::DrawEntities() const
     }
 }
 
-void EntityManager::UpdateItems(const float elapsedTime)
+void EntityManager::UpdateEntity(const float elapsedTime)
 {
     for (Entity* entity : m_Entities)
     {

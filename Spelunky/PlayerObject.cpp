@@ -7,9 +7,11 @@
 #include <algorithm>
 #include <iomanip>
 
+#include "Cave.h"
 #include "CirclePhysicsCollider.h"
 #include "Game.h"
 #include "GizmosDrawer.h"
+#include "GlobalValues.h"
 #include "InputManager.h"
 #include "RectPhysicsCollider.h"
 #include "SpriteSheetManager.h"
@@ -150,6 +152,11 @@ void PlayerObject::Draw() const
     
     GizmosDrawer::SetColor({1,1,1});
     GizmosDrawer::DrawQText(position, GetVelocity().ToString());
+
+    std::stringstream yes;
+    yes << "IsTouchingWall: " << std::boolalpha << std::to_string(m_IsTouchingWall) << " IsLeft: " + std::to_string(m_IsTouchingLeftWall);
+
+    GizmosDrawer::DrawQText(position + Vector2f{0, 30}, yes.str());
     
 
     if(m_IsLookingToLeft)
@@ -167,34 +174,72 @@ void PlayerObject::Draw() const
 void PlayerObject::Update(const float elapsedTimes)
 {
     Vector2f inputVelocity{};
-    const Vector2f moveInput = m_InputManager->GetMoveInput();
+    const Vector2f& moveInput = m_InputManager->GetMoveInput();
 
-    // No player input
-    if(std::abs(moveInput.x) < 0.1f)
+    if(m_PlayerState == PlayerState::normal)
     {
-        float slowDownSpeed = m_StopSpeed * elapsedTimes / 0.1f;
-        const float overShooting = std::abs(GetVelocity().x) - slowDownSpeed;
-        if(overShooting < 0)
+        if(m_IsTouchingWall)
         {
-            slowDownSpeed += overShooting;
+            if(GetVelocity().y > 0)
+            {
+                const float characterTopHeight = GetRect().top;
+                const float characterNewTopHeight = GetRect().top + GetVelocity().y * elapsedTimes;
+
+                const int characterTileY = int(characterTopHeight / spelucky_settings::g_TileSize);
+                const int characterNewTileY = int(characterNewTopHeight / spelucky_settings::g_TileSize);
+                
+                if(characterTileY != characterNewTileY)
+                {
+                    const Vector2i currentTileIndex{int(GetPosition().x / spelucky_settings::g_TileSize), characterTileY};
+                    const Vector2i hangingDirection = m_IsTouchingLeftWall ? Vector2i{-1, 0} : Vector2i{1, 0};
+                    
+                    Cave* cave = m_WorldManager->GetCave();
+                    if (cave->GetTile(currentTileIndex.x + hangingDirection.x, currentTileIndex.y).GetTileType() == TileTypes::air &&
+                        cave->GetTile(currentTileIndex.x + hangingDirection.x, currentTileIndex.y + 1).GetTileType() == TileTypes::ground
+                    )
+                    {
+                        // GizmosDrawer::DrawRect(Rectf{float(currentTileIndex.x) * spelucky_settings::g_TileSize, float(currentTileIndex.y) * spelucky_settings::g_TileSize,spelucky_settings::g_TileSize, spelucky_settings::g_TileSize}, 3);
+                        // m_IsHanging = true;
+                        m_PlayerState = PlayerState::hanging;
+                        SetVelocity(0, 0);
+                        SetRect(Rectf{GetRect().left, float(currentTileIndex.y+1) * spelucky_settings::g_TileSize, GetRect().width, GetRect().height});
+                        // SetCenter(Vector2f{GetCenter().x, float(currentTileIndex.y+1) * spelucky_settings::g_TileSize});
+                    }
+                }
+            }
+        }
+    }
+
+    if(m_PlayerState == PlayerState::normal)
+    {
+        // No player input
+        if(std::abs(moveInput.x) < 0.1f)
+        {
+            float slowDownSpeed = m_StopSpeed * elapsedTimes / 0.1f;
+            const float overShooting = std::abs(GetVelocity().x) - slowDownSpeed;
+            if(overShooting < 0)
+            {
+                slowDownSpeed += overShooting;
+            }
+            
+            const float direction = GetVelocity().x > 0 ? -1.f : 1.f;
+            inputVelocity.x += direction * slowDownSpeed;
+        }
+
+        // DeAcceleration to help the player turn
+        if(std::abs(moveInput.x) > 0.1f && moveInput.x > 0 != GetVelocity().x > 0)
+        {
+            const float slowDownSpeed = m_StopSpeed * elapsedTimes / 0.1f;
+            const float direction = GetVelocity().x > 0 ? -1.f : 1.f;
+            inputVelocity.x += direction * slowDownSpeed;
         }
         
-        const float direction = GetVelocity().x > 0 ? -1.f : 1.f;
-        inputVelocity.x += direction * slowDownSpeed;
+        // Accelerating
+        
+        inputVelocity += Vector2f{moveInput.x * m_MaxSpeed/0.2f * elapsedTimes, 0};
+        ApplyForce(inputVelocity);
     }
 
-    // DeAcceleration to help the player turn
-    if(std::abs(moveInput.x) > 0.1f && moveInput.x > 0 != GetVelocity().x > 0)
-    {
-        const float slowDownSpeed = m_StopSpeed * elapsedTimes / 0.1f;
-        const float direction = GetVelocity().x > 0 ? -1.f : 1.f;
-        inputVelocity.x += direction * slowDownSpeed;
-    }
-    
-    // Accelerating
-    
-    inputVelocity += Vector2f{moveInput.x * m_MaxSpeed/0.2f * elapsedTimes, 0};
-    
 
     // If full jump reach top in 0.3 sec or 0.31
     // Full jump 1.5 blocks high.
@@ -204,32 +249,38 @@ void PlayerObject::Update(const float elapsedTimes)
     // Dropping 3 blocks takes 0.42 sec
     // Dropping 4 blocks takes 0.5 sec
 
-    
-    if(m_InputManager->PressedJumpThisFrame())
+    if(m_PlayerState != PlayerState::ragdoll)
     {
-        if(m_IsOnGround)
+        if(m_InputManager->PressedJumpThisFrame())
         {
-            m_IsJumping = true;
-            SetVelocity(GetVelocity().x, -630);
-        }
-    }
-    
-    if(m_IsJumping)
-    {
-        if(m_InputManager->IsHoldingJump() == false)
-        {
-            ApplyForce(Vector2f{0, -GetVelocity().y * 0.7f});
-            m_IsJumping = false;
+            if(m_IsOnGround || m_PlayerState == PlayerState::hanging)
+            {
+                m_IsJumping = true;
+                m_PlayerState = PlayerState::normal;
+                SetVelocity(GetVelocity().x, -630);
+            }
         }
         
-        if(GetVelocity().y >= 0)
+        if(m_IsJumping)
         {
-            m_IsJumping = false;
+            if(m_InputManager->IsHoldingJump() == false)
+            {
+                ApplyForce(Vector2f{0, -GetVelocity().y * 0.7f});
+                m_IsJumping = false;
+            }
+            
+            if(GetVelocity().y >= 0)
+            {
+                m_IsJumping = false;
+            }
         }
     }
-    
-    ApplyForce(Vector2f{0,2048} * elapsedTimes);
 
+
+    if(m_PlayerState != PlayerState::hanging)
+    {
+        ApplyForce(Vector2f{0,2048} * elapsedTimes);
+    }
     
     if(std::abs(GetVelocity().x) < 0.0001)
     {
@@ -239,10 +290,8 @@ void PlayerObject::Update(const float elapsedTimes)
     {
         m_IsLookingToLeft = GetVelocity().x < 0;
     }
-
-    ApplyForce(inputVelocity);
-
-    // Limit speed
+    
+    // Limit left/right speed
     const float currentMaxSpeed = m_InputManager->IsHoldingSprint() ? m_MaxSprintSpeed : m_MaxSpeed;
     if(std::abs(GetVelocity().x) > currentMaxSpeed)
     {
@@ -263,6 +312,14 @@ void PlayerObject::Update(const float elapsedTimes)
 
     
     m_IsOnGround = false;
+    if(m_IsTouchingWall && m_PlayerState != PlayerState::hanging)
+    {
+        if(std::abs(moveInput.x) > 0)
+        {
+            m_IsTouchingWall = false;
+        }
+    }
+    
     UpdatePhysics(elapsedTimes);
     
     m_AnimationTimer += elapsedTimes;
@@ -271,10 +328,19 @@ void PlayerObject::Update(const float elapsedTimes)
 
 void PlayerObject::CallBackHitTile(std::pair<const Tile*, RayVsRectInfo> hitInfo)
 {
-    if(hitInfo.second.normal.y < 0)
+    if( hitInfo.first->GetTileType() == TileTypes::ground)
     {
-        m_IsOnGround = true;
+        if(hitInfo.second.normal.y < 0)
+        {
+            m_IsOnGround = true;
+        }
+        if(hitInfo.second.normal.x != 0)
+        {
+            m_IsTouchingWall = true;
+            m_IsTouchingLeftWall = hitInfo.second.normal.x > 0;
+        }
     }
+    
 }
 
 void PlayerObject::Respawn(const Vector2f& spawnLocation)

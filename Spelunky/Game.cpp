@@ -57,7 +57,7 @@ void Game::Update(const float elapsedSec)
     m_CurrentTime += elapsedSec;
     m_InputManager->Update();
     m_Player->Update(elapsedSec);
-    m_EntityManager->UpdateItems(elapsedSec);
+    m_EntityManager->UpdateEntity(elapsedSec);
 
     m_CameraSystem->UpdateCamera();
     m_PrevDeltaTime = elapsedSec;
