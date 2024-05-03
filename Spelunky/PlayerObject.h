@@ -21,7 +21,9 @@ enum class PlayerState
 {
     normal,
     hanging,
-    ragdoll
+    ragdoll,
+
+    dead
 };
 
 
@@ -41,6 +43,9 @@ public:
     void Respawn(const Vector2f& spawnLocation);
     
     Vector2f GetPosition() const;
+    PlayerState GetPlayerState() const;
+
+    
     virtual EntityType GetEntityType() const override;
     virtual void CallBackHitTile(std::pair<const Tile*, RayVsRectInfo> hitInfo) override;
 

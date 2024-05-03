@@ -206,16 +206,7 @@ void PlayerObject::Update(const float elapsedTimes)
         inputVelocity += Vector2f{moveInput.x * m_MaxSpeed/0.2f * elapsedTimes, 0};
         ApplyForce(inputVelocity);
     }
-
-
-    // If full jump reach top in 0.3 sec or 0.31
-    // Full jump 1.5 blocks high.
-    // Get to the ground in 0.26666 sec
-    // Dropping 1 block takes 0.25 sec
-    // Dropping 2 blocks takes 0.36 sec
-    // Dropping 3 blocks takes 0.42 sec
-    // Dropping 4 blocks takes 0.5 sec
-
+    
     if(m_PlayerState != PlayerState::ragdoll)
     {
         if(m_InputManager->PressedJumpThisFrame())
@@ -295,6 +286,7 @@ void PlayerObject::CallBackHitTile(std::pair<const Tile*, RayVsRectInfo> hitInfo
 {
     if( hitInfo.first->GetTileType() == TileTypes::ground || hitInfo.first->GetTileType() == TileTypes::border)
     {
+        
         if(hitInfo.second.normal.y < 0)
         {
             m_IsOnGround = true;
@@ -303,6 +295,15 @@ void PlayerObject::CallBackHitTile(std::pair<const Tile*, RayVsRectInfo> hitInfo
         {
             m_IsTouchingWall = true;
             m_IsTouchingLeftWall = hitInfo.second.normal.x > 0;
+        }
+    }
+    else if(hitInfo.first->GetTileType() == TileTypes::spikes)
+    {
+        if(GetVelocity().y > 0)
+        {
+            GizmosDrawer::SetColor({1,0,0});
+            GizmosDrawer::DrawRect(hitInfo.first->GetRect(), 1);
+            m_PlayerState = PlayerState::dead;
         }
     }
     
@@ -345,11 +346,17 @@ void PlayerObject::Respawn(const Vector2f& spawnLocation)
     m_AnimationFrame = 0;
     m_AnimationTimer = 0;
     m_PickupItem = nullptr;
+    m_PlayerState = PlayerState::normal;
 }
 
 Vector2f PlayerObject::GetPosition() const
 {
     return GetCenter();
+}
+
+PlayerState PlayerObject::GetPlayerState() const
+{
+    return m_PlayerState;
 }
 
 EntityType PlayerObject::GetEntityType() const

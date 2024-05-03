@@ -60,6 +60,13 @@ void Game::Update(const float elapsedSec)
     m_EntityManager->UpdateEntity(elapsedSec);
 
     m_CameraSystem->UpdateCamera(elapsedSec);
+
+    if(m_Player->GetPlayerState() == PlayerState::dead)
+    {
+        Reset();
+    }
+
+    
     m_PrevDeltaTime = elapsedSec;
     
     GizmosDrawer::SetColor({0, 1.0f, 0});

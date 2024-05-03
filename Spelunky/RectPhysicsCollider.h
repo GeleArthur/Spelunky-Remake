@@ -82,5 +82,9 @@ private:
     float m_InverseMass;
     float m_Bounciness;
 
+    // cache vector memory se the array can be reused
+    static std::vector<std::pair<const Tile*, RayVsRectInfo>> m_HitsCache;
+    static std::vector<std::pair<const Tile*, RayVsRectInfo>> m_BlocksWeHit;
+
     WorldManager* m_WorldManager;
 };
