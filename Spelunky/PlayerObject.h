@@ -15,7 +15,6 @@ enum class PlayerAnimationState
     idle,
     walk,
     inAir,
-    climbing,
     hanging
 };
 enum class PlayerState
@@ -38,7 +37,7 @@ public:
 
     virtual void Draw() const override;
     virtual void Update(float elapsedTimes) override;
-    void UpdateAnimationState();
+    void UpdateAnimationState(float elapsedTimes);
     void Respawn(const Vector2f& spawnLocation);
     
     Vector2f GetPosition() const;
@@ -46,6 +45,9 @@ public:
     virtual void CallBackHitTile(std::pair<const Tile*, RayVsRectInfo> hitInfo) override;
 
 private:
+    void HandleWallHanging(float elapsedTimes);
+
+    
     PlayerAnimationState m_CurrentAnimation{PlayerAnimationState::idle};
     PlayerState m_PlayerState{PlayerState::normal};
     

@@ -59,9 +59,8 @@ void Game::Update(const float elapsedSec)
     m_Player->Update(elapsedSec);
     m_EntityManager->UpdateEntity(elapsedSec);
 
-    m_CameraSystem->UpdateCamera();
+    m_CameraSystem->UpdateCamera(elapsedSec);
     m_PrevDeltaTime = elapsedSec;
-
     
     GizmosDrawer::SetColor({0, 1.0f, 0});
     GizmosDrawer::DrawQText(-m_CameraSystem->GetCameraPosition(), std::to_string((1 / m_PrevDeltaTime)));

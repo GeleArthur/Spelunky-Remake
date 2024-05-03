@@ -287,7 +287,7 @@ void Cave::RoomStringToTileType(
         const int xLocation = (roomLocation.x * 10) + i % 10;
         const int yLocation = (roomLocation.y * 8) + i / 10;
         TileTypes tileType;
-
+        
         switch (processedString.at(i))
         {
         case '0':

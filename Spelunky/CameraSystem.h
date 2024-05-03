@@ -13,7 +13,7 @@ public:
     CameraSystem(CameraSystem && other) = delete;
     CameraSystem& operator=(CameraSystem&& other) = delete;
     
-    void UpdateCamera();
+    void UpdateCamera(float elapsedTime);
     void PushCamera() const;
     void PopCamera();
     Vector2f GetCameraPosition() const;

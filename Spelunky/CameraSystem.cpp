@@ -12,7 +12,7 @@ CameraSystem::CameraSystem(const PlayerObject* player):
 {
 }
 
-void CameraSystem::UpdateCamera()
+void CameraSystem::UpdateCamera(float elapsedTime)
 {
     Vector2f cameraPos = m_Player->GetPosition();
     
@@ -22,7 +22,7 @@ void CameraSystem::UpdateCamera()
     cameraPos.x -= 1280.0f/2; // TODO: Make screen size reference
     cameraPos.y -= 720.0f/2;
 
-    m_CameraPosition = Vector2f::Lerp(m_CameraPosition, cameraPos, 0.05f);
+    m_CameraPosition = Vector2f::Lerp(m_CameraPosition, cameraPos, 20.0f * elapsedTime);
     
     m_TranslateMatrix.m30 = -m_CameraPosition.x;
     m_TranslateMatrix.m31 = -m_CameraPosition.y;

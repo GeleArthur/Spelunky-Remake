@@ -27,9 +27,11 @@ PlayerObject::PlayerObject(WorldManager* worldManager):
 {
 }
 
-void PlayerObject::UpdateAnimationState()
+void PlayerObject::UpdateAnimationState(const float elapsedTimes)
 {
-    const Vector2f velocity = GetVelocity();
+    m_AnimationTimer += elapsedTimes;
+    
+    const Vector2f& velocity = GetVelocity();
     const float speed = velocity.SquaredLength();
     
     switch (m_CurrentAnimation)
@@ -47,7 +49,6 @@ void PlayerObject::UpdateAnimationState()
             m_AnimationTimer = 0;
             m_AnimationFrame = 0;
         }
-
         break;
     case PlayerAnimationState::walk:
         if(m_IsOnGround == false)
@@ -56,39 +57,21 @@ void PlayerObject::UpdateAnimationState()
             m_AnimationTimer = 0;
             m_AnimationFrame = 0;
         }
+        else if(speed < 0.01)
+        {
+            m_CurrentAnimation = PlayerAnimationState::idle;
+            m_AnimationTimer = 0;
+            m_AnimationFrame = 0;
+        }
         else
         {
-            if(speed < 0.01)
+            if(m_AnimationTimer > (m_InputManager->IsHoldingSprint() ? 0.05f : 0.06f)  )
             {
-                m_CurrentAnimation = PlayerAnimationState::idle;
                 m_AnimationTimer = 0;
-                m_AnimationFrame = 0;
+                m_AnimationFrame++;
             }
-            else
-            {
-                if(m_AnimationTimer > 0.05+(1-(std::abs(velocity.x)/m_MaxSpeed))*0.2)
-                {
-                    m_AnimationTimer = 0;
-                    m_AnimationFrame++;
-                }
-            }
-            // else if(speed < 250)
-            // {
-            //     if(m_AnimationTimer > 0.5f)
-            //     {
-            //         m_AnimationTimer = 0;
-            //         m_AnimationFrame++;
-            //     }
-            // }
-            // else
-            // {
-            //     if(m_AnimationTimer > 0.1f)
-            //     {
-            //         m_AnimationTimer = 0;
-            //         m_AnimationFrame++;
-            //     }
-            // }
         }
+        
         break;
     case PlayerAnimationState::inAir:
         if(m_IsOnGround)
@@ -98,12 +81,26 @@ void PlayerObject::UpdateAnimationState()
             m_AnimationFrame = 0;
             return;
         }
-        break;
-    case PlayerAnimationState::climbing:
+        if(m_PlayerState == PlayerState::hanging)
+        {
+            m_CurrentAnimation = PlayerAnimationState::hanging;
+            m_AnimationTimer = 0;
+            m_AnimationFrame = 0;
+        }
         break;
     case PlayerAnimationState::hanging:
+        if(m_AnimationTimer > 0.05)
+        {
+            m_AnimationFrame++;
+            m_AnimationTimer = 0;
+        }
+        if(m_PlayerState != PlayerState::hanging)
+        {
+            m_CurrentAnimation = PlayerAnimationState::inAir;
+            m_AnimationTimer = 0;
+            m_AnimationFrame = 0;
+        }
         break;
-
     }
 }
 
@@ -140,9 +137,9 @@ void PlayerObject::Draw() const
             }
         }
         break;
-    case PlayerAnimationState::climbing:
-        break;
     case PlayerAnimationState::hanging:
+        animationSource.top = 3 * 80.f;
+        animationSource.left = float(8 + std::min(m_AnimationFrame, 3)) * 80.0f;
         break;
     }
     
@@ -178,36 +175,7 @@ void PlayerObject::Update(const float elapsedTimes)
 
     if(m_PlayerState == PlayerState::normal)
     {
-        if(m_IsTouchingWall)
-        {
-            if(GetVelocity().y > 0)
-            {
-                const float characterTopHeight = GetRect().top;
-                const float characterNewTopHeight = GetRect().top + GetVelocity().y * elapsedTimes;
-
-                const int characterTileY = int(characterTopHeight / spelucky_settings::g_TileSize);
-                const int characterNewTileY = int(characterNewTopHeight / spelucky_settings::g_TileSize);
-                
-                if(characterTileY != characterNewTileY)
-                {
-                    const Vector2i currentTileIndex{int(GetPosition().x / spelucky_settings::g_TileSize), characterTileY};
-                    const Vector2i hangingDirection = m_IsTouchingLeftWall ? Vector2i{-1, 0} : Vector2i{1, 0};
-                    
-                    Cave* cave = m_WorldManager->GetCave();
-                    if (cave->GetTile(currentTileIndex.x + hangingDirection.x, currentTileIndex.y).GetTileType() == TileTypes::air &&
-                        cave->GetTile(currentTileIndex.x + hangingDirection.x, currentTileIndex.y + 1).GetTileType() == TileTypes::ground
-                    )
-                    {
-                        // GizmosDrawer::DrawRect(Rectf{float(currentTileIndex.x) * spelucky_settings::g_TileSize, float(currentTileIndex.y) * spelucky_settings::g_TileSize,spelucky_settings::g_TileSize, spelucky_settings::g_TileSize}, 3);
-                        // m_IsHanging = true;
-                        m_PlayerState = PlayerState::hanging;
-                        SetVelocity(0, 0);
-                        SetRect(Rectf{GetRect().left, float(currentTileIndex.y+1) * spelucky_settings::g_TileSize, GetRect().width, GetRect().height});
-                        // SetCenter(Vector2f{GetCenter().x, float(currentTileIndex.y+1) * spelucky_settings::g_TileSize});
-                    }
-                }
-            }
-        }
+        HandleWallHanging(elapsedTimes);
     }
 
     if(m_PlayerState == PlayerState::normal)
@@ -235,7 +203,6 @@ void PlayerObject::Update(const float elapsedTimes)
         }
         
         // Accelerating
-        
         inputVelocity += Vector2f{moveInput.x * m_MaxSpeed/0.2f * elapsedTimes, 0};
         ApplyForce(inputVelocity);
     }
@@ -321,14 +288,12 @@ void PlayerObject::Update(const float elapsedTimes)
     }
     
     UpdatePhysics(elapsedTimes);
-    
-    m_AnimationTimer += elapsedTimes;
-    UpdateAnimationState();
+    UpdateAnimationState(elapsedTimes);
 }
 
 void PlayerObject::CallBackHitTile(std::pair<const Tile*, RayVsRectInfo> hitInfo)
 {
-    if( hitInfo.first->GetTileType() == TileTypes::ground)
+    if( hitInfo.first->GetTileType() == TileTypes::ground || hitInfo.first->GetTileType() == TileTypes::border)
     {
         if(hitInfo.second.normal.y < 0)
         {
@@ -341,6 +306,37 @@ void PlayerObject::CallBackHitTile(std::pair<const Tile*, RayVsRectInfo> hitInfo
         }
     }
     
+}
+
+void PlayerObject::HandleWallHanging(const float elapsedTimes)
+{
+    if(m_IsTouchingWall && !(m_InputManager->GetMoveInput().y > 0))
+    {
+        if(m_IsJumping == false)
+        {
+            const float characterTopHeight = GetRect().top ;
+            const float characterNewTopHeight = GetRect().top + GetVelocity().y * elapsedTimes;
+
+            const int characterTileY = int(characterTopHeight / spelucky_settings::g_TileSize);
+            const int characterNewTileY = int(characterNewTopHeight / spelucky_settings::g_TileSize);
+                
+            if(characterTileY != characterNewTileY)
+            {
+                const Vector2i currentTileIndex{int(GetPosition().x / spelucky_settings::g_TileSize), characterTileY};
+                const Vector2i hangingDirection = m_IsTouchingLeftWall ? Vector2i{-1, 0} : Vector2i{1, 0};
+                    
+                Cave* cave = m_WorldManager->GetCave();
+                if (cave->GetTile(currentTileIndex.x + hangingDirection.x, currentTileIndex.y).GetTileType() == TileTypes::air &&
+                    cave->GetTile(currentTileIndex.x + hangingDirection.x, currentTileIndex.y + 1).GetTileType() == TileTypes::ground
+                )
+                {
+                    m_PlayerState = PlayerState::hanging;
+                    SetVelocity(0, 0);
+                    SetRect(Rectf{GetRect().left, float(currentTileIndex.y+1) * spelucky_settings::g_TileSize, GetRect().width, GetRect().height});
+                }
+            }
+        }
+    }
 }
 
 void PlayerObject::Respawn(const Vector2f& spawnLocation)
