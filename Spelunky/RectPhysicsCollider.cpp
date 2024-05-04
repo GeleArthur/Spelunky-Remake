@@ -109,9 +109,6 @@ bool RectPhysicsCollider::IsOverlapping(const Collider& other) const
 bool RectPhysicsCollider::PredictCollision(const Vector2f& startPoint, const Vector2f& moveDirection,
                                            const RectPhysicsCollider& otherPhysicsRect, RayVsRectInfo& out)
 {
-    if (moveDirection.x == 0 && moveDirection.y == 0)
-        return false;
-
     Rectf otherRect{otherPhysicsRect.GetRect()};
     Rectf thisRect{GetRect()};
 
@@ -121,7 +118,7 @@ bool RectPhysicsCollider::PredictCollision(const Vector2f& startPoint, const Vec
         otherRect.width + thisRect.width,
         otherRect.height + thisRect.height
     };
-
+    
     // GizmosDrawer::SetColor({0, 1, 0});
     // GizmosDrawer::DrawRect(extendedRect);
 
@@ -216,13 +213,12 @@ bool RectPhysicsCollider::PredictCollision(const CirclePhysicsCollider& other)
     return false;
 }
 
+// TODO: Delete or let PredictCollision call it
 bool RectPhysicsCollider::RayCastCollision(const Vector2f& startPoint, const Vector2f& moveDirection,
-    const RectPhysicsCollider& other, RayVsRectInfo& out)
+    const Rectf& rect, RayVsRectInfo& out)
 {
     if (moveDirection.x == 0 && moveDirection.y == 0)
         return false;
-    
-    const Rectf& rect{other.GetRect()};
     
     float nearTimeX = (rect.left - startPoint.x) / moveDirection.x;
     float nearTimeY = (rect.top - startPoint.y) / moveDirection.y;
@@ -318,10 +314,8 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
                 std::pair<const Tile*, RayVsRectInfo> firstHit = m_HitsCache.at(i);
                 m_BlocksWeHit.push_back(firstHit);
             
-                GizmosDrawer::DrawRect(firstHit.first->GetRect(), 0);
                 if(firstHit.first->GetTileType() != TileTypes::ground && firstHit.first->GetTileType() != TileTypes::border) continue;
-
-            
+                
                 const float t = 1 - firstHit.second.nearTime;
                 const Vector2f velocityThatLeft = collidedVelocity * t;
 

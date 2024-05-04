@@ -22,6 +22,7 @@ enum class PlayerState
     normal,
     hanging,
     ragdoll,
+    ladderClimbing,
 
     dead
 };
@@ -66,6 +67,7 @@ private:
     
     bool m_IsOnGround{false};
     bool m_IsJumping{false};
+    bool m_IsOnLadder{false};
     
     // bool m_IsHanging{false};
     bool m_IsTouchingWall{false};

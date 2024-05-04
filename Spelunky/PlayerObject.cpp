@@ -13,6 +13,7 @@
 #include "GizmosDrawer.h"
 #include "GlobalValues.h"
 #include "InputManager.h"
+#include "magic_enum.hpp"
 #include "RectPhysicsCollider.h"
 #include "SpriteSheetManager.h"
 #include "Texture.h"
@@ -147,13 +148,13 @@ void PlayerObject::Draw() const
     const Vector2f position = GetCenter();
     glTranslatef(position.x, position.y, 0);
     
-    GizmosDrawer::SetColor({1,1,1});
-    GizmosDrawer::DrawQText(position, GetVelocity().ToString());
+    // GizmosDrawer::SetColor({1,1,1});
+    // GizmosDrawer::DrawQText(position, GetVelocity().ToString());
 
-    std::stringstream yes;
-    yes << "IsTouchingWall: " << std::boolalpha << std::to_string(m_IsTouchingWall) << " IsLeft: " + std::to_string(m_IsTouchingLeftWall);
+    // std::stringstream yes;
+    // yes << "IsTouchingWall: " << std::boolalpha << std::to_string(m_IsTouchingWall) << " IsLeft: " + std::to_string(m_IsTouchingLeftWall);
 
-    GizmosDrawer::DrawQText(position + Vector2f{0, 30}, yes.str());
+    // GizmosDrawer::DrawQText(position + Vector2f{0, 30}, yes.str());
     
 
     if(m_IsLookingToLeft)
@@ -207,11 +208,35 @@ void PlayerObject::Update(const float elapsedTimes)
         ApplyForce(inputVelocity);
     }
     
+    if(m_PlayerState == PlayerState::ladderClimbing)
+    {
+        SetVelocity(0, moveInput.y * spelucky_settings::g_TileSize*3);
+        
+        // TODO: Even do the cast is explicit it doesn't complain ask about this???
+        int direction = moveInput.y > 0 ? 1 : -1;
+        Vector2i newLadderTile{(GetCenter() - Vector2f{0, static_cast<float>(direction * spelucky_settings::g_TileSize/2)}) / spelucky_settings::g_TileSize};
+        newLadderTile.y += direction;
+
+        GizmosDrawer::DrawRect(m_WorldManager->GetCave()->GetTile(newLadderTile.x, newLadderTile.y).GetRect());
+        
+        const TileTypes tileType = m_WorldManager->GetCave()->GetTile(newLadderTile.x, newLadderTile.y).GetTileType();
+        if(tileType == TileTypes::air)
+        {
+            SetVelocity(0,0);
+        }
+        
+        
+        if(m_IsOnLadder == false)
+        {
+            m_PlayerState = PlayerState::normal;
+        }
+    }
+    
     if(m_PlayerState != PlayerState::ragdoll)
     {
         if(m_InputManager->PressedJumpThisFrame())
         {
-            if(m_IsOnGround || m_PlayerState == PlayerState::hanging)
+            if(m_IsOnGround || m_PlayerState == PlayerState::hanging || m_PlayerState == PlayerState::ladderClimbing)
             {
                 m_IsJumping = true;
                 m_PlayerState = PlayerState::normal;
@@ -233,9 +258,8 @@ void PlayerObject::Update(const float elapsedTimes)
             }
         }
     }
-
-
-    if(m_PlayerState != PlayerState::hanging)
+    
+    if(m_PlayerState != PlayerState::hanging && m_PlayerState != PlayerState::ladderClimbing)
     {
         ApplyForce(Vector2f{0,2048} * elapsedTimes);
     }
@@ -270,6 +294,7 @@ void PlayerObject::Update(const float elapsedTimes)
 
     
     m_IsOnGround = false;
+    m_IsOnLadder = false;
     if(m_IsTouchingWall && m_PlayerState != PlayerState::hanging)
     {
         if(std::abs(moveInput.x) > 0)
@@ -284,9 +309,10 @@ void PlayerObject::Update(const float elapsedTimes)
 
 void PlayerObject::CallBackHitTile(std::pair<const Tile*, RayVsRectInfo> hitInfo)
 {
-    if( hitInfo.first->GetTileType() == TileTypes::ground || hitInfo.first->GetTileType() == TileTypes::border)
+    switch (hitInfo.first->GetTileType())
     {
-        
+    case TileTypes::ground:
+    case TileTypes::border:
         if(hitInfo.second.normal.y < 0)
         {
             m_IsOnGround = true;
@@ -296,17 +322,35 @@ void PlayerObject::CallBackHitTile(std::pair<const Tile*, RayVsRectInfo> hitInfo
             m_IsTouchingWall = true;
             m_IsTouchingLeftWall = hitInfo.second.normal.x > 0;
         }
-    }
-    else if(hitInfo.first->GetTileType() == TileTypes::spikes)
-    {
+        break;
+    case TileTypes::spikes:
         if(GetVelocity().y > 0)
         {
-            GizmosDrawer::SetColor({1,0,0});
-            GizmosDrawer::DrawRect(hitInfo.first->GetRect(), 1);
             m_PlayerState = PlayerState::dead;
         }
+        break;
+
+    case TileTypes::ladder:
+    case TileTypes::ladderTop:
+        if(m_PlayerState == PlayerState::ladderClimbing && m_IsOnLadder == false)
+        {
+            m_IsOnLadder = true;
+        }
+        else if(m_InputManager->GetMoveInput().y < 0 && m_IsJumping == false)
+        {
+            if((hitInfo.first->GetCenter() - GetCenter()).SquaredLength() < (spelucky_settings::g_TileSize/2.0f)*(spelucky_settings::g_TileSize/2.0f))
+            {
+                m_PlayerState = PlayerState::ladderClimbing;
+                m_IsTouchingWall = false;
+                m_IsOnLadder = true;
+                SetCenter(Vector2f{hitInfo.first->GetCenter().x, GetPosition().y});
+                SetVelocity(0,0);
+            }
+        }
+        break;
+    default:
+        break;
     }
-    
 }
 
 void PlayerObject::HandleWallHanging(const float elapsedTimes)

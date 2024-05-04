@@ -55,7 +55,7 @@ public:
     // void SetOnCollisionStay(std::function<void()> function);
     // void RemoveOnCollisionStay();
 
-    static bool RayCastCollision(const Vector2f& startPoint, const Vector2f& moveDirection, const RectPhysicsCollider& other, RayVsRectInfo& out);
+    static bool RayCastCollision(const Vector2f& startPoint, const Vector2f& moveDirection, const Rectf& rect, RayVsRectInfo& out);
 
     /// Update
     ///

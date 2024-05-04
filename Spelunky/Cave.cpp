@@ -430,3 +430,8 @@ const Tile& Cave::GetTile(const int x, const int y)
 {
     return m_Tiles.at(x).at(y);
 }
+
+const Tile& Cave::GetTile(const Vector2i& location)
+{
+    return m_Tiles.at(location.x).at(location.y);
+}

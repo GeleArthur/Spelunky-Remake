@@ -31,6 +31,7 @@ public:
 	Vector2f GetExit() const;
 	const std::vector<std::vector<Tile>>* GetTiles() const;
 	const Tile& GetTile(int x, int y);
+	const Tile& GetTile(const Vector2i& location);
 	const static int MAX_ROOMS_X{4};
 	const static int MAX_ROOMS_Y{4};
 	const static int TILES_PER_ROOM_X{10};

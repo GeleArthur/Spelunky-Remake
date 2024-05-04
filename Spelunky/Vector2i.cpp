@@ -18,6 +18,13 @@ Vector2i::Vector2i(const int x, const int y )
 	, y{ y }
 {
 }
+
+Vector2i::Vector2i(const Vector2f& vector):
+	x(static_cast<int>(vector.x)),
+	y(static_cast<int>(vector.y))
+{
+}
+
 //
 // Vector2i Vector2i::FromTo(const Vector2i& fromPoint, const Vector2i& toPoint)
 // {
