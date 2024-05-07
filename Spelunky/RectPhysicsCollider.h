@@ -54,7 +54,7 @@ public:
     virtual void CallBackHitEntity(Entity* entityHit /*, TODO: How was the tile hit*/);
     // void SetOnCollisionStay(std::function<void()> function);
     // void RemoveOnCollisionStay();
-
+    
     static bool RayCastCollision(const Vector2f& startPoint, const Vector2f& moveDirection, const Rectf& rect, RayVsRectInfo& out);
 
     /// Update

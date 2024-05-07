@@ -15,7 +15,8 @@ enum class PlayerAnimationState
     idle,
     walk,
     inAir,
-    hanging
+    hanging,
+    ladderClimbing,
 };
 enum class PlayerState
 {
@@ -41,6 +42,7 @@ public:
     virtual void Draw() const override;
     virtual void Update(float elapsedTimes) override;
     void UpdateAnimationState(float elapsedTimes);
+    void ChangeAnimationState(PlayerAnimationState newAnimationState);
     void Respawn(const Vector2f& spawnLocation);
     
     Vector2f GetPosition() const;

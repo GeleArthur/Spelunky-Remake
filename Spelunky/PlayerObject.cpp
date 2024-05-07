@@ -32,37 +32,26 @@ void PlayerObject::UpdateAnimationState(const float elapsedTimes)
 {
     m_AnimationTimer += elapsedTimes;
     
-    const Vector2f& velocity = GetVelocity();
-    const float speed = velocity.SquaredLength();
-    
     switch (m_CurrentAnimation)
     {
     case PlayerAnimationState::idle:
         if(m_IsOnGround == false)
         {
-            m_CurrentAnimation = PlayerAnimationState::inAir;
-            m_AnimationTimer = 0;
-            m_AnimationFrame = 0;
+            ChangeAnimationState(PlayerAnimationState::inAir);
         }
-        else if(speed > 0.01)
+        else if(GetVelocity().SquaredLength() > 0.01)
         {
-            m_CurrentAnimation = PlayerAnimationState::walk;
-            m_AnimationTimer = 0;
-            m_AnimationFrame = 0;
+            ChangeAnimationState(PlayerAnimationState::walk);
         }
         break;
     case PlayerAnimationState::walk:
         if(m_IsOnGround == false)
         {
-            m_CurrentAnimation = PlayerAnimationState::inAir;
-            m_AnimationTimer = 0;
-            m_AnimationFrame = 0;
+            ChangeAnimationState(PlayerAnimationState::inAir);
         }
-        else if(speed < 0.01)
+        else if(GetVelocity().SquaredLength() < 0.01)
         {
-            m_CurrentAnimation = PlayerAnimationState::idle;
-            m_AnimationTimer = 0;
-            m_AnimationFrame = 0;
+            ChangeAnimationState(PlayerAnimationState::idle);
         }
         else
         {
@@ -75,34 +64,83 @@ void PlayerObject::UpdateAnimationState(const float elapsedTimes)
         
         break;
     case PlayerAnimationState::inAir:
-        if(m_IsOnGround)
-        {
-            m_CurrentAnimation = PlayerAnimationState::walk;
-            m_AnimationTimer = 0;
-            m_AnimationFrame = 0;
-            return;
-        }
         if(m_PlayerState == PlayerState::hanging)
         {
-            m_CurrentAnimation = PlayerAnimationState::hanging;
-            m_AnimationTimer = 0;
-            m_AnimationFrame = 0;
+            ChangeAnimationState(PlayerAnimationState::hanging);
+        }
+        else if(m_IsOnGround == true)
+        {
+            ChangeAnimationState(PlayerAnimationState::walk);
+        }
+        else if(m_IsOnLadder == true)
+        {
+            ChangeAnimationState(PlayerAnimationState::ladderClimbing);
+        }
+        else
+        {
+            const Vector2f velocity = GetVelocity();
+            if(velocity.y > 0 && velocity.y < 50)
+            {
+                m_AnimationFrame = 4;
+            }
+            else if(velocity.y > 50 && velocity.y < 200)
+            {
+                m_AnimationFrame = 5;
+            }
+            else if(velocity.y > 200)
+            {
+                m_AnimationFrame = 7;
+            }
         }
         break;
     case PlayerAnimationState::hanging:
-        if(m_AnimationTimer > 0.05)
-        {
-            m_AnimationFrame++;
-            m_AnimationTimer = 0;
-        }
         if(m_PlayerState != PlayerState::hanging)
         {
-            m_CurrentAnimation = PlayerAnimationState::inAir;
-            m_AnimationTimer = 0;
-            m_AnimationFrame = 0;
+            ChangeAnimationState(PlayerAnimationState::inAir);
         }
+        else
+        {
+            if(m_AnimationTimer > 0.05)
+            {
+                m_AnimationFrame++;
+                m_AnimationTimer = 0;
+            }
+        }
+
+        break;
+    case PlayerAnimationState::ladderClimbing:
+        if(m_IsOnLadder == false)
+        {
+            ChangeAnimationState(PlayerAnimationState::inAir);
+        }
+        else
+        {
+            // std::cout << std::abs(GetVelocity().y) << '\n';
+            if(std::abs(GetVelocity().y) > 0.1f )
+            {
+                if(m_AnimationTimer > 0.1)
+                {
+                    m_AnimationFrame = (m_AnimationFrame+1)%6;
+                    m_AnimationTimer = 0;
+                }
+            }
+            else
+            {
+                // m_AnimationTimer = 0;
+                // std::cout << "PAIN\n";
+                m_AnimationFrame = 0;
+            }
+        }
+        
         break;
     }
+}
+
+void PlayerObject::ChangeAnimationState(const PlayerAnimationState newAnimationState)
+{
+    m_CurrentAnimation = newAnimationState;
+    m_AnimationTimer = 0;
+    m_AnimationFrame = 0;
 }
 
 void PlayerObject::Draw() const
@@ -122,34 +160,27 @@ void PlayerObject::Draw() const
         break;
     case PlayerAnimationState::inAir:
         {
-            const Vector2f velocity = GetVelocity();
             animationSource.top = 9*80.0f;
-            if(velocity.y > 0 && velocity.y < 50)
-            {
-                animationSource.left = 4*80.0f;
-            }
-            else if(velocity.y > 50 && velocity.y < 200)
-            {
-                animationSource.left = 5*80.0f;
-            }
-            else if(velocity.y > 200)
-            {
-                animationSource.left = 7*80.0f;
-            }
-        }
+            animationSource.left = static_cast<float>(m_AnimationFrame)*80.0f;
+        } 
         break;
     case PlayerAnimationState::hanging:
         animationSource.top = 3 * 80.f;
-        animationSource.left = float(8 + std::min(m_AnimationFrame, 3)) * 80.0f;
+        animationSource.left = static_cast<float>(8 + std::min(m_AnimationFrame, 3)) * 80.0f;
+        break;
+    case PlayerAnimationState::ladderClimbing:
+        animationSource.top = 6 * 80.f;
+        animationSource.left = static_cast<float>(m_AnimationFrame) * 80.0f;
         break;
     }
+
     
     glPushMatrix();
     const Vector2f position = GetCenter();
     glTranslatef(position.x, position.y, 0);
     
-    // GizmosDrawer::SetColor({1,1,1});
-    // GizmosDrawer::DrawQText(position, GetVelocity().ToString());
+    GizmosDrawer::SetColor({1,1,1});
+    GizmosDrawer::DrawQText(position + Vector2f{0, 50}, GetVelocity().ToString());
 
     // std::stringstream yes;
     // yes << "IsTouchingWall: " << std::boolalpha << std::to_string(m_IsTouchingWall) << " IsLeft: " + std::to_string(m_IsTouchingLeftWall);
@@ -216,11 +247,9 @@ void PlayerObject::Update(const float elapsedTimes)
         int direction = moveInput.y > 0 ? 1 : -1;
         Vector2i newLadderTile{(GetCenter() - Vector2f{0, static_cast<float>(direction * spelucky_settings::g_TileSize/2)}) / spelucky_settings::g_TileSize};
         newLadderTile.y += direction;
-
-        GizmosDrawer::DrawRect(m_WorldManager->GetCave()->GetTile(newLadderTile.x, newLadderTile.y).GetRect());
         
-        const TileTypes tileType = m_WorldManager->GetCave()->GetTile(newLadderTile.x, newLadderTile.y).GetTileType();
-        if(tileType == TileTypes::air)
+        const TileTypes topTileType = m_WorldManager->GetCave()->GetTile(newLadderTile.x, newLadderTile.y).GetTileType();
+        if(topTileType == TileTypes::air)
         {
             SetVelocity(0,0);
         }
@@ -336,7 +365,7 @@ void PlayerObject::CallBackHitTile(std::pair<const Tile*, RayVsRectInfo> hitInfo
         {
             m_IsOnLadder = true;
         }
-        else if(m_InputManager->GetMoveInput().y < 0 && m_IsJumping == false)
+        else if(m_PlayerState != PlayerState::ladderClimbing && m_InputManager->GetMoveInput().y < 0 && m_IsJumping == false)
         {
             if((hitInfo.first->GetCenter() - GetCenter()).SquaredLength() < (spelucky_settings::g_TileSize/2.0f)*(spelucky_settings::g_TileSize/2.0f))
             {

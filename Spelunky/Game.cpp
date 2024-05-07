@@ -116,10 +116,10 @@ void Game::Reset()
     const float elapsedSeconds = std::chrono::duration<float>(std::chrono::steady_clock::now() - t2).count();
     std::cout << "Took: " << elapsedSeconds << " sec. To generate level";
 
-    m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{30, -64}, m_WorldManager});
-    m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{50, -64}, m_WorldManager});
-    m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{-30, -64}, m_WorldManager});
-    m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{-50, -64}, m_WorldManager});
+    // m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{30, -64}, m_WorldManager});
+    // m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{50, -64}, m_WorldManager});
+    // m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{-30, -64}, m_WorldManager});
+    // m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{-50, -64}, m_WorldManager});
     m_Player->Respawn(/*Vector2f{64.0f*2, 64.0f*2}*/m_Cave->GetEntrance() + Vector2f{
         spelucky_settings::g_TileSize / 2.0f, spelucky_settings::g_TileSize / 2.0f
     });
