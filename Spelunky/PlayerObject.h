@@ -14,6 +14,7 @@ enum class PlayerAnimationState
 {
     idle,
     walk,
+    crouching,
     inAir,
     hanging,
     ladderClimbing,
@@ -66,10 +67,13 @@ private:
     float m_MaxSpeed{256.0f};
     float m_MaxSprintSpeed{512};
     float m_StopSpeed{256.0f};
+
+    float m_MaxCrouchingSpeed{64.0f};
     
     bool m_IsOnGround{false};
     bool m_IsJumping{false};
     bool m_IsOnLadder{false};
+    bool m_IsCrouching{false};
     
     // bool m_IsHanging{false};
     bool m_IsTouchingWall{false};

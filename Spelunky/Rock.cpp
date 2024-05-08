@@ -11,7 +11,7 @@
 Rock::Rock(const Vector2f& position, WorldManager* worldManager):
     Entity(),
     PickupItem(),
-    RectPhysicsCollider(Rectf{position.x, position.y, 40, 40}, 3, 1.0f, worldManager),
+    RectPhysicsCollider(Rectf{position.x, position.y, 40, 40}, 3, 0.3f, worldManager),
     m_SpriteSheetManager(worldManager->GetSpriteSheet())
 {
 }

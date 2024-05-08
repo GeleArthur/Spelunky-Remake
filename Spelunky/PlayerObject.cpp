@@ -43,6 +43,10 @@ void PlayerObject::UpdateAnimationState(const float elapsedTimes)
         {
             ChangeAnimationState(PlayerAnimationState::walk);
         }
+        else if(m_IsCrouching)
+        {
+            ChangeAnimationState(PlayerAnimationState::crouching);
+        }
         break;
     case PlayerAnimationState::walk:
         if(m_IsOnGround == false)
@@ -53,6 +57,10 @@ void PlayerObject::UpdateAnimationState(const float elapsedTimes)
         {
             ChangeAnimationState(PlayerAnimationState::idle);
         }
+        else if(m_IsCrouching)
+        {
+            ChangeAnimationState(PlayerAnimationState::crouching);
+        }
         else
         {
             if(m_AnimationTimer > (m_InputManager->IsHoldingSprint() ? 0.05f : 0.06f)  )
@@ -61,7 +69,6 @@ void PlayerObject::UpdateAnimationState(const float elapsedTimes)
                 m_AnimationFrame++;
             }
         }
-        
         break;
     case PlayerAnimationState::inAir:
         if(m_PlayerState == PlayerState::hanging)
@@ -115,7 +122,6 @@ void PlayerObject::UpdateAnimationState(const float elapsedTimes)
         }
         else
         {
-            // std::cout << std::abs(GetVelocity().y) << '\n';
             if(std::abs(GetVelocity().y) > 0.1f )
             {
                 if(m_AnimationTimer > 0.1)
@@ -126,12 +132,31 @@ void PlayerObject::UpdateAnimationState(const float elapsedTimes)
             }
             else
             {
-                // m_AnimationTimer = 0;
-                // std::cout << "PAIN\n";
                 m_AnimationFrame = 0;
             }
         }
         
+        break;
+    case PlayerAnimationState::crouching:
+        if(m_IsCrouching == false)
+        {
+            ChangeAnimationState(PlayerAnimationState::walk);
+        }
+        else
+        {
+            if(std::abs(GetVelocity().x) > 0.1f )
+            {
+                if(m_AnimationTimer > 0.04)
+                {
+                    m_AnimationFrame = (m_AnimationFrame+1)%7;
+                    m_AnimationTimer = 0;
+                }
+            }
+            else
+            {
+                m_AnimationFrame = 3;
+            }
+        }
         break;
     }
 }
@@ -172,6 +197,10 @@ void PlayerObject::Draw() const
         animationSource.top = 6 * 80.f;
         animationSource.left = static_cast<float>(m_AnimationFrame) * 80.0f;
         break;
+    case PlayerAnimationState::crouching:
+        animationSource.top = 1 * 80.f;
+        animationSource.left = 5 * 80.0f + static_cast<float>(m_AnimationFrame) * 80.0f;
+        break;
     }
 
     
@@ -205,11 +234,13 @@ void PlayerObject::Update(const float elapsedTimes)
     Vector2f inputVelocity{};
     const Vector2f& moveInput = m_InputManager->GetMoveInput();
 
+    // Check is need to hang on wall
     if(m_PlayerState == PlayerState::normal)
     {
         HandleWallHanging(elapsedTimes);
     }
 
+    // Apply normal movement input
     if(m_PlayerState == PlayerState::normal)
     {
         // No player input
@@ -238,13 +269,13 @@ void PlayerObject::Update(const float elapsedTimes)
         inputVelocity += Vector2f{moveInput.x * m_MaxSpeed/0.2f * elapsedTimes, 0};
         ApplyForce(inputVelocity);
     }
-    
+
+    // Apply ladder climing input
     if(m_PlayerState == PlayerState::ladderClimbing)
     {
         SetVelocity(0, moveInput.y * spelucky_settings::g_TileSize*3);
-        
-        // TODO: Even do the cast is explicit it doesn't complain ask about this???
-        int direction = moveInput.y > 0 ? 1 : -1;
+
+        const int direction = moveInput.y > 0 ? 1 : -1;
         Vector2i newLadderTile{(GetCenter() - Vector2f{0, static_cast<float>(direction * spelucky_settings::g_TileSize/2)}) / spelucky_settings::g_TileSize};
         newLadderTile.y += direction;
         
@@ -254,13 +285,22 @@ void PlayerObject::Update(const float elapsedTimes)
             SetVelocity(0,0);
         }
         
-        
         if(m_IsOnLadder == false)
         {
             m_PlayerState = PlayerState::normal;
         }
     }
-    
+
+    m_IsCrouching = false;
+    if(m_PlayerState == PlayerState::normal && m_IsOnGround && !m_IsOnLadder)
+    {
+        if(moveInput.y > 0.1)
+        {
+            m_IsCrouching = true;
+        }
+    }
+
+    // Check jumping
     if(m_PlayerState != PlayerState::ragdoll)
     {
         if(m_InputManager->PressedJumpThisFrame())
@@ -287,23 +327,34 @@ void PlayerObject::Update(const float elapsedTimes)
             }
         }
     }
-    
+
+    // Apply gravity
     if(m_PlayerState != PlayerState::hanging && m_PlayerState != PlayerState::ladderClimbing)
     {
         ApplyForce(Vector2f{0,2048} * elapsedTimes);
     }
-    
+
+    // Set the x velocity to 0 if really small
     if(std::abs(GetVelocity().x) < 0.0001)
     {
         SetVelocity(0, GetVelocity().y);
     }
     else
     {
+        // Set looking left
         m_IsLookingToLeft = GetVelocity().x < 0;
     }
     
     // Limit left/right speed
-    const float currentMaxSpeed = m_InputManager->IsHoldingSprint() ? m_MaxSprintSpeed : m_MaxSpeed;
+    float currentMaxSpeed;
+    if(m_IsCrouching)
+    {
+        currentMaxSpeed = m_MaxCrouchingSpeed;
+    }
+    else
+    {
+        currentMaxSpeed = m_InputManager->IsHoldingSprint() ? m_MaxSprintSpeed : m_MaxSpeed;
+    }
     if(std::abs(GetVelocity().x) > currentMaxSpeed)
     {
         if(GetVelocity().x > 0)
@@ -321,7 +372,8 @@ void PlayerObject::Update(const float elapsedTimes)
             SetVelocity(GetVelocity().x, -960);
     }
 
-    
+
+    // Setup varibles for UpdatePhysics
     m_IsOnGround = false;
     m_IsOnLadder = false;
     if(m_IsTouchingWall && m_PlayerState != PlayerState::hanging)
