@@ -102,7 +102,6 @@ void Game::Draw() const
     m_Cave->Draw();
     m_EntityManager->DrawEntities();
     m_Player->Draw();
-    // m_ItemManager->DrawPickupItems();
 
     GizmosDrawer::Draw();
     m_CameraSystem->PopCamera();

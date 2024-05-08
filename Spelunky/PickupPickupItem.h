@@ -12,5 +12,6 @@ public:
     
     virtual bool Throw(Vector2f force) = 0;
     virtual bool CanBePickedUp() = 0;
-    virtual void Draw() const = 0;
+    virtual void DrawPickedUp() const = 0;
+    virtual void SetTargetPosition(Vector2f position) = 0;
 };

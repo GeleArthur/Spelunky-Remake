@@ -215,18 +215,12 @@ void PlayerObject::Draw() const
     // yes << "IsTouchingWall: " << std::boolalpha << std::to_string(m_IsTouchingWall) << " IsLeft: " + std::to_string(m_IsTouchingLeftWall);
 
     // GizmosDrawer::DrawQText(position + Vector2f{0, 30}, yes.str());
-    
 
     if(m_IsLookingToLeft)
         glScalef(-1,1,1);
     m_SpriteSheetManager->GetCurrentPlayerTexture()->Draw(-Vector2f{40,40}, animationSource);
     
     glPopMatrix();
-
-    // if(m_PickupItem != nullptr)
-    // {
-    //     m_PickupItem->Draw();
-    // }
 }
 
 void PlayerObject::Update(const float elapsedTimes)
@@ -487,6 +481,11 @@ PlayerState PlayerObject::GetPlayerState() const
 EntityType PlayerObject::GetEntityType() const
 {
     return EntityType::player;
+}
+
+bool PlayerObject::IsPickedUp() const
+{
+    return false;
 }
 
 
