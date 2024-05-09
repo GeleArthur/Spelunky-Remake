@@ -4,7 +4,8 @@
 
 #include "Entity.h"
 
-class PickupItem;
+class CirclePhysicsCollider;
+class RectPhysicsCollider;
 class WorldManager;
 
 class EntityManager final
@@ -25,5 +26,7 @@ public:
     
 private:
     std::vector<Entity*> m_Entities;
+    std::vector<RectPhysicsCollider*> m_EntitiesWithRectCollider;
+    std::vector<CirclePhysicsCollider*> m_EntitiesWithCircleCollider;
     // std::vector<PickupItem*> m_PickupItems;
 };

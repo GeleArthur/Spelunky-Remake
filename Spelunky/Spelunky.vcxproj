@@ -153,6 +153,8 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="Cave.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="CollisionHelpers.cpp" />
+    <ClCompile Include="EntityPickupRectCollider.cpp" />
+    <ClCompile Include="EntityRectCollider.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GizmosDrawer.cpp" />
     <ClCompile Include="Entity.cpp" />
@@ -167,7 +169,6 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="RoomTemplates.cpp" />
     <ClCompile Include="CirclePhysicsCollider.cpp" />
     <ClCompile Include="SpriteSheetManager.cpp" />
-    <ClCompile Include="PickupItem.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Vector2i.cpp" />
     <ClCompile Include="WorldManager.cpp" />
@@ -177,6 +178,8 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="Cave.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="CollisionHelpers.h" />
+    <ClInclude Include="EntityPickupRectCollider.h" />
+    <ClInclude Include="EntityRectCollider.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GizmosDrawer.h" />
     <ClInclude Include="GlobalValues.h" />
@@ -193,7 +196,6 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="RoomTemplates.h" />
     <ClInclude Include="CirclePhysicsCollider.h" />
     <ClInclude Include="SpriteSheetManager.h" />
-    <ClInclude Include="PickupPickupItem.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileTypes.h" />
     <ClInclude Include="Vector2i.h" />

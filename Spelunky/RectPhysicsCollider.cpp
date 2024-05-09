@@ -5,6 +5,7 @@
 
 #include "Cave.h"
 #include "CirclePhysicsCollider.h"
+#include "EntityManager.h"
 #include "Game.h"
 #include "GizmosDrawer.h"
 #include "utils.h"
@@ -273,9 +274,6 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
 
     Vector2f collidedPosition = GetCenter();
     Vector2f collidedVelocity = m_Velocity * elapsedTime;
-
-    // GizmosDrawer::SetColor({1, 1, 1});
-    // GizmosDrawer::DrawLine(GetCenter(), GetCenter() + m_Velocity);
     
     m_BlocksWeHit.clear();
     
@@ -288,9 +286,9 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
         m_HitsCache.clear();
 
         // TODO: Optimise so it only checks around the collider based on the velocity
-        for (int i{}; i < int(tiles->size()); ++i)
+        for (int i{}; i < static_cast<int>(tiles->size()); ++i)
         {
-            for (int j{}; j < int(tiles->at(i).size()); ++j)
+            for (int j{}; j < static_cast<int>(tiles->at(i).size()); ++j)
             {
                 const Tile& currentTile = tiles->at(i).at(j);
                 if (currentTile.GetTileType() == TileTypes::air) continue;
@@ -321,6 +319,8 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
 
                 const float strengthInVelocity = (-(1 + m_Bounciness) * velocityThatLeft).DotProduct(firstHit.second.normal);
                 const float strengthInVelocityFull = (-(1 + m_Bounciness) * m_Velocity).DotProduct(firstHit.second.normal);
+
+                CheckEntityCollision(collidedPosition, velocityThatLeft);
         
                 m_Velocity += firstHit.second.normal * strengthInVelocityFull;
                 collidedVelocity = velocityThatLeft + firstHit.second.normal * strengthInVelocity;
@@ -334,16 +334,24 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
     collidedPosition += collidedVelocity;
     SetCenter(collidedPosition);
     
-    for (int i{}; i < m_BlocksWeHit.size(); ++i)
-    {
-        CallBackHitTile(m_BlocksWeHit[i]);
-    }
+    CallBackHitTile(m_BlocksWeHit);
     
     // GizmosDrawer::SetColor({1,1,1});
     // GizmosDrawer::DrawCircle(collidedPosition, 3);
 }
 
-void RectPhysicsCollider::CallBackHitTile(std::pair<const Tile*, RayVsRectInfo> hitInfo)
+void RectPhysicsCollider::CheckEntityCollision(const Vector2f& position, const Vector2f& velocity) const
+{
+    const std::vector<Entity*>& entities = m_WorldManager->GetEntityManager()->GetAllEntities();
+
+    for (int i{}; i < entities.size(); ++i)
+    {
+        
+    }
+    
+}
+
+void RectPhysicsCollider::CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo)
 {
 }
 

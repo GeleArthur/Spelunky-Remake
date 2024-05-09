@@ -382,49 +382,56 @@ void PlayerObject::Update(const float elapsedTimes)
     UpdateAnimationState(elapsedTimes);
 }
 
-void PlayerObject::CallBackHitTile(std::pair<const Tile*, RayVsRectInfo> hitInfo)
+void PlayerObject::CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo)
 {
-    switch (hitInfo.first->GetTileType())
+    for (int i{}; i < hitInfo.size(); ++i)
     {
-    case TileTypes::ground:
-    case TileTypes::border:
-        if(hitInfo.second.normal.y < 0)
+        switch (hitInfo[i].first->GetTileType())
         {
-            m_IsOnGround = true;
-        }
-        if(hitInfo.second.normal.x != 0)
-        {
-            m_IsTouchingWall = true;
-            m_IsTouchingLeftWall = hitInfo.second.normal.x > 0;
-        }
-        break;
-    case TileTypes::spikes:
-        if(GetVelocity().y > 0)
-        {
-            m_PlayerState = PlayerState::dead;
-        }
-        break;
-
-    case TileTypes::ladder:
-    case TileTypes::ladderTop:
-        if(m_PlayerState == PlayerState::ladderClimbing && m_IsOnLadder == false)
-        {
-            m_IsOnLadder = true;
-        }
-        else if(m_PlayerState != PlayerState::ladderClimbing && m_InputManager->GetMoveInput().y < 0 && m_IsJumping == false)
-        {
-            if((hitInfo.first->GetCenter() - GetCenter()).SquaredLength() < (spelucky_settings::g_TileSize/2.0f)*(spelucky_settings::g_TileSize/2.0f))
+        case TileTypes::ground:
+        case TileTypes::border:
+            if(hitInfo[i].second.normal.y < 0)
             {
-                m_PlayerState = PlayerState::ladderClimbing;
-                m_IsTouchingWall = false;
-                m_IsOnLadder = true;
-                SetCenter(Vector2f{hitInfo.first->GetCenter().x, GetPosition().y});
-                SetVelocity(0,0);
+                m_IsOnGround = true;
             }
+            if(hitInfo[i].second.normal.x != 0)
+            {
+                m_IsTouchingWall = true;
+                m_IsTouchingLeftWall = hitInfo[i].second.normal.x > 0;
+            }
+            break;
+        case TileTypes::spikes:
+            if(GetVelocity().y > 0)
+            {
+                m_PlayerState = PlayerState::dead;
+            }
+            break;
+
+        case TileTypes::ladder:
+        case TileTypes::ladderTop:
+            if(m_PlayerState == PlayerState::ladderClimbing && m_IsOnLadder == false)
+            {
+                m_IsOnLadder = true;
+            }
+            else if(m_PlayerState != PlayerState::ladderClimbing && m_InputManager->GetMoveInput().y < 0 && m_IsJumping == false)
+            {
+                if((hitInfo[i].first->GetCenter() - GetCenter()).SquaredLength() < (spelucky_settings::g_TileSize/2.0f)*(spelucky_settings::g_TileSize/2.0f))
+                {
+                    m_PlayerState = PlayerState::ladderClimbing;
+                    m_IsTouchingWall = false;
+                    m_IsOnLadder = true;
+                    SetCenter(Vector2f{hitInfo[i].first->GetCenter().x, GetPosition().y});
+                    SetVelocity(0,0);
+                }
+            }
+            break;
+        case TileTypes::air:
+        case TileTypes::pushBlock:
+        case TileTypes::entrance:
+        case TileTypes::exit:
+        case TileTypes::unknown:
+            break;
         }
-        break;
-    default:
-        break;
     }
 }
 
@@ -483,9 +490,7 @@ EntityType PlayerObject::GetEntityType() const
     return EntityType::player;
 }
 
-bool PlayerObject::IsPickedUp() const
+ColliderTypes PlayerObject::GetColliderType() const
 {
-    return false;
+    return RectPhysicsCollider::GetColliderType();
 }
-
-

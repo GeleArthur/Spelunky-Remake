@@ -50,7 +50,8 @@ public:
     // bool PredictCollision(const Collider& other);
 
     void UpdatePhysics(float elapsedTime);
-    virtual void CallBackHitTile(std::pair<const Tile*, RayVsRectInfo> hitInfo);
+    void CheckEntityCollision(const Vector2f& position, const Vector2f& velocity) const;
+    virtual void CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo);
     virtual void CallBackHitEntity(Entity* entityHit /*, TODO: How was the tile hit*/);
     // void SetOnCollisionStay(std::function<void()> function);
     // void RemoveOnCollisionStay();

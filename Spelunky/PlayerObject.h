@@ -51,12 +51,12 @@ public:
 
     
     virtual EntityType GetEntityType() const override;
-    virtual void CallBackHitTile(std::pair<const Tile*, RayVsRectInfo> hitInfo) override;
+    virtual ColliderTypes GetColliderType() const override;
+    virtual void CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo) override;
 
 private:
     void HandleWallHanging(float elapsedTimes);
 
-    
     PlayerAnimationState m_CurrentAnimation{PlayerAnimationState::idle};
     PlayerState m_PlayerState{PlayerState::normal};
     

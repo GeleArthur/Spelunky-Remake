@@ -40,12 +40,12 @@ void InputManager::Update()
     m_PressedJumpThisFrame = false;
     m_PressedGrabThisFrame = false;
 
-    if(pStates[SDL_SCANCODE_Z] && pStates[SDL_SCANCODE_Z] != m_PressedJumpPrevState)
+    if(pStates[SDL_SCANCODE_Z] && static_cast<bool>(pStates[SDL_SCANCODE_Z]) != m_PressedJumpPrevState)
     {
         m_PressedJumpThisFrame = true;
     }
 
-    if(pStates[SDL_SCANCODE_X] && pStates[SDL_SCANCODE_X] != m_PressedGrabPrevState)
+    if(pStates[SDL_SCANCODE_X] && static_cast<bool>(pStates[SDL_SCANCODE_X]) != m_PressedGrabPrevState)
     {
         m_PressedGrabThisFrame = true;
     }
