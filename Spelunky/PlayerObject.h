@@ -53,6 +53,7 @@ public:
     virtual EntityType GetEntityType() const override;
     virtual ColliderTypes GetColliderType() const override;
     virtual void CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo) override;
+    virtual void CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, Entity*>>& hitInfo) override;
 
 private:
     void HandleWallHanging(float elapsedTimes);

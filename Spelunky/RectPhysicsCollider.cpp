@@ -6,6 +6,7 @@
 #include "Cave.h"
 #include "CirclePhysicsCollider.h"
 #include "EntityManager.h"
+#include "EntityRectCollider.h"
 #include "Game.h"
 #include "GizmosDrawer.h"
 #include "utils.h"
@@ -13,6 +14,7 @@
 
 std::vector<std::pair<const Tile*, RayVsRectInfo>> RectPhysicsCollider::m_HitsCache{};
 std::vector<std::pair<const Tile*, RayVsRectInfo>> RectPhysicsCollider::m_BlocksWeHit{};
+std::vector<std::pair<RayVsRectInfo, Entity*>> RectPhysicsCollider::m_EntitiesWeHit{};
 
 RectPhysicsCollider::RectPhysicsCollider(const Rectf& rect, const float mass, const float bounciness,
                                          WorldManager* worldManager):
@@ -108,10 +110,10 @@ bool RectPhysicsCollider::IsOverlapping(const Collider& other) const
 }
 
 bool RectPhysicsCollider::PredictCollision(const Vector2f& startPoint, const Vector2f& moveDirection,
-                                           const RectPhysicsCollider& otherPhysicsRect, RayVsRectInfo& out)
+                                           const RectPhysicsCollider& otherPhysicsRect, RayVsRectInfo& out) const
 {
-    Rectf otherRect{otherPhysicsRect.GetRect()};
-    Rectf thisRect{GetRect()};
+    const Rectf otherRect{otherPhysicsRect.GetRect()};
+    const Rectf thisRect{GetRect()};
 
     const Rectf extendedRect{
         otherRect.left - thisRect.width / 2,
@@ -119,94 +121,8 @@ bool RectPhysicsCollider::PredictCollision(const Vector2f& startPoint, const Vec
         otherRect.width + thisRect.width,
         otherRect.height + thisRect.height
     };
-    
-    // GizmosDrawer::SetColor({0, 1, 0});
-    // GizmosDrawer::DrawRect(extendedRect);
 
-    Vector2f rayOrigin = startPoint;
-    Vector2f rayDirection = moveDirection;
-    // GizmosDrawer::SetColor({1,0,0});
-    // GizmosDrawer::DrawLine(rayOrigin, rayOrigin + rayDirection);
-
-    float nearTimeX = (extendedRect.left - rayOrigin.x) / rayDirection.x;
-    float nearTimeY = (extendedRect.top - rayOrigin.y) / rayDirection.y;
-
-    float farTimeX = ((extendedRect.left + extendedRect.width) - rayOrigin.x) / rayDirection.x;
-    float farTimeY = ((extendedRect.top + extendedRect.height) - rayOrigin.y) / rayDirection.y;
-
-    if (std::isnan(nearTimeX)) nearTimeX = 1;
-    if (std::isnan(nearTimeY)) nearTimeY = 1;
-    if (std::isnan(farTimeX)) farTimeX = 0;
-    if (std::isnan(farTimeY)) farTimeY = 0;
-
-
-    if (nearTimeX > farTimeX) std::swap(nearTimeX, farTimeX);
-    if (nearTimeY > farTimeY) std::swap(nearTimeY, farTimeY);
-
-    /*
-    GizmosDrawer::SetColor({1,0,0});
-    GizmosDrawer::DrawCircle(rayOrigin + rayDirection * nearTimeX, 4);
-    GizmosDrawer::DrawQText(rayOrigin + rayDirection * nearTimeX, "N X: " + std::to_string(nearTimeX));
-    GizmosDrawer::DrawCircle(rayOrigin + rayDirection * nearTimeY, 4);
-    GizmosDrawer::DrawQText(rayOrigin + rayDirection * nearTimeY, "N Y: " + std::to_string(nearTimeY));
-    
-    GizmosDrawer::SetColor({0,1,0});
-    GizmosDrawer::DrawCircle(rayOrigin + rayDirection * farTimeX, 4);
-    GizmosDrawer::DrawQText(rayOrigin + rayDirection * farTimeX, "F X" + std::to_string(farTimeX));
-    GizmosDrawer::DrawCircle(rayOrigin + rayDirection * farTimeY, 4);
-    GizmosDrawer::DrawQText(rayOrigin + rayDirection * farTimeY, "F Y" + std::to_string(farTimeY));
-    */
-
-
-    float nearTime = std::max(nearTimeX, nearTimeY);
-    float farTime = std::min(farTimeX, farTimeY);
-
-    // GizmosDrawer::SetColor({1,0,0});
-    // GizmosDrawer::DrawCircle(rayOrigin + rayDirection * nearTime, 4);
-    // GizmosDrawer::DrawQText(rayOrigin + rayDirection * nearTime, "Near " + std::to_string(nearTime));
-    //
-    // GizmosDrawer::SetColor({0,1,0});
-    // GizmosDrawer::DrawCircle(rayOrigin + rayDirection * farTime, 4);
-    // GizmosDrawer::DrawQText(rayOrigin + rayDirection * farTime, "Far " + std::to_string(farTime));
-
-    if (farTime <= 0 && nearTime >= 1) // Check if line is in ray time
-        return false;
-    if (nearTime >= farTime || farTime <= 0 || nearTime >= 1)
-    // If the outer points over shoot each other it doesn't hit
-    {
-        return false;
-    }
-
-    // GizmosDrawer::SetColor({1,0,0});
-    // GizmosDrawer::DrawCircle(rayOrigin + rayDirection * nearTime, 4);
-    // GizmosDrawer::DrawQText(rayOrigin + rayDirection * nearTime, "Near " + std::to_string(nearTime));
-    //
-    // GizmosDrawer::SetColor({0,1,0});
-    // GizmosDrawer::DrawCircle(rayOrigin + rayDirection * farTime, 4);
-    // GizmosDrawer::DrawQText(rayOrigin + rayDirection * farTime, "Far " + std::to_string(farTime));
-
-    out.nearTime = nearTime;
-    out.farTime = farTime;
-
-    // GizmosDrawer::SetColor({1,0,0});
-    // GizmosDrawer::DrawRect(extendedRect);
-
-    out.interSectionPoint = rayOrigin + rayDirection * nearTime;
-    if (nearTimeX > nearTimeY) // We hit on the X side
-    {
-        if (rayDirection.x > 0) out.normal = Vector2f{-1, 0};
-        else out.normal = Vector2f{1, 0};
-    }
-    else
-    {
-        if (rayDirection.y > 0) out.normal = Vector2f{0, -1};
-        else out.normal = Vector2f{0, 1};
-    }
-
-    // GizmosDrawer::DrawCircle(out.interSectionPoint, 5);
-    // GizmosDrawer::DrawLine(out.interSectionPoint, out.interSectionPoint + out.normal * 10);
-
-    return true;
+    return RayCastCollision(startPoint, moveDirection, extendedRect, out);
 }
 
 bool RectPhysicsCollider::PredictCollision(const CirclePhysicsCollider& other)
@@ -214,13 +130,9 @@ bool RectPhysicsCollider::PredictCollision(const CirclePhysicsCollider& other)
     return false;
 }
 
-// TODO: Delete or let PredictCollision call it
 bool RectPhysicsCollider::RayCastCollision(const Vector2f& startPoint, const Vector2f& moveDirection,
     const Rectf& rect, RayVsRectInfo& out)
 {
-    if (moveDirection.x == 0 && moveDirection.y == 0)
-        return false;
-    
     float nearTimeX = (rect.left - startPoint.x) / moveDirection.x;
     float nearTimeY = (rect.top - startPoint.y) / moveDirection.y;
 
@@ -268,14 +180,20 @@ bool RectPhysicsCollider::RayCastCollision(const Vector2f& startPoint, const Vec
 
 void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
 {
-    const std::vector<std::vector<Tile>>* tiles = m_WorldManager->GetCave()->GetTiles();
+    const std::vector<std::vector<Tile>>& tiles = m_WorldManager->GetCave()->GetTiles();
 
     bool isColliding = true;
 
     Vector2f collidedPosition = GetCenter();
     Vector2f collidedVelocity = m_Velocity * elapsedTime;
+
+    GizmosDrawer::DrawRect(GetRect());
     
     m_BlocksWeHit.clear();
+    m_EntitiesWeHit.clear();
+
+    // Not perfect as we can go through walls. But the chance of that happening low.
+    CheckEntityCollision(collidedPosition, collidedVelocity);
     
     int limitCount = 10;
     while (isColliding && limitCount > 0)
@@ -286,11 +204,12 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
         m_HitsCache.clear();
 
         // TODO: Optimise so it only checks around the collider based on the velocity
-        for (int i{}; i < static_cast<int>(tiles->size()); ++i)
+        
+        for (int i{}; i < static_cast<int>(tiles.size()); ++i)
         {
-            for (int j{}; j < static_cast<int>(tiles->at(i).size()); ++j)
+            for (int j{}; j < static_cast<int>(tiles[i].size()); ++j)
             {
-                const Tile& currentTile = tiles->at(i).at(j);
+                const Tile& currentTile = tiles[i][j];
                 if (currentTile.GetTileType() == TileTypes::air) continue;
 
                 RayVsRectInfo rayResult;
@@ -309,7 +228,7 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
 
             for (int i{}; i < m_HitsCache.size(); ++i)
             {
-                std::pair<const Tile*, RayVsRectInfo> firstHit = m_HitsCache.at(i);
+                std::pair<const Tile*, RayVsRectInfo> firstHit = m_HitsCache[i];
                 m_BlocksWeHit.push_back(firstHit);
             
                 if(firstHit.first->GetTileType() != TileTypes::ground && firstHit.first->GetTileType() != TileTypes::border) continue;
@@ -319,9 +238,7 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
 
                 const float strengthInVelocity = (-(1 + m_Bounciness) * velocityThatLeft).DotProduct(firstHit.second.normal);
                 const float strengthInVelocityFull = (-(1 + m_Bounciness) * m_Velocity).DotProduct(firstHit.second.normal);
-
-                CheckEntityCollision(collidedPosition, velocityThatLeft);
-        
+                
                 m_Velocity += firstHit.second.normal * strengthInVelocityFull;
                 collidedVelocity = velocityThatLeft + firstHit.second.normal * strengthInVelocity;
                 collidedPosition = firstHit.second.interSectionPoint;
@@ -335,6 +252,7 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
     SetCenter(collidedPosition);
     
     CallBackHitTile(m_BlocksWeHit);
+    CallBackHitEntity(m_EntitiesWeHit);
     
     // GizmosDrawer::SetColor({1,1,1});
     // GizmosDrawer::DrawCircle(collidedPosition, 3);
@@ -343,10 +261,28 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
 void RectPhysicsCollider::CheckEntityCollision(const Vector2f& position, const Vector2f& velocity) const
 {
     const std::vector<Entity*>& entities = m_WorldManager->GetEntityManager()->GetAllEntities();
-
+    
     for (int i{}; i < entities.size(); ++i)
     {
-        
+        switch (entities[i]->GetColliderType())
+        {
+        case ColliderTypes::circle:
+            break;
+        case ColliderTypes::rect:
+            {
+                const EntityRectCollider* rectCollider = reinterpret_cast<EntityRectCollider*>(entities[i]);
+                if(rectCollider == this)
+                {
+                    continue;
+                }
+
+                if(RayVsRectInfo out; PredictCollision(position, velocity, *rectCollider, out))
+                {
+                    m_EntitiesWeHit.emplace_back(out, entities[i]);
+                }
+            }
+            break;
+        }
     }
     
 }
@@ -355,6 +291,6 @@ void RectPhysicsCollider::CallBackHitTile(std::vector<std::pair<const Tile*, Ray
 {
 }
 
-void RectPhysicsCollider::CallBackHitEntity(Entity* entityHit)
+void RectPhysicsCollider::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, Entity*>>& hitInfo)
 {
 }

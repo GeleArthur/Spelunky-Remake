@@ -45,14 +45,14 @@ public:
     bool IsOverlapping(const CirclePhysicsCollider& other) const;
     bool IsOverlapping(const Collider& other) const;
 
-    bool PredictCollision(const Vector2f& startPoint, const Vector2f& moveDirection, const RectPhysicsCollider& other, RayVsRectInfo& out);
+    bool PredictCollision(const Vector2f& startPoint, const Vector2f& moveDirection, const RectPhysicsCollider& otherPhysicsRect, RayVsRectInfo& out) const;
     bool PredictCollision(const CirclePhysicsCollider& other /*TODO: out needed */);
     // bool PredictCollision(const Collider& other);
 
     void UpdatePhysics(float elapsedTime);
     void CheckEntityCollision(const Vector2f& position, const Vector2f& velocity) const;
     virtual void CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo);
-    virtual void CallBackHitEntity(Entity* entityHit /*, TODO: How was the tile hit*/);
+    virtual void CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, Entity*>>& hitInfo);
     // void SetOnCollisionStay(std::function<void()> function);
     // void RemoveOnCollisionStay();
     
@@ -83,9 +83,11 @@ private:
     float m_InverseMass;
     float m_Bounciness;
 
-    // cache vector memory se the array can be reused
+    // cache vector memory so the array can be reused
     static std::vector<std::pair<const Tile*, RayVsRectInfo>> m_HitsCache;
     static std::vector<std::pair<const Tile*, RayVsRectInfo>> m_BlocksWeHit;
+
+    static std::vector<std::pair<RayVsRectInfo, Entity*>> m_EntitiesWeHit;
 
     WorldManager* m_WorldManager;
 };

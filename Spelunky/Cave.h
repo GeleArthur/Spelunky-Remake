@@ -29,7 +29,7 @@ public:
 	void GenerateLevel();
 	Vector2f GetEntrance() const;
 	Vector2f GetExit() const;
-	const std::vector<std::vector<Tile>>* GetTiles() const;
+	const std::vector<std::vector<Tile>>& GetTiles() const;
 	const Tile& GetTile(int x, int y);
 	const Tile& GetTile(const Vector2i& location);
 	const static int MAX_ROOMS_X{4};

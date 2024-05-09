@@ -421,9 +421,9 @@ Vector2f Cave::GetExit() const
     return m_ExitLocation;
 }
 
-const std::vector<std::vector<Tile>>* Cave::GetTiles() const
+const std::vector<std::vector<Tile>>& Cave::GetTiles() const
 {
-    return &m_Tiles;
+    return m_Tiles;
 }
 
 const Tile& Cave::GetTile(const int x, const int y)

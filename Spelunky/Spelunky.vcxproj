@@ -152,7 +152,6 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="CameraSystem.cpp" />
     <ClCompile Include="Cave.cpp" />
     <ClCompile Include="Collider.cpp" />
-    <ClCompile Include="CollisionHelpers.cpp" />
     <ClCompile Include="EntityPickupRectCollider.cpp" />
     <ClCompile Include="EntityRectCollider.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -177,7 +176,6 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="CameraSystem.h" />
     <ClInclude Include="Cave.h" />
     <ClInclude Include="Collider.h" />
-    <ClInclude Include="CollisionHelpers.h" />
     <ClInclude Include="EntityPickupRectCollider.h" />
     <ClInclude Include="EntityRectCollider.h" />
     <ClInclude Include="Game.h" />

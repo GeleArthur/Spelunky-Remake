@@ -15,6 +15,7 @@
 #include "InputManager.h"
 #include "magic_enum.hpp"
 #include "RectPhysicsCollider.h"
+#include "Rock.h"
 #include "SpriteSheetManager.h"
 #include "Texture.h"
 #include "Tile.h"
@@ -430,6 +431,29 @@ void PlayerObject::CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectI
         case TileTypes::entrance:
         case TileTypes::exit:
         case TileTypes::unknown:
+            break;
+        }
+    }
+}
+
+void PlayerObject::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, Entity*>>& hitInfo)
+{
+    for (int i{}; i < hitInfo.size(); ++i)
+    {
+        switch (hitInfo[i].second->GetEntityType())
+        {
+        case EntityType::player:
+            break;
+        case EntityType::rock:
+            {
+                const Rock* rock = reinterpret_cast<Rock*>(hitInfo[i].second);
+                GizmosDrawer::SetColor({1,0,0});
+                GizmosDrawer::DrawRect(rock->GetRect());
+            }
+            break;
+        case EntityType::arrow:
+            break;
+        case EntityType::snake:
             break;
         }
     }
