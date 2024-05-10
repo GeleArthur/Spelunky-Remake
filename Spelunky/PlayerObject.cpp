@@ -447,8 +447,19 @@ void PlayerObject::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, Entity
         case EntityType::rock:
             {
                 const Rock* rock = reinterpret_cast<Rock*>(hitInfo[i].second);
+
+                const Rectf extendedRect{
+                    rock->GetRect().left - GetRect().width / 2,
+                    rock->GetRect().top - GetRect().height / 2,
+                    rock->GetRect().width + GetRect().width,
+                    rock->GetRect().height + GetRect().height
+                };
+
+                
                 GizmosDrawer::SetColor({1,0,0});
-                GizmosDrawer::DrawRect(rock->GetRect());
+                GizmosDrawer::DrawRect(extendedRect);
+                
+                GizmosDrawer::DrawCircle(hitInfo[i].first.interSectionPoint, 3, 0.2f);
             }
             break;
         case EntityType::arrow:

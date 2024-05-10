@@ -8,7 +8,7 @@
 
 
 Rock::Rock(const Vector2f& position, WorldManager* worldManager):
-    EntityPickupRectCollider(Rectf{position.x, position.y, 40, 40}, 3, 0.3f, worldManager),
+    EntityPickupRectCollider(Rectf{position.x, position.y, 34, 34}, 3, 0.3f, worldManager),
     m_SpriteSheetManager(worldManager->GetSpriteSheet())
 {
 }

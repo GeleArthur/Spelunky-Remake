@@ -186,14 +186,9 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
 
     Vector2f collidedPosition = GetCenter();
     Vector2f collidedVelocity = m_Velocity * elapsedTime;
-
-    GizmosDrawer::DrawRect(GetRect());
     
     m_BlocksWeHit.clear();
     m_EntitiesWeHit.clear();
-
-    // Not perfect as we can go through walls. But the chance of that happening low.
-    CheckEntityCollision(collidedPosition, collidedVelocity);
     
     int limitCount = 10;
     while (isColliding && limitCount > 0)
@@ -247,6 +242,19 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
             }
         }
     }
+
+    Vector2f fixedVelocity;
+    if(m_Velocity.SquaredLength() != 0)
+    {
+        m_IsTurningLeft = m_Velocity.x > 0;
+        fixedVelocity = m_Velocity * elapsedTime;
+    }
+    else
+    {
+        fixedVelocity = Vector2f{m_IsTurningLeft ? 0.001f : -0.001f * elapsedTime, 0};
+    }
+    // Not perfect as its possible to skip an entity but the chance of that is really low.
+    CheckEntityCollision(collidedPosition, fixedVelocity);
     
     collidedPosition += collidedVelocity;
     SetCenter(collidedPosition);
