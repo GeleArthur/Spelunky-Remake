@@ -8,12 +8,15 @@ public:
     
     virtual EntityType GetEntityType() const override = 0;
     virtual void Draw() const override = 0;
+    virtual void DrawPickedUp() const = 0;
     virtual void Update(float elapsedTime) override;
     
-    virtual void Throw(const Vector2f& force);
-    virtual bool TryToPickUp(Entity* pickedUpBy);
-    virtual void SetTargetPosition(Vector2f position);
+    void Throw(const Vector2f& force);
+    bool TryToPickUp(Entity* pickedUpBy);
+    void SetTargetPosition(const Vector2f& position);
+    bool GetIsPickedUp() const;
     virtual bool CanBePickedUp() const = 0;
+    
     
 private:
     bool m_IsPickedUp{};

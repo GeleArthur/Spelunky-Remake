@@ -222,6 +222,11 @@ void PlayerObject::Draw() const
     m_SpriteSheetManager->GetCurrentPlayerTexture()->Draw(-Vector2f{40,40}, animationSource);
     
     glPopMatrix();
+
+    if(m_PickupItem != nullptr)
+    {
+        m_PickupItem->DrawPickedUp();
+    }
 }
 
 void PlayerObject::Update(const float elapsedTimes)
@@ -378,6 +383,17 @@ void PlayerObject::Update(const float elapsedTimes)
             m_IsTouchingWall = false;
         }
     }
+
+    if(m_PickupItem != nullptr)
+    {
+        m_PickupItem->SetTargetPosition(GetCenter());
+
+        if(m_InputManager->PressedGrabItemThisFrame())
+        {
+            m_PickupItem->Throw(Vector2f{m_IsLookingToLeft ? -1500.0f : 1500.0f, -300.0f});
+            m_PickupItem = nullptr;
+        }
+    }
     
     UpdatePhysics(elapsedTimes);
     UpdateAnimationState(elapsedTimes);
@@ -446,20 +462,25 @@ void PlayerObject::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, Entity
             break;
         case EntityType::rock:
             {
-                const Rock* rock = reinterpret_cast<Rock*>(hitInfo[i].second);
+                Rock* rock = reinterpret_cast<Rock*>(hitInfo[i].second);
 
-                const Rectf extendedRect{
-                    rock->GetRect().left - GetRect().width / 2,
-                    rock->GetRect().top - GetRect().height / 2,
-                    rock->GetRect().width + GetRect().width,
-                    rock->GetRect().height + GetRect().height
-                };
-
+                if(m_IsCrouching && m_InputManager->PressedGrabItemThisFrame() && m_PickupItem == nullptr)
+                {
+                    rock->TryToPickUp(this);
+                    m_PickupItem = rock;
+                }
                 
-                GizmosDrawer::SetColor({1,0,0});
-                GizmosDrawer::DrawRect(extendedRect);
-                
-                GizmosDrawer::DrawCircle(hitInfo[i].first.interSectionPoint, 3, 0.2f);
+                // const Rectf extendedRect{
+                //     rock->GetRect().left - GetRect().width / 2,
+                //     rock->GetRect().top - GetRect().height / 2,
+                //     rock->GetRect().width + GetRect().width,
+                //     rock->GetRect().height + GetRect().height
+                // };
+                //
+                // GizmosDrawer::SetColor({1,0,0});
+                // GizmosDrawer::DrawRect(extendedRect);
+                //
+                // GizmosDrawer::DrawCircle(hitInfo[i].first.interSectionPoint, 3, 0.2f);
             }
             break;
         case EntityType::arrow:

@@ -20,7 +20,14 @@ EntityType Rock::GetEntityType() const
 
 void Rock::Draw() const
 {
-    // If we are picked up let the player draw me.
+    if(GetIsPickedUp() == false)
+    {
+        DrawPickedUp();
+    }
+}
+
+void Rock::DrawPickedUp() const
+{
     m_SpriteSheetManager->GetItemsTexture()->Draw(
         GetCenter() - Vector2f{40, 40},
         Rectf{1360, 0, 80,80}

@@ -16,6 +16,7 @@ public:
     
     virtual EntityType GetEntityType() const override;
     virtual void Draw() const override;
+    virtual void DrawPickedUp() const override;
     virtual bool CanBePickedUp() const override;
 
 private:

@@ -10,7 +10,7 @@ void EntityPickupRectCollider::Update(const float elapsedTime)
 {
     if(m_IsPickedUp == true)
     {
-        ApplyForce((m_TargetPosition - GetCenter()));
+        SetVelocity((m_TargetPosition - GetCenter()) );
         UpdatePhysics(elapsedTime);
     }
     else
@@ -39,7 +39,12 @@ bool EntityPickupRectCollider::TryToPickUp(Entity* pickedUpBy)
     return false;
 }
 
-void EntityPickupRectCollider::SetTargetPosition(Vector2f position)
+void EntityPickupRectCollider::SetTargetPosition(const Vector2f& position)
 {
     m_TargetPosition = position;
+}
+
+bool EntityPickupRectCollider::GetIsPickedUp() const
+{
+    return m_IsPickedUp;
 }

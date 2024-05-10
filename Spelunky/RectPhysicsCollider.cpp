@@ -242,7 +242,7 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
             }
         }
     }
-
+    
     Vector2f fixedVelocity;
     if(m_Velocity.SquaredLength() != 0)
     {
