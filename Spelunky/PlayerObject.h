@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "Entity.h"
+#include "EntityRectCollider.h"
 #include "RectPhysicsCollider.h"
 
 class PickUp;
@@ -32,7 +33,7 @@ enum class PlayerState
 };
 
 
-class PlayerObject final : public RectPhysicsCollider, public Entity
+class PlayerObject final : public EntityRectCollider
 {
 public:
     explicit PlayerObject(WorldManager* worldManager);
@@ -57,9 +58,13 @@ public:
     virtual void CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo) override;
     virtual void CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, Entity*>>& hitInfo) override;
 
+    // virtual void YouGotHit(int damage, Vector2f force, HitType hitType) override;
+
+
 private:
     void HandleWallHanging(float elapsedTimes);
 
+    
     PlayerAnimationState m_CurrentAnimation{PlayerAnimationState::idle};
     PlayerState m_PlayerState{PlayerState::normal};
     

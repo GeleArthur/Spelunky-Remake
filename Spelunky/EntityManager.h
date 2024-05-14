@@ -4,6 +4,7 @@
 
 #include "Entity.h"
 
+class PickUp;
 class CirclePhysicsCollider;
 class RectPhysicsCollider;
 class WorldManager;
@@ -18,7 +19,7 @@ public:
     EntityManager(EntityManager && other) = delete;
     EntityManager& operator=(const EntityManager&& other) = delete;
     
-    void AddEntity(Entity* item);
+    void AddEntity(Entity* entity);
     void DrawEntities() const;
     void UpdateEntity(float elapsedTime);
     std::vector<Entity*>& GetAllEntities();
@@ -28,5 +29,7 @@ private:
     std::vector<Entity*> m_Entities;
     std::vector<RectPhysicsCollider*> m_EntitiesWithRectCollider;
     std::vector<CirclePhysicsCollider*> m_EntitiesWithCircleCollider;
+
+    std::vector<PickUp*> m_EntitiesWithPickUp;
     // std::vector<PickupItem*> m_PickupItems;
 };

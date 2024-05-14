@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Collider.h"
+#include "HitType.h"
 
 enum class EntityType
 {
@@ -25,6 +26,8 @@ public:
     virtual ColliderTypes GetColliderType() const = 0;
     virtual void Update(float elapsedTime) = 0;
     virtual void Draw() const = 0;
+
+    virtual void YouGotHit(int damage, Vector2f force, HitType hitType) = 0;
     
     // virtual bool TryToPickup(Entity* beaningPickedUpBy) = 0;
     // virtual bool ThrowPickUp(const Vector2f& force) = 0;

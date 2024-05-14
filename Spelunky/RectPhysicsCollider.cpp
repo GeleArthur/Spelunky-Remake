@@ -259,8 +259,8 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
     collidedPosition += collidedVelocity;
     SetCenter(collidedPosition);
     
-    CallBackHitTile(m_BlocksWeHit);
-    CallBackHitEntity(m_EntitiesWeHit);
+    if(!m_BlocksWeHit.empty()) CallBackHitTile(m_BlocksWeHit);
+    if(!m_EntitiesWeHit.empty()) CallBackHitEntity(m_EntitiesWeHit);
     
     // GizmosDrawer::SetColor({1,1,1});
     // GizmosDrawer::DrawCircle(collidedPosition, 3);
@@ -278,7 +278,8 @@ void RectPhysicsCollider::CheckEntityCollision(const Vector2f& position, const V
             break;
         case ColliderTypes::rect:
             {
-                const EntityRectCollider* rectCollider = reinterpret_cast<EntityRectCollider*>(entities[i]);
+                // TODO: Make a bunch of vectors so we dont need to cast
+                const EntityRectCollider* rectCollider = dynamic_cast<EntityRectCollider*>(entities[i]);
                 if(rectCollider == this)
                 {
                     continue;

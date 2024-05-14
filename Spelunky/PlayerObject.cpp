@@ -22,7 +22,7 @@
 #include "WorldManager.h"
 
 PlayerObject::PlayerObject(WorldManager* worldManager):
-    RectPhysicsCollider(Rectf{0, 0, 40, 56}, 60, 0.0f, worldManager),
+    EntityRectCollider(Rectf{0, 0, 40, 56}, 60, 0.0f, worldManager),
     m_SpriteSheetManager(worldManager->GetSpriteSheet()),
     m_InputManager(worldManager->GetInputManager()),
     m_WorldManager(worldManager)
@@ -468,27 +468,13 @@ void PlayerObject::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, Entity
             {
                 if(m_IsCrouching && m_InputManager->PressedGrabItemThisFrame() && m_PickupItem == nullptr)
                 {
-                    Rock* rock = reinterpret_cast<Rock*>(hitInfo[i].second);
+                    Rock* rock = dynamic_cast<Rock*>(hitInfo[i].second);
 
                     rock->TryToPickUp(this);
                     rock->SetTargetPosition(GetCenter(), GetCenter() + Vector2f{m_IsLookingToLeft ? 20.0f : -20.0f, -10});
                     m_PickupItem = rock;
                     return;
                 }
-
-
-                
-                // const Rectf extendedRect{
-                //     rock->GetRect().left - GetRect().width / 2,
-                //     rock->GetRect().top - GetRect().height / 2,
-                //     rock->GetRect().width + GetRect().width,
-                //     rock->GetRect().height + GetRect().height
-                // };
-                //
-                // GizmosDrawer::SetColor({1,0,0});
-                // GizmosDrawer::DrawRect(extendedRect);
-                //
-                // GizmosDrawer::DrawCircle(hitInfo[i].first.interSectionPoint, 3, 0.2f);
             }
             break;
         case EntityType::arrow:

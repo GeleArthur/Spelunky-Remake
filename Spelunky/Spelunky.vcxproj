@@ -187,6 +187,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="GlobalValues.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityManager.h" />
+    <ClInclude Include="HitType.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="magic_enum.hpp" />
     <ClInclude Include="Matrix.h" />

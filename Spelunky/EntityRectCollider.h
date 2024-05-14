@@ -2,7 +2,7 @@
 #include "Entity.h"
 #include "RectPhysicsCollider.h"
 
-class EntityRectCollider : public Entity, public RectPhysicsCollider
+class EntityRectCollider : public RectPhysicsCollider, public Entity
 {
 public:
     explicit EntityRectCollider(const Rectf& collider, float mass, float bounciness, WorldManager* worldManager);
@@ -12,13 +12,7 @@ public:
 
     virtual void Draw() const override = 0;
     virtual void Update(float elapsedTime) override;
-    
-    
-    // virtual void YouCollidedWith(Entity* other) override;
-    
-    // virtual bool TryToPickup(Entity* beaningPickedUpBy) override;
-    // virtual bool ThrowPickUp(const Vector2f& force) override;
-    // virtual void SetTargetPositionPickUp(const Vector2f& position) override;
+    virtual void YouGotHit(int damage, Vector2f force, HitType hitType) override;
 
 private:
 };

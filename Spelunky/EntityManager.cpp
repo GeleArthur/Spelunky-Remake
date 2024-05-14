@@ -1,5 +1,7 @@
 ﻿#include "pch.h"
 #include "EntityManager.h"
+
+#include "CirclePhysicsCollider.h"
 #include "Collider.h"
 #include "WorldManager.h"
 
@@ -43,7 +45,17 @@ EntityManager::~EntityManager()
     ClearAllEntities();
 }
 
-void EntityManager::AddEntity(Entity* item)
+void EntityManager::AddEntity(Entity* entity)
 {
-    m_Entities.push_back(item);
+    switch (entity->GetColliderType())
+    {
+    case ColliderTypes::circle:
+        m_EntitiesWithCircleCollider.push_back(dynamic_cast<CirclePhysicsCollider*>(entity));
+        break;
+    case ColliderTypes::rect:
+        m_EntitiesWithRectCollider.push_back(dynamic_cast<RectPhysicsCollider*>(entity));
+        break;
+    }
+    
+    m_Entities.push_back(entity);
 }
