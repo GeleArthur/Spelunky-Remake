@@ -15,11 +15,12 @@ public:
 	SpriteSheetManager(SpriteSheetManager&& other) = delete;
 	SpriteSheetManager& operator=(SpriteSheetManager&& other) = delete;
 
-	Texture* GetLevelTexture() const;
-	Texture* GetBackGroundTexture() const;
-	Texture* GetDoorsTexture() const;
-	Texture* GetCurrentPlayerTexture() const;
-	Texture* GetItemsTexture() const;
+	const Texture* GetLevelTexture() const;
+	const Texture* GetBackGroundTexture() const;
+	const Texture* GetDoorsTexture() const;
+	const Texture* GetCurrentPlayerTexture() const;
+	const Texture* GetItemsTexture() const;
+	const Texture* GetMonsterTexture() const; 
 
 private:
 	Texture* m_CurrentPlayerTexture;
@@ -27,5 +28,6 @@ private:
 	Texture* m_BackGroundTexture;
 	Texture* m_ExitDoorsTexture;
 	Texture* m_ItemsTexture;
+	Texture* m_MonsterTexture;
 };
 

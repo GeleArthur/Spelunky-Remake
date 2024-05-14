@@ -36,8 +36,8 @@ void Tile::Draw() const
 {
     // if(m_TileType != TileTypes::air) GetCollider()->DebugDraw();
 
-    Texture* levelTexture = m_SpriteSheetManager->GetLevelTexture();
-    Texture* doorsTexture = m_SpriteSheetManager->GetDoorsTexture();
+    const Texture* levelTexture = m_SpriteSheetManager->GetLevelTexture();
+    const Texture* doorsTexture = m_SpriteSheetManager->GetDoorsTexture();
 
     const Rectf rect = GetRect();
     const Vector2f position = Vector2f{rect.left, rect.top};

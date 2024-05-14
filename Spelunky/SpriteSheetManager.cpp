@@ -13,6 +13,7 @@ SpriteSheetManager::SpriteSheetManager(WorldManager* worldManager)
 	m_BackGroundTexture = new Texture{"MINE/minebg.jpg"};
 	m_ExitDoorsTexture = new Texture{"ANYLEVEL/TU_exitdoors.png"};
 	m_ItemsTexture = new Texture{"ITEMS/items.png"};
+	m_MonsterTexture = new Texture{"MONSTERS/monsters.png"};
 	
 	worldManager->SetSpriteSheetManager(this);
 }
@@ -26,27 +27,32 @@ SpriteSheetManager::~SpriteSheetManager()
 	delete m_ItemsTexture;
 }
 
-Texture* SpriteSheetManager::GetLevelTexture() const
+const Texture* SpriteSheetManager::GetLevelTexture() const
 {
 	return m_LevelTexture;
 }
 
-Texture* SpriteSheetManager::GetBackGroundTexture() const
+const Texture* SpriteSheetManager::GetBackGroundTexture() const
 {
 	return m_BackGroundTexture;
 }
 
-Texture* SpriteSheetManager::GetDoorsTexture() const
+const Texture* SpriteSheetManager::GetDoorsTexture() const
 {
 	return m_ExitDoorsTexture;
 }
 
-Texture* SpriteSheetManager::GetCurrentPlayerTexture() const
+const Texture* SpriteSheetManager::GetCurrentPlayerTexture() const
 {
 	return m_CurrentPlayerTexture;
 }
 
-Texture* SpriteSheetManager::GetItemsTexture() const
+const Texture* SpriteSheetManager::GetItemsTexture() const
 {
 	return m_ItemsTexture;
+}
+
+const Texture* SpriteSheetManager::GetMonsterTexture() const
+{
+	return m_MonsterTexture;
 }

@@ -82,7 +82,7 @@ private:
 
     float m_InverseMass;
     float m_Bounciness;
-    bool m_IsTurningLeft{};
+    bool m_IsLookingLeft{};
 
     WorldManager* m_WorldManager;
 
