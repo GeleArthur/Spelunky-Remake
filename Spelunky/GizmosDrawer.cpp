@@ -7,7 +7,7 @@
 #include "Texture.h"
 #include "utils.h"
 
-std::vector<DrawHolder*> GizmosDrawer::m_Drawings;
+std::vector<DrawHolder*> GizmosDrawer::m_Drawings{};
 Color4f GizmosDrawer::m_CurrentColor{1,1,1,1};
 TTF_Font* GizmosDrawer::m_QTextFont{};
 float* GizmosDrawer::m_CurrentTime{};
@@ -99,13 +99,13 @@ void GizmosDrawer::SetTimePointer(float* currentTime)
 
 void GizmosDrawer::Draw()
 {
-    for (int i{}; i < int(m_Drawings.size()); ++i)
+    for (int i{}; i < static_cast<int>(m_Drawings.size()); ++i)
     {
         utils::SetColor(m_Drawings[i]->color);
         m_Drawings[i]->Draw();
     }
     
-    for (int i{int(m_Drawings.size()) -1}; i >= 0; --i)
+    for (int i{static_cast<int>(m_Drawings.size()) -1}; i >= 0; --i)
     {
         if(m_Drawings[i]->timeToDelete < *m_CurrentTime)
         {

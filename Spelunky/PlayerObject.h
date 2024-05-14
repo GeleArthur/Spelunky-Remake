@@ -4,6 +4,7 @@
 #include "Entity.h"
 #include "RectPhysicsCollider.h"
 
+class PickUp;
 class EntityPickupRectCollider;
 class InputManager;
 class WorldManager;
@@ -81,7 +82,7 @@ private:
     bool m_IsTouchingWall{false};
     bool m_IsTouchingLeftWall{false};
     
-    EntityPickupRectCollider* m_PickupItem{};
+    PickUp* m_PickupItem{};
 
     SpriteSheetManager* m_SpriteSheetManager;
     InputManager* m_InputManager;

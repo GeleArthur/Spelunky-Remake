@@ -5,7 +5,7 @@
 class EntityRectCollider : public Entity, public RectPhysicsCollider
 {
 public:
-    explicit EntityRectCollider(const Rectf& collider, const float mass, const float bounciness, WorldManager* worldManager);
+    explicit EntityRectCollider(const Rectf& collider, float mass, float bounciness, WorldManager* worldManager);
     
     virtual EntityType GetEntityType() const override = 0;
     virtual ColliderTypes GetColliderType() const override;
@@ -21,5 +21,4 @@ public:
     // virtual void SetTargetPositionPickUp(const Vector2f& position) override;
 
 private:
-    
 };

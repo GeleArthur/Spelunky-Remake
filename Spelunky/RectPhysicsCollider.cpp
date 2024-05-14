@@ -283,7 +283,7 @@ void RectPhysicsCollider::CheckEntityCollision(const Vector2f& position, const V
                 {
                     continue;
                 }
-
+                
                 if(RayVsRectInfo out; PredictCollision(position, velocity, *rectCollider, out))
                 {
                     m_EntitiesWeHit.emplace_back(out, entities[i]);

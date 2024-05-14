@@ -386,8 +386,6 @@ void PlayerObject::Update(const float elapsedTimes)
 
     if(m_PickupItem != nullptr)
     {
-        m_PickupItem->SetTargetPosition(GetCenter());
-
         if(m_InputManager->PressedGrabItemThisFrame())
         {
             m_PickupItem->Throw(Vector2f{m_IsLookingToLeft ? -1500.0f : 1500.0f, -300.0f});
@@ -397,6 +395,12 @@ void PlayerObject::Update(const float elapsedTimes)
     
     UpdatePhysics(elapsedTimes);
     UpdateAnimationState(elapsedTimes);
+
+    if(m_PickupItem != nullptr)
+    {
+        // m_PickupItem->SetTargetPosition(GetCenter() + Vector2f{m_IsLookingToLeft ? -20.0f : 20.0f, 10});
+        m_PickupItem->SetTargetPosition(GetCenter(), GetCenter() + Vector2f{m_IsLookingToLeft ? 20.0f : -20.0f, -10});
+    }
 }
 
 void PlayerObject::CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo)
@@ -462,13 +466,17 @@ void PlayerObject::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, Entity
             break;
         case EntityType::rock:
             {
-                Rock* rock = reinterpret_cast<Rock*>(hitInfo[i].second);
-
                 if(m_IsCrouching && m_InputManager->PressedGrabItemThisFrame() && m_PickupItem == nullptr)
                 {
+                    Rock* rock = reinterpret_cast<Rock*>(hitInfo[i].second);
+
                     rock->TryToPickUp(this);
+                    rock->SetTargetPosition(GetCenter(), GetCenter() + Vector2f{m_IsLookingToLeft ? 20.0f : -20.0f, -10});
                     m_PickupItem = rock;
+                    return;
                 }
+
+
                 
                 // const Rectf extendedRect{
                 //     rock->GetRect().left - GetRect().width / 2,
