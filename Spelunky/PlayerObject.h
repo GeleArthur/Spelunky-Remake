@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <vector>
 
-#include "Entity.h"
+
 #include "EntityRectCollider.h"
 #include "RectPhysicsCollider.h"
 
@@ -9,7 +9,7 @@ class PickUp;
 class EntityPickupRectCollider;
 class InputManager;
 class WorldManager;
-class Entity;
+class EntityRectCollider;
 class Tile;
 class SpriteSheetManager;
 
@@ -54,9 +54,8 @@ public:
 
     
     virtual EntityType GetEntityType() const override;
-    virtual ColliderTypes GetColliderType() const override;
     virtual void CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo) override;
-    virtual void CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, Entity*>>& hitInfo) override;
+    virtual void CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, EntityRectCollider*>>& hitInfo) override;
 
     // virtual void YouGotHit(int damage, Vector2f force, HitType hitType) override;
 

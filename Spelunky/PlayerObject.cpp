@@ -8,7 +8,7 @@
 #include <iomanip>
 
 #include "Cave.h"
-#include "CirclePhysicsCollider.h"
+
 #include "Game.h"
 #include "GizmosDrawer.h"
 #include "GlobalValues.h"
@@ -456,7 +456,7 @@ void PlayerObject::CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectI
     }
 }
 
-void PlayerObject::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, Entity*>>& hitInfo)
+void PlayerObject::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, EntityRectCollider*>>& hitInfo)
 {
     for (int i{}; i < hitInfo.size(); ++i)
     {
@@ -538,9 +538,4 @@ PlayerState PlayerObject::GetPlayerState() const
 EntityType PlayerObject::GetEntityType() const
 {
     return EntityType::player;
-}
-
-ColliderTypes PlayerObject::GetColliderType() const
-{
-    return RectPhysicsCollider::GetColliderType();
 }

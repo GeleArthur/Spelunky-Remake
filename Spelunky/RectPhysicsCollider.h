@@ -1,12 +1,9 @@
 ﻿#pragma once
 #include <functional>
 
-#include "Collider.h"
-
 class WorldManager;
-class Entity;
+class EntityRectCollider;
 class Tile;
-class CirclePhysicsCollider;
 
 struct RayVsRectInfo
 {
@@ -16,17 +13,17 @@ struct RayVsRectInfo
     float farTime;
 };
 
-class RectPhysicsCollider : public Collider
+class RectPhysicsCollider
 {
 public:
     explicit RectPhysicsCollider(const Rectf& rect, float mass, float bounciness, WorldManager* worldManager);
-    virtual ~RectPhysicsCollider() override = default;
+    virtual ~RectPhysicsCollider() = default;
     RectPhysicsCollider(const RectPhysicsCollider& other) = default;
     RectPhysicsCollider& operator=(const RectPhysicsCollider& other) = default;
     RectPhysicsCollider(RectPhysicsCollider && other) = default;
     RectPhysicsCollider& operator=(RectPhysicsCollider&& other) = default;
     
-    virtual ColliderTypes GetColliderType() const override;
+    // virtual ColliderTypes GetColliderType() const override;
     
     void DebugDraw() const;
     const Rectf& GetRect() const;
@@ -42,17 +39,17 @@ public:
 
     // Collision checks
     bool IsOverlapping(const RectPhysicsCollider& other) const;
-    bool IsOverlapping(const CirclePhysicsCollider& other) const;
-    bool IsOverlapping(const Collider& other) const;
+    // bool IsOverlapping(const CirclePhysicsCollider& other) const;
+    // bool IsOverlapping(const Collider& other) const;
 
     bool PredictCollision(const Vector2f& startPoint, const Vector2f& moveDirection, const RectPhysicsCollider& otherPhysicsRect, RayVsRectInfo& out) const;
-    bool PredictCollision(const CirclePhysicsCollider& other /*TODO: out needed */);
+    // bool PredictCollision(const CirclePhysicsCollider& other /*TODO: out needed */);
     // bool PredictCollision(const Collider& other);
 
     void UpdatePhysics(float elapsedTime);
     void CheckEntityCollision(const Vector2f& position, const Vector2f& velocity) const;
     virtual void CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo);
-    virtual void CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, Entity*>>& hitInfo);
+    virtual void CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, EntityRectCollider*>>& hitInfo);
     // void SetOnCollisionStay(std::function<void()> function);
     // void RemoveOnCollisionStay();
     
@@ -89,6 +86,6 @@ private:
     // cache vector memory so the array can be reused
     static std::vector<std::pair<const Tile*, RayVsRectInfo>> m_HitsCache;
     static std::vector<std::pair<const Tile*, RayVsRectInfo>> m_BlocksWeHit;
-    static std::vector<std::pair<RayVsRectInfo, Entity*>> m_EntitiesWeHit;
+    static std::vector<std::pair<RayVsRectInfo, EntityRectCollider*>> m_EntitiesWeHit;
 
 };

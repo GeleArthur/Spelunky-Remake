@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <vector>
 
-#include "Entity.h"
+
 #include "EntityPickupRectCollider.h"
 #include "RectPhysicsCollider.h"
 

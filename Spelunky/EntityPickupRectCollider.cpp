@@ -37,7 +37,7 @@ void EntityPickupRectCollider::Throw(const Vector2f& force)
     SetVelocity(force);
 }
 
-bool EntityPickupRectCollider::TryToPickUp(Entity* pickedUpBy)
+bool EntityPickupRectCollider::TryToPickUp(EntityRectCollider* pickedUpBy)
 {
     if(CanBePickedUp())
     {

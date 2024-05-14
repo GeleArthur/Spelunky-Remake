@@ -13,7 +13,7 @@ public:
     virtual void Update(float elapsedTime) override;
 
     virtual void Throw(const Vector2f& force) override;
-    virtual bool TryToPickUp(Entity* pickedUpBy) override;
+    virtual bool TryToPickUp(EntityRectCollider* pickedUpBy) override;
     virtual void SetTargetPosition(const Vector2f& position, const Vector2f& goingTo) override;
     virtual bool GetIsPickedUp() const override;
     virtual bool CanBePickedUp() const override = 0;
@@ -26,5 +26,5 @@ private:
     Vector2f m_CenterOfTarget{};
     float m_FrictionOnFloor;
     bool m_IsOnGround{};
-    Entity* m_PickedUpBy{};
+    EntityRectCollider* m_PickedUpBy{};
 };

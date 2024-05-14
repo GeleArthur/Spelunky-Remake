@@ -1,13 +1,12 @@
 ﻿#include "pch.h"
 #include "EntityManager.h"
 
-#include "CirclePhysicsCollider.h"
-#include "Collider.h"
+
 #include "WorldManager.h"
 
 void EntityManager::DrawEntities() const
 {
-    for (const Entity* entity : m_Entities)
+    for (const EntityRectCollider* entity : m_Entities)
     {
         entity->Draw();
     }
@@ -15,13 +14,13 @@ void EntityManager::DrawEntities() const
 
 void EntityManager::UpdateEntity(const float elapsedTime)
 {
-    for (Entity* entity : m_Entities)
+    for (EntityRectCollider* entity : m_Entities)
     {
         entity->Update(elapsedTime);
     }
 }
 
-std::vector<Entity*>& EntityManager::GetAllEntities()
+std::vector<EntityRectCollider*>& EntityManager::GetAllEntities()
 {
     return m_Entities;
 }
@@ -45,17 +44,7 @@ EntityManager::~EntityManager()
     ClearAllEntities();
 }
 
-void EntityManager::AddEntity(Entity* entity)
+void EntityManager::AddEntity(EntityRectCollider* entity)
 {
-    switch (entity->GetColliderType())
-    {
-    case ColliderTypes::circle:
-        m_EntitiesWithCircleCollider.push_back(dynamic_cast<CirclePhysicsCollider*>(entity));
-        break;
-    case ColliderTypes::rect:
-        m_EntitiesWithRectCollider.push_back(dynamic_cast<RectPhysicsCollider*>(entity));
-        break;
-    }
-    
     m_Entities.push_back(entity);
 }

@@ -4,7 +4,6 @@
 #include <algorithm>
 
 #include "Cave.h"
-#include "CirclePhysicsCollider.h"
 #include "EntityManager.h"
 #include "EntityRectCollider.h"
 #include "Game.h"
@@ -14,7 +13,7 @@
 
 std::vector<std::pair<const Tile*, RayVsRectInfo>> RectPhysicsCollider::m_HitsCache{};
 std::vector<std::pair<const Tile*, RayVsRectInfo>> RectPhysicsCollider::m_BlocksWeHit{};
-std::vector<std::pair<RayVsRectInfo, Entity*>> RectPhysicsCollider::m_EntitiesWeHit{};
+std::vector<std::pair<RayVsRectInfo, EntityRectCollider*>> RectPhysicsCollider::m_EntitiesWeHit{};
 
 RectPhysicsCollider::RectPhysicsCollider(const Rectf& rect, const float mass, const float bounciness,
                                          WorldManager* worldManager):
@@ -23,11 +22,6 @@ RectPhysicsCollider::RectPhysicsCollider(const Rectf& rect, const float mass, co
     m_Bounciness(bounciness),
     m_WorldManager(worldManager)
 {
-}
-
-ColliderTypes RectPhysicsCollider::GetColliderType() const
-{
-    return ColliderTypes::rect;
 }
 
 void RectPhysicsCollider::DebugDraw() const
@@ -91,24 +85,6 @@ bool RectPhysicsCollider::IsOverlapping(const RectPhysicsCollider& other) const
     return false;
 }
 
-bool RectPhysicsCollider::IsOverlapping(const CirclePhysicsCollider& other) const
-{
-    // TODO
-    return false;
-}
-
-bool RectPhysicsCollider::IsOverlapping(const Collider& other) const
-{
-    switch (other.GetColliderType())
-    {
-    case ColliderTypes::circle:
-        return IsOverlapping(reinterpret_cast<const CirclePhysicsCollider&>(other));
-    case ColliderTypes::rect:
-        return IsOverlapping(reinterpret_cast<const RectPhysicsCollider&>(other));
-    }
-    throw;
-}
-
 bool RectPhysicsCollider::PredictCollision(const Vector2f& startPoint, const Vector2f& moveDirection,
                                            const RectPhysicsCollider& otherPhysicsRect, RayVsRectInfo& out) const
 {
@@ -123,11 +99,6 @@ bool RectPhysicsCollider::PredictCollision(const Vector2f& startPoint, const Vec
     };
 
     return RayCastCollision(startPoint, moveDirection, extendedRect, out);
-}
-
-bool RectPhysicsCollider::PredictCollision(const CirclePhysicsCollider& other)
-{
-    return false;
 }
 
 bool RectPhysicsCollider::RayCastCollision(const Vector2f& startPoint, const Vector2f& moveDirection,
@@ -199,7 +170,6 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
         m_HitsCache.clear();
 
         // TODO: Optimise so it only checks around the collider based on the velocity
-        
         for (int i{}; i < static_cast<int>(tiles.size()); ++i)
         {
             for (int j{}; j < static_cast<int>(tiles[i].size()); ++j)
@@ -268,29 +238,19 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
 
 void RectPhysicsCollider::CheckEntityCollision(const Vector2f& position, const Vector2f& velocity) const
 {
-    const std::vector<Entity*>& entities = m_WorldManager->GetEntityManager()->GetAllEntities();
+    const std::vector<EntityRectCollider*>& entities = m_WorldManager->GetEntityManager()->GetAllEntities();
     
     for (int i{}; i < entities.size(); ++i)
     {
-        switch (entities[i]->GetColliderType())
+        // TODO: Make a bunch of vectors so we dont need to cast
+        if(entities[i] == this)
         {
-        case ColliderTypes::circle:
-            break;
-        case ColliderTypes::rect:
-            {
-                // TODO: Make a bunch of vectors so we dont need to cast
-                const EntityRectCollider* rectCollider = dynamic_cast<EntityRectCollider*>(entities[i]);
-                if(rectCollider == this)
-                {
-                    continue;
-                }
-                
-                if(RayVsRectInfo out; PredictCollision(position, velocity, *rectCollider, out))
-                {
-                    m_EntitiesWeHit.emplace_back(out, entities[i]);
-                }
-            }
-            break;
+            continue;
+        }
+        
+        if(RayVsRectInfo out; PredictCollision(position, velocity, *entities[i], out))
+        {
+            m_EntitiesWeHit.emplace_back(out, entities[i]);
         }
     }
     
@@ -300,6 +260,6 @@ void RectPhysicsCollider::CallBackHitTile(std::vector<std::pair<const Tile*, Ray
 {
 }
 
-void RectPhysicsCollider::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, Entity*>>& hitInfo)
+void RectPhysicsCollider::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, EntityRectCollider*>>& hitInfo)
 {
 }
