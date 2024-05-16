@@ -14,7 +14,7 @@ int SDL_main(int argv, char** args)
 
 	StartHeapControl();
 
-	Game* pGame{ new Game{ Window{ "Spelunky - van den Barselaar, Arthur - 1DAE16", 1280.f , 720.f, false } } };
+	Game* pGame{ new Game{ Window{ "Spelunky - van den Barselaar, Arthur - 1DAE16", 1280.f , 720.f, true } } };
 	pGame->Run();
 	delete pGame;
 

@@ -118,7 +118,7 @@ void Game::Reset()
     std::cout << "Took: " << elapsedSeconds << " sec. To generate level";
 
     m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{30, -64}, m_WorldManager});
-    m_EntityManager->AddEntity(new Snake{m_Cave->GetEntrance() + Vector2f{64, 0}, m_WorldManager});
+    m_EntityManager->AddEntity(new Snake{m_Cave->GetEntrance() + Vector2f{64*3, 0}, m_WorldManager});
     // m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{50, -64}, m_WorldManager});
     // m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{-30, -64}, m_WorldManager});
     // m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{-50, -64}, m_WorldManager});

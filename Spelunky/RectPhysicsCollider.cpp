@@ -148,7 +148,7 @@ bool RectPhysicsCollider::RayCastCollision(const Vector2f& startPoint, const Vec
     return true;
 }
 
-
+//TODO: If you build up velocity on the floor by elapsedTime we should ignore it if there is a bounch
 void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
 {
     const std::vector<std::vector<Tile>>& tiles = m_WorldManager->GetCave()->GetTiles();
@@ -159,7 +159,6 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
     Vector2f collidedVelocity = m_Velocity * elapsedTime;
     
     m_BlocksWeHit.clear();
-    m_EntitiesWeHit.clear();
     
     int limitCount = 10;
     while (isColliding && limitCount > 0)
@@ -223,7 +222,7 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
     {
         fixedVelocity = Vector2f{m_IsLookingLeft ? 0.001f : -0.001f * elapsedTime, 0};
     }
-    // Not perfect as its possible to skip an entity but the chance of that is really low.
+    // Not perfect as its possible to skip an entity if hit 2 walls but the chance of that is really low.
     CheckEntityCollision(collidedPosition, fixedVelocity);
     
     collidedPosition += collidedVelocity;
@@ -239,11 +238,11 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
 void RectPhysicsCollider::CheckEntityCollision(const Vector2f& position, const Vector2f& velocity) const
 {
     const std::vector<EntityRectCollider*>& entities = m_WorldManager->GetEntityManager()->GetAllEntities();
+    m_EntitiesWeHit.clear();
     
-    for (int i{}; i < entities.size(); ++i)
+    for (int i{}; i < static_cast<int>(entities.size()); ++i)
     {
-        // TODO: Make a bunch of vectors so we dont need to cast
-        if(entities[i] == this)
+        if(entities[i] == this || entities[i]->IsDead())
         {
             continue;
         }
@@ -253,7 +252,6 @@ void RectPhysicsCollider::CheckEntityCollision(const Vector2f& position, const V
             m_EntitiesWeHit.emplace_back(out, entities[i]);
         }
     }
-    
 }
 
 void RectPhysicsCollider::CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo)

@@ -5,7 +5,7 @@
 class EntityPickupRectCollider: public EntityRectCollider, public PickUp
 {
 public:
-    EntityPickupRectCollider(const Rectf& collider, float mass, float bounciness, float frictionOnGround, WorldManager* worldManager);
+    EntityPickupRectCollider(const Rectf& collider, int health, float mass, float bounciness, float frictionOnGround, WorldManager* worldManager);
     
     virtual EntityType GetEntityType() const override = 0;
     virtual void Draw() const override = 0;
@@ -15,10 +15,11 @@ public:
     virtual void Throw(const Vector2f& force) override;
     virtual bool TryToPickUp(EntityRectCollider* pickedUpBy) override;
     virtual void SetTargetPosition(const Vector2f& position, const Vector2f& goingTo) override;
-    virtual bool GetIsPickedUp() const override;
+    virtual bool IsPickedUp() const override;
     virtual bool CanBePickedUp() const override = 0;
-    
-    
+    bool IsOnGround() const;
+
+
 private:
     virtual void CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo) override;
     

@@ -22,7 +22,7 @@
 #include "WorldManager.h"
 
 PlayerObject::PlayerObject(WorldManager* worldManager):
-    EntityRectCollider(Rectf{0, 0, 40, 56}, 60, 0.0f, worldManager),
+    EntityRectCollider(Rectf{0, 0, 40, 56}, 4, 60, 0.0f, worldManager),
     m_SpriteSheetManager(worldManager->GetSpriteSheet()),
     m_InputManager(worldManager->GetInputManager()),
     m_WorldManager(worldManager)
@@ -388,7 +388,15 @@ void PlayerObject::Update(const float elapsedTimes)
     {
         if(m_InputManager->PressedGrabItemThisFrame())
         {
-            m_PickupItem->Throw(Vector2f{m_IsLookingToLeft ? -1500.0f : 1500.0f, -300.0f});
+            if(m_IsCrouching)
+            {
+                m_PickupItem->Throw(Vector2f{m_IsLookingToLeft ? -300.0f : 300.0f, -10.0f});
+            }
+            else
+            {
+                m_PickupItem->Throw(Vector2f{m_IsLookingToLeft ? -1500.0f : 1500.0f, -300.0f});
+            }
+            
             m_PickupItem = nullptr;
         }
     }

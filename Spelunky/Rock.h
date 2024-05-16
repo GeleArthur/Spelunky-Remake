@@ -19,6 +19,9 @@ public:
     virtual void DrawPickedUp() const override;
     virtual bool CanBePickedUp() const override;
 
+protected:
+    virtual void CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, EntityRectCollider*>>& hitInfo) override;
+
 private:
     const SpriteSheetManager* m_SpriteSheetManager;
 };

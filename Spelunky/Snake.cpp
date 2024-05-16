@@ -10,7 +10,7 @@
 #include "WorldManager.h"
 
 Snake::Snake(const Vector2f& position, WorldManager* worldManager) :
-    EntityRectCollider(Rectf{position.x, position.y, 52, 52}, 1, 0, worldManager),
+    EntityRectCollider(Rectf{position.x, position.y, 52, 52}, 1, 1, 0, worldManager),
     m_SpriteSheetManager(worldManager->GetSpriteSheet()),
     m_Cave(worldManager->GetCave())
 {
@@ -18,6 +18,7 @@ Snake::Snake(const Vector2f& position, WorldManager* worldManager) :
 
 void Snake::Draw() const
 {
+    if(IsDead()) return;
     glPushMatrix();
     glTranslatef(GetCenter().x, GetCenter().y, 0);
     if(!m_MovingLeft)

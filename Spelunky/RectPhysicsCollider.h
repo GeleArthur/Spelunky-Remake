@@ -39,40 +39,17 @@ public:
 
     // Collision checks
     bool IsOverlapping(const RectPhysicsCollider& other) const;
-    // bool IsOverlapping(const CirclePhysicsCollider& other) const;
-    // bool IsOverlapping(const Collider& other) const;
-
     bool PredictCollision(const Vector2f& startPoint, const Vector2f& moveDirection, const RectPhysicsCollider& otherPhysicsRect, RayVsRectInfo& out) const;
-    // bool PredictCollision(const CirclePhysicsCollider& other /*TODO: out needed */);
-    // bool PredictCollision(const Collider& other);
-
     void UpdatePhysics(float elapsedTime);
-    void CheckEntityCollision(const Vector2f& position, const Vector2f& velocity) const;
-    virtual void CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo);
-    virtual void CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, EntityRectCollider*>>& hitInfo);
-    // void SetOnCollisionStay(std::function<void()> function);
-    // void RemoveOnCollisionStay();
     
+    void CheckEntityCollision(const Vector2f& position, const Vector2f& velocity) const;
     static bool RayCastCollision(const Vector2f& startPoint, const Vector2f& moveDirection, const Rectf& rect, RayVsRectInfo& out);
 
-    /// Update
-    ///
-    /// Predict if we are going to hit world
-    /// World tiles. Grid Collider???
-    /// Need to know what tile we hit and where
-    ///
-    /// Predict if we hit creatures
-    /// List of all creatures
-    /// Tell player what enemy we hit
-    ///
-    /// So we are going to have collider type pass through or solid
-    /// We have a callback function that gets called when we hit any other collider.
-    /// If its solid the physics engine will apply normal opposite force.
-    /// Otherwise it will do nothing but tell the subscriber we hit that object.
-    /// 
-    /// We might want onEnter, onStay, onExit. For now lets do onStay
     
-
+protected:
+    virtual void CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo);
+    virtual void CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, EntityRectCollider*>>& hitInfo);
+    
 private:
     Rectf m_Rect;
     Vector2f m_Velocity{};

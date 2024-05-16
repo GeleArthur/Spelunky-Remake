@@ -10,7 +10,7 @@
 
 
 Rock::Rock(const Vector2f& position, WorldManager* worldManager):
-    EntityPickupRectCollider(Rectf{position.x, position.y, 34, 34}, 3, 0.3f, 0.3f, worldManager),
+    EntityPickupRectCollider(Rectf{position.x, position.y, 34, 34}, 999, 3, 0.3f, 0.3f, worldManager),
     m_SpriteSheetManager(worldManager->GetSpriteSheet())
 {
 }
@@ -22,16 +22,16 @@ EntityType Rock::GetEntityType() const
 
 void Rock::Draw() const
 {
-    if(GetIsPickedUp() == false)
+    if(IsPickedUp() == false)
     {
         DrawPickedUp();
     }
+
+    GizmosDrawer::DrawQText(GetCenter() - Vector2f{0, 50}, GetVelocity().ToString());
 }
 
 void Rock::DrawPickedUp() const
 {
-    // utils::DrawRect(GetRect());
-    // GizmosDrawer::DrawRect(GetRect());
     m_SpriteSheetManager->GetItemsTexture()->Draw(
         GetCenter() - Vector2f{40, 40},
         Rectf{1360, 0, 80,80}
@@ -40,8 +40,16 @@ void Rock::DrawPickedUp() const
 
 bool Rock::CanBePickedUp() const
 {
-    return true;
+    return IsOnGround();
 }
 
-
-
+void Rock::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, EntityRectCollider*>>& hitInfo)
+{
+    if(!IsOnGround() && !IsPickedUp() && GetVelocity().SquaredLength() > 1000*1000 )
+    {
+        for (int i{}; i < hitInfo.size(); ++i)
+        {
+            hitInfo[i].second->YouGotHit(1, GetVelocity());
+        }
+    }
+}
