@@ -228,8 +228,8 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
     collidedPosition += collidedVelocity;
     SetCenter(collidedPosition);
     
-    if(!m_BlocksWeHit.empty()) CallBackHitTile(m_BlocksWeHit);
-    if(!m_EntitiesWeHit.empty()) CallBackHitEntity(m_EntitiesWeHit);
+    CallBackHitTile(m_BlocksWeHit);
+    CallBackHitEntity(m_EntitiesWeHit);
     
     // GizmosDrawer::SetColor({1,1,1});
     // GizmosDrawer::DrawCircle(collidedPosition, 3);

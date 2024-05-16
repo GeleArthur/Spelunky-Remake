@@ -20,13 +20,13 @@ public:
     
     void AddEntity(EntityRectCollider* entity);
     void DrawEntities() const;
-    void UpdateEntity(float elapsedTime);
+    void UpdateEntity(float elapsedTime) const;
     std::vector<EntityRectCollider*>& GetAllEntities();
     void ClearAllEntities();
     
 private:
     std::vector<EntityRectCollider*> m_Entities;
-    
+    std::vector<EntityRectCollider*> m_EntitiesWithoutPlayer;
     std::vector<PickUp*> m_EntitiesWithPickUp;
     // std::vector<PickupItem*> m_PickupItems;
 };

@@ -394,7 +394,7 @@ void PlayerObject::Update(const float elapsedTimes)
             }
             else
             {
-                m_PickupItem->Throw(Vector2f{m_IsLookingToLeft ? -1500.0f : 1500.0f, -300.0f});
+                m_PickupItem->Throw(Vector2f{m_IsLookingToLeft ? -1000.0f : 1000.0f, -300.0f});
             }
             
             m_PickupItem = nullptr;
@@ -478,10 +478,12 @@ void PlayerObject::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, Entity
                 {
                     Rock* rock = dynamic_cast<Rock*>(hitInfo[i].second);
 
-                    rock->TryToPickUp(this);
-                    rock->SetTargetPosition(GetCenter(), GetCenter() + Vector2f{m_IsLookingToLeft ? 20.0f : -20.0f, -10});
-                    m_PickupItem = rock;
-                    return;
+                    if(rock->TryToPickUp(this))
+                    {
+                        rock->SetTargetPosition(GetCenter(), GetCenter() + Vector2f{m_IsLookingToLeft ? 20.0f : -20.0f, -10});
+                        m_PickupItem = rock;
+                        return;
+                    }
                 }
             }
             break;
@@ -492,6 +494,11 @@ void PlayerObject::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, Entity
         }
     }
 }
+
+// void PlayerObject::YouGotHit(int damage, const Vector2f& force)
+// {
+//     EntityRectCollider::YouGotHit(damage, force);
+// }
 
 void PlayerObject::HandleWallHanging(const float elapsedTimes)
 {
@@ -527,6 +534,7 @@ void PlayerObject::HandleWallHanging(const float elapsedTimes)
 void PlayerObject::Respawn(const Vector2f& spawnLocation)
 {
     SetCenter(spawnLocation);
+    m_Health = 4; // TODO DIE
     m_AnimationFrame = 0;
     m_AnimationTimer = 0;
     m_PickupItem = nullptr;

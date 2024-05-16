@@ -38,6 +38,7 @@ void EntityPickupRectCollider::Update(const float elapsedTime)
 
 void EntityPickupRectCollider::Throw(const Vector2f& force)
 {
+    m_HitPrevFrame.push_back(m_PickedUpBy);
     m_PickedUpBy = nullptr;
 
     SetVelocity(force);
@@ -48,6 +49,7 @@ bool EntityPickupRectCollider::TryToPickUp(EntityRectCollider* pickedUpBy)
     if(CanBePickedUp())
     {
         m_PickedUpBy = pickedUpBy;
+        m_HitPrevFrame.clear();
         
         return true;
     }
@@ -63,6 +65,11 @@ void EntityPickupRectCollider::SetTargetPosition(const Vector2f& position, const
 bool EntityPickupRectCollider::IsPickedUp() const
 {
     return m_PickedUpBy != nullptr;
+}
+
+bool EntityPickupRectCollider::CanBePickedUp() const
+{
+    return m_IsOnGround;
 }
 
 bool EntityPickupRectCollider::IsOnGround() const
@@ -85,6 +92,38 @@ void EntityPickupRectCollider::CallBackHitTile(std::vector<std::pair<const Tile*
          break;
         default:
             break;
+        }
+    }
+}
+
+void EntityPickupRectCollider::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, EntityRectCollider*>>& hitInfo)
+{
+    if(!IsOnGround() && !IsPickedUp() )
+    {
+
+        if(GetVelocity().SquaredLength() > 450*450)
+        {
+            std::vector<EntityRectCollider*> entitiesHitNow{hitInfo.size()};
+            
+            for (int i{}; i < hitInfo.size(); ++i)
+            {
+                entitiesHitNow.push_back(hitInfo[i].second);
+
+                bool alReadyHit{false};
+                for (int j{}; j < m_HitPrevFrame.size(); ++j)
+                {
+                    if(m_HitPrevFrame[j] == hitInfo[i].second)
+                    {
+                        alReadyHit = true;
+                        break;
+                    }
+                }
+                
+                if(alReadyHit) continue;
+                hitInfo[i].second->YouGotHit(1, GetVelocity());
+            }
+
+            m_HitPrevFrame = entitiesHitNow; // ?? Copy Assignment constructor
         }
     }
 }

@@ -17,10 +17,6 @@ public:
     virtual EntityType GetEntityType() const override;
     virtual void Draw() const override;
     virtual void DrawPickedUp() const override;
-    virtual bool CanBePickedUp() const override;
-
-protected:
-    virtual void CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, EntityRectCollider*>>& hitInfo) override;
 
 private:
     const SpriteSheetManager* m_SpriteSheetManager;

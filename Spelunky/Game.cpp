@@ -117,6 +117,7 @@ void Game::Reset()
     const float elapsedSeconds = std::chrono::duration<float>(std::chrono::steady_clock::now() - t2).count();
     std::cout << "Took: " << elapsedSeconds << " sec. To generate level";
 
+    m_EntityManager->AddEntity(m_Player);
     m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{30, -64}, m_WorldManager});
     m_EntityManager->AddEntity(new Snake{m_Cave->GetEntrance() + Vector2f{64*3, 0}, m_WorldManager});
     // m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{50, -64}, m_WorldManager});

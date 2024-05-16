@@ -6,15 +6,15 @@
 
 void EntityManager::DrawEntities() const
 {
-    for (const EntityRectCollider* entity : m_Entities)
+    for (const EntityRectCollider* entity : m_EntitiesWithoutPlayer)
     {
         entity->Draw();
     }
 }
 
-void EntityManager::UpdateEntity(const float elapsedTime)
+void EntityManager::UpdateEntity(const float elapsedTime) const
 {
-    for (EntityRectCollider* entity : m_Entities)
+    for (EntityRectCollider* entity : m_EntitiesWithoutPlayer)
     {
         entity->Update(elapsedTime);
     }
@@ -27,10 +27,11 @@ std::vector<EntityRectCollider*>& EntityManager::GetAllEntities()
 
 void EntityManager::ClearAllEntities()
 {
-    for (int i{}; i < m_Entities.size(); ++i)
+    for (int i{}; i < m_EntitiesWithoutPlayer.size(); ++i)
     {
-        delete m_Entities[i];
+        delete m_EntitiesWithoutPlayer[i];
     }
+    m_EntitiesWithoutPlayer.clear();
     m_Entities.clear();
 }
 
@@ -46,5 +47,15 @@ EntityManager::~EntityManager()
 
 void EntityManager::AddEntity(EntityRectCollider* entity)
 {
+    switch (entity->GetEntityType())
+    {
+    case EntityType::player:
+        break;
+    case EntityType::rock:
+    case EntityType::arrow:
+    case EntityType::snake:
+        m_EntitiesWithoutPlayer.push_back(entity);
+        break;
+    }
     m_Entities.push_back(entity);
 }
