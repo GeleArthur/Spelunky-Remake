@@ -63,6 +63,14 @@ void RectPhysicsCollider::SetVelocity(const float x, const float y)
 {
     m_Velocity = Vector2f{x, y};
 }
+void RectPhysicsCollider::SetBounciness(const float newBounciness)
+{
+    m_Bounciness = newBounciness;
+}
+float RectPhysicsCollider::GetBounciness() const
+{
+    return m_Bounciness;
+}
 
 void RectPhysicsCollider::ApplyForce(const Vector2f& forceToApply)
 {

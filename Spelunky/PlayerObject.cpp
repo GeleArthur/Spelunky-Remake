@@ -163,21 +163,9 @@ void PlayerObject::UpdateAnimationState(const float elapsedTimes)
         }
         break;
     case PlayerAnimationState::ragdoll:
-        if(GetVelocity().SquaredLength() < 1)
+        if(m_PlayerState != PlayerState::ragdoll)
         {
-            m_AnimationFrame = 0;
-        }
-        else
-        {
-            m_RagDollTimer = 1;
-            if(GetVelocity().x > 0)
-            {
-                m_AnimationFrame = 0;
-            }
-            else
-            {
-                m_AnimationFrame = 1;
-            }
+            ChangeAnimationState(PlayerAnimationState::idle);
         }
         break;
     }
@@ -414,6 +402,7 @@ void PlayerObject::CheckCrouching(const Vector2f& moveInput)
         }
     }
 }
+
 void PlayerObject::Update(const float elapsedTimes)
 {
     const Vector2f& moveInput = m_InputManager->GetMoveInput();
@@ -442,22 +431,53 @@ void PlayerObject::Update(const float elapsedTimes)
     {
         ApplyForce(Vector2f{0,2048} * elapsedTimes);
     }
-    
-    // Set the x velocity to 0 if minuscule
-    if(std::abs(GetVelocity().x) < 0.0001)
-    {
-        SetVelocity(0, GetVelocity().y);
-    }
-    else
-    {
-        // Set looking left
-        m_IsLookingToLeft = GetVelocity().x < 0;
-    }
-    
-    LimitSpeed();
-    CheckPickUp();
-    CheckBomb();
 
+    if(m_PlayerState != PlayerState::ragdoll)
+    {
+        // Set the x velocity to 0 if minuscule
+        if(std::abs(GetVelocity().x) < 0.0001)
+        {
+            SetVelocity(0, GetVelocity().y);
+        }
+        else
+        {
+            // Set looking left
+            m_IsLookingToLeft = GetVelocity().x < 0;
+        }
+        
+        LimitSpeed();
+        CheckPickUp();
+        CheckBomb();
+    }
+
+    if(m_PlayerState == PlayerState::ragdoll)
+    {
+        if(m_IsOnGround)
+        {
+            const Vector2f& velocity = GetVelocity();
+            Vector2f newVelocity{
+                std::max(std::abs(velocity.x) * 0.3f - 0.2f, 0.0f) * (velocity.x >= 0 ? 1.0f : -1.0f),
+                std::max(std::abs(velocity.y) * 0.3f - 0.2f, 0.0f) * (velocity.y >= 0 ? 1.0f : -1.0f)
+            };
+        
+            SetVelocity(newVelocity);
+        }
+        
+        if(GetVelocity().SquaredLength() < 100)
+        {
+            SetVelocity(0,0);
+            m_RagDollTimer -= elapsedTimes;
+            if(m_RagDollTimer < 0)
+            {
+                m_PlayerState = PlayerState::normal;
+                SetBounciness(0);
+            }
+        }
+        else
+        {
+            m_RagDollTimer = 1;
+        }
+    }
 
     // Setup varibles for UpdatePhysics
     m_IsOnGround = false;
@@ -570,7 +590,9 @@ void PlayerObject::YouGotHit(int damage, const Vector2f& force)
     if(force.Length() > 100)
     {
         m_PlayerState = PlayerState::ragdoll;
+        m_RagDollTimer = 1;
         ChangeAnimationState(PlayerAnimationState::ragdoll);
+        SetBounciness(0.3f);
     }
     
     m_Health -= damage;

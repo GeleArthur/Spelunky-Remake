@@ -35,6 +35,8 @@ public:
     const Vector2f& GetVelocity() const;
     void SetVelocity(const Vector2f& newVelocity);
     void SetVelocity(float x, float y);
+    void SetBounciness(float newBounciness);
+    float GetBounciness() const;
     void ApplyForce(const Vector2f& forceToApply);
 
     // Collision checks

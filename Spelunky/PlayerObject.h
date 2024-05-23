@@ -80,7 +80,7 @@ private:
     float m_MaxSpeed{256.0f};
     float m_MaxSprintSpeed{512};
     float m_StopSpeed{256.0f};
-    float m_RagDollTimer{5};
+    float m_RagDollTimer{};
 
     float m_MaxCrouchingSpeed{64.0f};
     
