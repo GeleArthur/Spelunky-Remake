@@ -32,6 +32,7 @@ public:
 	const std::vector<std::vector<Tile>>& GetTiles() const;
 	const Tile& GetTile(int x, int y);
 	const Tile& GetTile(const Vector2i& location);
+	void ExplodeTile(const Vector2i& tileIndex);
 	const static int MAX_ROOMS_X{4};
 	const static int MAX_ROOMS_Y{4};
 	const static int TILES_PER_ROOM_X{10};

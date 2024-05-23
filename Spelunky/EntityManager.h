@@ -3,6 +3,7 @@
 #include <vector>
 
 
+class Bomb;
 class EntityRectCollider;
 class PickUp;
 class RectPhysicsCollider;
@@ -19,6 +20,8 @@ public:
     EntityManager& operator=(const EntityManager&& other) = delete;
     
     void AddEntity(EntityRectCollider* entity);
+    Bomb* CreateBomb();
+    
     void DrawEntities() const;
     void UpdateEntity(float elapsedTime) const;
     std::vector<EntityRectCollider*>& GetAllEntities();
@@ -28,5 +31,6 @@ private:
     std::vector<EntityRectCollider*> m_Entities;
     std::vector<EntityRectCollider*> m_EntitiesWithoutPlayer;
     std::vector<PickUp*> m_EntitiesWithPickUp;
+    std::vector<Bomb*> m_BombObjectPool;
     // std::vector<PickupItem*> m_PickupItems;
 };

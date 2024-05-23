@@ -6,6 +6,8 @@ enum class EntityType
     
     rock,
     arrow,
+    bomb,
     
-    snake
+    snake,
+    bat
 };

@@ -69,41 +69,41 @@ This section gives a clear and detailed overview of which parts of the original 
 	- [ ] Items and enemy placement
 - [ ] World
 	- [x] All "objects" need to have physics.
-	- [ ] All "items/monsters" need to be able to be picked up.
-	- [ ] All "items/monsters" need to be able to be thrown.
+	- [x] All "items/monsters" need to be able to be picked up.
+	- [x] All "items/monsters" need to be able to be thrown.
 	- [ ] Spiderwebs (slow down any object)
 	- [ ] Pots
-	- [ ] Level destruction.
+	- [x] Level destruction.
 	- [ ] Arrow traps.
-	- [ ] Spikes (If landed on instant death. Can be walked through)
+	- [x] Spikes (If landed on instant death. Can be walked through)
 	- [x] Exit door
 	- [ ] Tiles that can snap together.
 - [ ] Physics:
 	- [x] Gravity, velocity, acceleration
-	- [ ] Impact damage
-	- [ ] Destroyed item if impact too large.
+	- [x] Impact damage
+	- [x] Destroyed item if impact too large.
 	- [ ] Objects need to rotate when in air.
 	- [x] Collision.
-	- [ ] Reaction on collision.
-	- [ ] If object hit with enough impact it will get stunned.
+	- [x] Reaction on collision.
+	- [x] If object hit with enough impact it will get stunned.
 - [ ] Player
 	- [x] Animated spritesheet
 	- [x] Jumping
 	- [x] Moving left right
 	- [x] Failing
 	- [ ] Fall damage
-	- [ ] Sprinting
-	- [ ] Crouching
-	- [ ] Crouch walking
-	- [ ] Hanging off ledges 
+	- [x] Sprinting
+	- [x] Crouching
+	- [x] Crouch walking
+	- [x] Hanging off ledges 
 	- [x] Pickup objects / holding objects.
 	- [x] Throw object.
-	- [ ] Put object back on floor.
+	- [x] Put object back on floor.
 	- [ ] Whip (Can damage Objects)
 	- [ ] Jump on top of monsters.
 	- [ ] Ropes that can be thrown up.
-	- [ ] Climbing on ropes and ladders. 
-	- [ ] Bombs.
+	- [x] Climbing on ropes and ladders. 
+	- [x] Bombs.
 	- [ ] Player invisible frames if gets hit.
 - [ ] UI
 	- [ ] Money counter
@@ -113,11 +113,11 @@ This section gives a clear and detailed overview of which parts of the original 
 	- [ ] Blood particles when something gets hit.
 	- [ ] Explosion
 - [ ] Monsters:
-	- [ ] AI system thats used by all monsters.
+	- [x] AI system thats used by all monsters.
 	- [ ] Damsel (Can be picked up and will run around if not picked up). 
-	- [ ] Snake (Moves left and right if found edge or wall)
+	- [x] Snake (Moves left and right if found edge or wall)
 	- [ ] Bat (When its above the player and close enough it will fly towards the player)
-	- [ ] Some monsters damages the player if get hit.
+	- [x] Some monsters damages the player if get hit.
 
 ### What I will probably make as well:
 - [ ] UI
