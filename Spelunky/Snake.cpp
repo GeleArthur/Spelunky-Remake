@@ -36,9 +36,11 @@ void Snake::Update(const float elapsedTime)
 {
     SetVelocity(m_MovingLeft ? Vector2f{100 , GetVelocity().y} : Vector2f{-100, GetVelocity().y});
     const Vector2i nextTile = Vector2i((GetCenter() + (m_MovingLeft ? Vector2f{-25, 0}: Vector2f{25, 0}))  / spelucky_settings::g_TileSize) + Vector2i{m_MovingLeft ? 1 : -1, 0};
+    const Vector2i nextTileBottom = Vector2i((GetCenter() + Vector2f{0, spelucky_settings::g_TileSize} + (m_MovingLeft ? Vector2f{-25, 0}: Vector2f{25, 0}))  / spelucky_settings::g_TileSize) + Vector2i{m_MovingLeft ? 1 : -1, 0};
     
     const TileTypes InFrontOfMe = m_Cave->GetTile(nextTile).GetTileType();
-    if(InFrontOfMe == TileTypes::ground || InFrontOfMe == TileTypes::border)
+    const TileTypes UnderMe = m_Cave->GetTile(nextTileBottom).GetTileType();
+    if(InFrontOfMe == TileTypes::ground || InFrontOfMe == TileTypes::border || UnderMe == TileTypes::air)
     {
         m_MovingLeft = !m_MovingLeft;
     }

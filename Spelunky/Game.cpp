@@ -6,6 +6,7 @@
 #include <iostream>
 #include <ostream>
 
+#include "Bomb.h"
 #include "CameraSystem.h"
 #include "Cave.h"
 #include "EntityManager.h"
@@ -120,6 +121,7 @@ void Game::Reset()
     m_EntityManager->AddEntity(m_Player);
     m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{30, -64}, m_WorldManager});
     m_EntityManager->AddEntity(new Snake{m_Cave->GetEntrance() + Vector2f{64*3, 0}, m_WorldManager});
+    m_EntityManager->AddEntity(new Bomb{m_Cave->GetEntrance() + Vector2f{64*3, 0}, m_WorldManager});
     // m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{50, -64}, m_WorldManager});
     // m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{-30, -64}, m_WorldManager});
     // m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{-50, -64}, m_WorldManager});

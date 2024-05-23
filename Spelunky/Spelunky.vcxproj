@@ -149,6 +149,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bomb.cpp" />
     <ClCompile Include="CameraSystem.cpp" />
     <ClCompile Include="Cave.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -173,6 +174,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="WorldManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bomb.h" />
     <ClInclude Include="CameraSystem.h" />
     <ClInclude Include="Cave.h" />
     <ClInclude Include="Enemy.h" />

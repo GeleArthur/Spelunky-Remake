@@ -54,8 +54,14 @@ void EntityManager::AddEntity(EntityRectCollider* entity)
     case EntityType::rock:
     case EntityType::arrow:
     case EntityType::snake:
+    case EntityType::bomb:
         m_EntitiesWithoutPlayer.push_back(entity);
         break;
     }
     m_Entities.push_back(entity);
+}
+
+Bomb* EntityManager::CreateBomb()
+{
+    return nullptr;
 }

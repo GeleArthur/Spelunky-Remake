@@ -15,10 +15,11 @@ public:
     Tile(Tile && other) = default;
     Tile& operator=(Tile&& other) = default;
     
-    void SetVariantIndex(int index);
     void Draw() const;
     const Vector2i& GetIndexPosition() const;
+    
     void SetTileType(TileTypes newTileType);
+    void SetVariantIndex(int index);
     TileTypes GetTileType() const;
 
 private:

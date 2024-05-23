@@ -435,3 +435,13 @@ const Tile& Cave::GetTile(const Vector2i& location)
 {
     return m_Tiles.at(location.x).at(location.y);
 }
+
+void Cave::ExplodeTile(const Vector2i& tileIndex)
+{
+    Tile& tile = m_Tiles.at(tileIndex.x).at(tileIndex.y);
+    const TileTypes tileType = tile.GetTileType();
+    if(tileType != TileTypes::border || tileType != TileTypes::exit || tileType != TileTypes::entrance)
+    {
+        tile.SetTileType(TileTypes::air);
+    }
+}
