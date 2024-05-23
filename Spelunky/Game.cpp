@@ -123,7 +123,21 @@ void Game::Reset()
     m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{30, -64}, m_WorldManager});
     m_EntityManager->AddEntity(new Snake{m_Cave->GetEntrance() + Vector2f{64*3, 0}, m_WorldManager});
     m_EntityManager->AddEntity(new Bomb{m_WorldManager});
-    m_EntityManager->AddEntity(new Bat{m_Cave->GetEntrance() + Vector2f{64*3, 0}, m_WorldManager});
+
+
+    Vector2i spawnLocation{m_Cave->GetEntrance()/spelucky_settings::g_TileSize};
+    
+    while (true)
+    {
+        Tile tile = m_Cave->GetTile(spawnLocation + Vector2i{0,-1});
+        if(tile.GetTileType() == TileTypes::ground || tile.GetTileType() == TileTypes::border )
+        {
+            break;
+        }
+        spawnLocation += Vector2i{0,-1};
+    }
+
+    m_EntityManager->AddEntity(new Bat{&m_Cave->GetTile(spawnLocation), m_WorldManager});
     // m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{50, -64}, m_WorldManager});
     // m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{-30, -64}, m_WorldManager});
     // m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{-50, -64}, m_WorldManager});

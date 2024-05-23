@@ -6,9 +6,9 @@ class SpriteSheetManager;
 class Bat final : public EntityRectCollider
 {
 public:
-	Bat(const Vector2f& position, WorldManager* worldManager);
-	EntityType GetEntityType() const override;
-	void Draw() const override;
+	Bat(const Tile* attachedTile, WorldManager* worldManager);
+	virtual EntityType GetEntityType() const override;
+	virtual void Draw() const override;
 	virtual void Update(float elapsedTime) override;
 
 private:
@@ -18,6 +18,5 @@ private:
 	float m_AnimationTimer{};
 	int m_AnimationFrame{};
 
-	Tile* m_AttachedTile{};
-
+	const Tile* m_AttachedTile;
 };
