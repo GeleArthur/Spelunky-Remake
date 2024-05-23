@@ -208,6 +208,12 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
                 const float t = 1 - firstHit.second.nearTime;
                 const Vector2f velocityThatLeft = collidedVelocity * t;
 
+                // float cancelBounce = m_Bounciness;
+                // if(collidedVelocity.Length() <= 10*elapsedTime )
+                // {
+                //     cancelBounce = 0;
+                // }
+
                 const float strengthInVelocity = (-(1 + m_Bounciness) * velocityThatLeft).DotProduct(firstHit.second.normal);
                 const float strengthInVelocityFull = (-(1 + m_Bounciness) * m_Velocity).DotProduct(firstHit.second.normal);
                 
