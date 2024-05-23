@@ -21,6 +21,7 @@ public:
 	const Texture* GetCurrentPlayerTexture() const;
 	const Texture* GetItemsTexture() const;
 	const Texture* GetMonsterTexture() const; 
+	const Texture* GetMonsterTexture3() const; 
 
 private:
 	Texture* m_CurrentPlayerTexture;
@@ -29,5 +30,6 @@ private:
 	Texture* m_ExitDoorsTexture;
 	Texture* m_ItemsTexture;
 	Texture* m_MonsterTexture;
+	Texture* m_MonsterTexture3;
 };
 

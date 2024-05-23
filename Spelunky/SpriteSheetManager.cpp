@@ -14,6 +14,7 @@ SpriteSheetManager::SpriteSheetManager(WorldManager* worldManager)
 	m_ExitDoorsTexture = new Texture{"ANYLEVEL/TU_exitdoors.png"};
 	m_ItemsTexture = new Texture{"ITEMS/items.png"};
 	m_MonsterTexture = new Texture{"MONSTERS/monsters.png"};
+	m_MonsterTexture3 = new Texture{"MONSTERS/monsters3.png"};
 	
 	worldManager->SetSpriteSheetManager(this);
 }
@@ -25,6 +26,8 @@ SpriteSheetManager::~SpriteSheetManager()
 	delete m_BackGroundTexture;
 	delete m_ExitDoorsTexture;
 	delete m_ItemsTexture;
+	delete m_MonsterTexture;
+	delete m_MonsterTexture3;
 }
 
 const Texture* SpriteSheetManager::GetLevelTexture() const
@@ -55,4 +58,8 @@ const Texture* SpriteSheetManager::GetItemsTexture() const
 const Texture* SpriteSheetManager::GetMonsterTexture() const
 {
 	return m_MonsterTexture;
+}
+const Texture* SpriteSheetManager::GetMonsterTexture3() const
+{
+	return m_MonsterTexture3;
 }
