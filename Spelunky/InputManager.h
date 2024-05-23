@@ -17,6 +17,8 @@ public:
     bool IsHoldingJump() const;
     bool IsHoldingSprint() const;
     bool PressedGrabItemThisFrame() const;
+    bool PressedBombThisFrame() const;
+
 
     void Update();
     void ProcessKeyDownEvent(const SDL_KeyboardEvent& e);
@@ -37,4 +39,7 @@ private:
     
     bool m_PressedGrabThisFrame{};
     bool m_PressedGrabPrevState{};
+
+    bool m_PressedBombThisFrame{};
+    bool m_PressedBombPrevState{};
 };

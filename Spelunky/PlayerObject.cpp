@@ -7,7 +7,9 @@
 #include <algorithm>
 #include <iomanip>
 
+#include "Bomb.h"
 #include "Cave.h"
+#include "EntityManager.h"
 
 #include "Game.h"
 #include "GizmosDrawer.h"
@@ -398,6 +400,21 @@ void PlayerObject::Update(const float elapsedTimes)
             }
             
             m_PickupItem = nullptr;
+        }
+    }
+
+    if(m_InputManager->PressedBombThisFrame())
+    {
+        Bomb* bomb = m_WorldManager->GetEntityManager()->CreateBomb();
+        const Vector2f spawnLocation = GetCenter() + Vector2f{m_IsLookingToLeft ? -20.0f : 20.0f, -10};
+        
+        if(m_IsCrouching)
+        {
+            bomb->Throw(spawnLocation, Vector2f{m_IsLookingToLeft ? -300.0f : 300.0f, -10.0f});
+        }
+        else
+        {
+            bomb->Throw(spawnLocation, Vector2f{m_IsLookingToLeft ? -1000.0f : 1000.0f, -300.0f});
         }
     }
     

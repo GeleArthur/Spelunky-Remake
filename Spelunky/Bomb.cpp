@@ -9,8 +9,8 @@
 #include "Vector2i.h"
 #include "WorldManager.h"
 
-Bomb::Bomb(const Vector2f& position, WorldManager* worldManager)
-    : EntityRectCollider(Rectf{position.x, position.y, 34, 34}, 999, 5, 0.3f, worldManager),
+Bomb::Bomb(WorldManager* worldManager)
+    : EntityRectCollider(Rectf{0, 0, 34, 34}, 999, 5, 0.3f, worldManager),
     m_SpriteSheetManager(worldManager->GetSpriteSheet()),
     m_WorldManager{worldManager}
 {
@@ -51,6 +51,19 @@ void Bomb::Draw() const
 void Bomb::Update(float elapsedTime)
 {
     if(IsDead()) return;
+
+    if(m_IsOnGround)
+    {
+        const Vector2f& velocity = GetVelocity();
+        const Vector2f newVelocity{
+            std::max(std::abs(velocity.x) * 0.3f - 0.2f, 0.0f) * (velocity.x >= 0 ? 1.0f : -1.0f),
+            std::max(std::abs(velocity.y) * 0.3f - 0.2f, 0.0f) * (velocity.y >= 0 ? 1.0f : -1.0f)
+        };
+        
+        SetVelocity(newVelocity);
+    }
+    m_IsOnGround = false;
+    
     EntityRectCollider::Update(elapsedTime);
 
     m_Timer -= elapsedTime;
@@ -66,6 +79,7 @@ void Bomb::Throw(const Vector2f& position, const Vector2f& velocity)
     m_Health = 9999;
     SetCenter(position);
     SetVelocity(velocity);
+    m_IsOnGround = false;
     m_Timer = m_TimerStart;
 }
 
@@ -83,6 +97,24 @@ void Bomb::Explode()
             {
                 m_WorldManager->GetCave()->ExplodeTile(center + Vector2i{x, y});
             }
+        }
+    }
+}
+void Bomb::CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo)
+{
+    for (int i{}; i < hitInfo.size(); ++i)
+    {
+        switch (hitInfo[i].first->GetTileType())
+        {
+        case TileTypes::ground:
+        case TileTypes::border:
+            if(hitInfo[i].second.normal.y < 0)
+            {
+                m_IsOnGround = true;
+            }
+            break;
+        default:
+            break;
         }
     }
 }

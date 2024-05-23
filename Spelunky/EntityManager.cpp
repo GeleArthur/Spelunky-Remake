@@ -2,6 +2,7 @@
 #include "EntityManager.h"
 
 
+#include "Bomb.h"
 #include "WorldManager.h"
 
 void EntityManager::DrawEntities() const
@@ -33,6 +34,7 @@ void EntityManager::ClearAllEntities()
     }
     m_EntitiesWithoutPlayer.clear();
     m_Entities.clear();
+    m_BombObjectPool.clear();
 }
 
 EntityManager::EntityManager(WorldManager* worldManager)
@@ -47,21 +49,33 @@ EntityManager::~EntityManager()
 
 void EntityManager::AddEntity(EntityRectCollider* entity)
 {
-    switch (entity->GetEntityType())
+    const EntityType type = entity->GetEntityType();
+
+    if(type == EntityType::bomb)
     {
-    case EntityType::player:
-        break;
-    case EntityType::rock:
-    case EntityType::arrow:
-    case EntityType::snake:
-    case EntityType::bomb:
-        m_EntitiesWithoutPlayer.push_back(entity);
-        break;
+        m_BombObjectPool.push_back(dynamic_cast<Bomb*>(entity));
     }
+
+    if(type != EntityType::player)
+    {
+        m_EntitiesWithoutPlayer.push_back(entity);
+    }
+    
     m_Entities.push_back(entity);
 }
 
 Bomb* EntityManager::CreateBomb()
 {
-    return nullptr;
+    for (int i = 0; i < m_BombObjectPool.size(); ++i)
+    {
+        if(m_BombObjectPool[i]->IsDead())
+        {
+            return m_BombObjectPool[i];
+        }
+    }
+
+    Bomb* bomb = new Bomb{WorldManager::GetSingleton()};
+    AddEntity(bomb);
+
+    return bomb;
 }

@@ -32,6 +32,10 @@ bool InputManager::PressedGrabItemThisFrame() const
 {
     return m_PressedGrabThisFrame;
 }
+bool InputManager::PressedBombThisFrame() const
+{
+    return m_PressedBombThisFrame;
+}
 
 void InputManager::Update()
 {
@@ -39,19 +43,24 @@ void InputManager::Update()
 
     m_PressedJumpThisFrame = false;
     m_PressedGrabThisFrame = false;
+    m_PressedBombThisFrame = false;
 
     if(pStates[SDL_SCANCODE_Z] && static_cast<bool>(pStates[SDL_SCANCODE_Z]) != m_PressedJumpPrevState)
     {
         m_PressedJumpThisFrame = true;
     }
-
     if(pStates[SDL_SCANCODE_X] && static_cast<bool>(pStates[SDL_SCANCODE_X]) != m_PressedGrabPrevState)
     {
         m_PressedGrabThisFrame = true;
     }
+    if(pStates[SDL_SCANCODE_A] && static_cast<bool>(pStates[SDL_SCANCODE_A]) != m_PressedBombPrevState)
+    {
+        m_PressedBombThisFrame = true;
+    }
 
     m_PressedJumpPrevState = pStates[SDL_SCANCODE_Z];
     m_PressedGrabPrevState = pStates[SDL_SCANCODE_X];
+    m_PressedBombPrevState = pStates[SDL_SCANCODE_A];
 
     m_HoldingJump = false;
     m_HoldingSprint = false;
