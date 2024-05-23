@@ -48,15 +48,15 @@ void Tile::Draw() const
         break;
     case TileTypes::ground:
         {
-            const float variantX = float(m_VariantIndex % 4) * g_TileSize;
-            const float variantY = float(m_VariantIndex / 4) * g_TileSize;
+            const float variantX = static_cast<float>(m_VariantIndex % 4) * g_TileSize;
+            const float variantY = static_cast<float>(m_VariantIndex / 4) * g_TileSize;
             levelTexture->Draw(position, Rectf{variantX, g_TileSize + variantY, g_TileSize, g_TileSize});
         }
         break;
     case TileTypes::border:
         {
-            const float variantX = float(m_VariantIndex % 2) * g_TileSize;
-            const float variantY = float(m_VariantIndex / 2) * g_TileSize;
+            const float variantX = static_cast<float>(m_VariantIndex % 2) * g_TileSize;
+            const float variantY = static_cast<float>(m_VariantIndex / 2) * g_TileSize;
             levelTexture->Draw(position, Rectf{1536 + variantX, 512 + variantY, g_TileSize, g_TileSize});
         }
         break;
@@ -68,7 +68,7 @@ void Tile::Draw() const
         break;
     case TileTypes::spikes:
         {
-            const float variantX = float(m_VariantIndex) * g_TileSize;
+            const float variantX = static_cast<float>(m_VariantIndex) * g_TileSize;
             levelTexture->Draw(position, Rectf{256 + variantX, 384, g_TileSize, g_TileSize});
         }
         break;
