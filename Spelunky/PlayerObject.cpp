@@ -29,6 +29,7 @@ PlayerObject::PlayerObject(WorldManager* worldManager):
     m_InputManager(worldManager->GetInputManager()),
     m_WorldManager(worldManager)
 {
+    worldManager->SetPlayer(this);
 }
 
 void PlayerObject::UpdateAnimationState(const float elapsedTimes)

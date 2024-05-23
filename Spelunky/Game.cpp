@@ -129,12 +129,12 @@ void Game::Reset()
     
     while (true)
     {
-        Tile tile = m_Cave->GetTile(spawnLocation + Vector2i{0,-1});
+        spawnLocation += Vector2i{0,-1};
+        Tile tile = m_Cave->GetTile(spawnLocation);
         if(tile.GetTileType() == TileTypes::ground || tile.GetTileType() == TileTypes::border )
         {
             break;
         }
-        spawnLocation += Vector2i{0,-1};
     }
 
     m_EntityManager->AddEntity(new Bat{&m_Cave->GetTile(spawnLocation), m_WorldManager});

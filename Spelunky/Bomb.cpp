@@ -10,7 +10,7 @@
 #include "WorldManager.h"
 
 Bomb::Bomb(WorldManager* worldManager)
-    : EntityRectCollider(Rectf{0, 0, 34, 34}, 999, 5, 0.3f, worldManager),
+    : EntityRectCollider(Rectf{0, 0, 34, 34}, 0, 5, 0.3f, worldManager),
     m_SpriteSheetManager(worldManager->GetSpriteSheet()),
     m_WorldManager{worldManager}
 {
