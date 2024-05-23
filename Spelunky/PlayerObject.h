@@ -21,6 +21,7 @@ enum class PlayerAnimationState
     inAir,
     hanging,
     ladderClimbing,
+    ragdoll,
 };
 enum class PlayerState
 {
@@ -51,18 +52,24 @@ public:
     
     Vector2f GetPosition() const;
     PlayerState GetPlayerState() const;
-
-    
     virtual EntityType GetEntityType() const override;
+
+protected:
     virtual void CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo) override;
     virtual void CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, EntityRectCollider*>>& hitInfo) override;
     // virtual void YouGotHit(int damage, Vector2f force, HitType hitType) override;
-
-
+    virtual void YouGotHit(int damage, const Vector2f& force) override;
+    
 private:
     void HandleWallHanging(float elapsedTimes);
+    void PlayerMovement(float elapsedTimes, const Vector2f& moveInput);
+    void LadderClimbing(const Vector2f& moveInput);
+    void PlayerJump();
+    void LimitSpeed();
+    void CheckPickUp();
+    void CheckBomb();
+    void CheckCrouching(const Vector2f& moveInput);
 
-    
     PlayerAnimationState m_CurrentAnimation{PlayerAnimationState::idle};
     PlayerState m_PlayerState{PlayerState::normal};
     
@@ -73,6 +80,7 @@ private:
     float m_MaxSpeed{256.0f};
     float m_MaxSprintSpeed{512};
     float m_StopSpeed{256.0f};
+    float m_RagDollTimer{5};
 
     float m_MaxCrouchingSpeed{64.0f};
     

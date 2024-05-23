@@ -162,6 +162,24 @@ void PlayerObject::UpdateAnimationState(const float elapsedTimes)
             }
         }
         break;
+    case PlayerAnimationState::ragdoll:
+        if(GetVelocity().SquaredLength() < 1)
+        {
+            m_AnimationFrame = 0;
+        }
+        else
+        {
+            m_RagDollTimer = 1;
+            if(GetVelocity().x > 0)
+            {
+                m_AnimationFrame = 0;
+            }
+            else
+            {
+                m_AnimationFrame = 1;
+            }
+        }
+        break;
     }
 }
 
@@ -188,10 +206,8 @@ void PlayerObject::Draw() const
         animationSource.left = 80.0f + static_cast<float>(m_AnimationFrame%7) * 80.0f;
         break;
     case PlayerAnimationState::inAir:
-        {
-            animationSource.top = 9*80.0f;
-            animationSource.left = static_cast<float>(m_AnimationFrame)*80.0f;
-        } 
+        animationSource.top = 9*80.0f;
+        animationSource.left = static_cast<float>(m_AnimationFrame)*80.0f;
         break;
     case PlayerAnimationState::hanging:
         animationSource.top = 3 * 80.f;
@@ -205,8 +221,20 @@ void PlayerObject::Draw() const
         animationSource.top = 1 * 80.f;
         animationSource.left = 5 * 80.0f + static_cast<float>(m_AnimationFrame) * 80.0f;
         break;
+    case PlayerAnimationState::ragdoll:
+        if(GetVelocity().SquaredLength() < 1)
+        {
+            animationSource.top = 0 * 80.f;
+            animationSource.left = 9 * 80.0f;
+        }
+        else
+        {
+            animationSource.top = 2 * 80.f;
+            animationSource.left = static_cast<float>(m_AnimationFrame) * 80.0f;
+        }
+        break;
     }
-
+    
     
     glPushMatrix();
     const Vector2f position = GetCenter();
@@ -232,122 +260,83 @@ void PlayerObject::Draw() const
     }
 }
 
-void PlayerObject::Update(const float elapsedTimes)
+void PlayerObject::PlayerMovement(const float elapsedTimes, const Vector2f& moveInput)
 {
     Vector2f inputVelocity{};
-    const Vector2f& moveInput = m_InputManager->GetMoveInput();
 
-    // Check is need to hang on wall
-    if(m_PlayerState == PlayerState::normal)
+    // No player input
+    if(std::abs(moveInput.x) < 0.1f)
     {
-        HandleWallHanging(elapsedTimes);
-    }
-
-    // Apply normal movement input
-    if(m_PlayerState == PlayerState::normal)
-    {
-        // No player input
-        if(std::abs(moveInput.x) < 0.1f)
+        float slowDownSpeed = m_StopSpeed * elapsedTimes / 0.1f;
+        const float overShooting = std::abs(GetVelocity().x) - slowDownSpeed;
+        if(overShooting < 0)
         {
-            float slowDownSpeed = m_StopSpeed * elapsedTimes / 0.1f;
-            const float overShooting = std::abs(GetVelocity().x) - slowDownSpeed;
-            if(overShooting < 0)
-            {
-                slowDownSpeed += overShooting;
-            }
+            slowDownSpeed += overShooting;
+        }
             
-            const float direction = GetVelocity().x > 0 ? -1.f : 1.f;
-            inputVelocity.x += direction * slowDownSpeed;
-        }
-
-        // DeAcceleration to help the player turn
-        if(std::abs(moveInput.x) > 0.1f && moveInput.x > 0 != GetVelocity().x > 0)
-        {
-            const float slowDownSpeed = m_StopSpeed * elapsedTimes / 0.1f;
-            const float direction = GetVelocity().x > 0 ? -1.f : 1.f;
-            inputVelocity.x += direction * slowDownSpeed;
-        }
-        
-        // Accelerating
-        inputVelocity += Vector2f{moveInput.x * m_MaxSpeed/0.2f * elapsedTimes, 0};
-        ApplyForce(inputVelocity);
+        const float direction = GetVelocity().x > 0 ? -1.f : 1.f;
+        inputVelocity.x += direction * slowDownSpeed;
     }
 
-    // Apply ladder climing input
-    if(m_PlayerState == PlayerState::ladderClimbing)
+    // DeAcceleration to help the player turn
+    if(std::abs(moveInput.x) > 0.1f && moveInput.x > 0 != GetVelocity().x > 0)
     {
-        SetVelocity(0, moveInput.y * spelucky_settings::g_TileSize*3);
+        const float slowDownSpeed = m_StopSpeed * elapsedTimes / 0.1f;
+        const float direction = GetVelocity().x > 0 ? -1.f : 1.f;
+        inputVelocity.x += direction * slowDownSpeed;
+    }
+        
+    // Accelerating
+    inputVelocity += Vector2f{moveInput.x * m_MaxSpeed/0.2f * elapsedTimes, 0};
+    ApplyForce(inputVelocity);
+}
+void PlayerObject::LadderClimbing(const Vector2f& moveInput)
+{
+    SetVelocity(0, moveInput.y * spelucky_settings::g_TileSize*3);
 
-        const int direction = moveInput.y > 0 ? 1 : -1;
-        Vector2i newLadderTile{(GetCenter() - Vector2f{0, static_cast<float>(direction * spelucky_settings::g_TileSize/2)}) / spelucky_settings::g_TileSize};
-        newLadderTile.y += direction;
+    const int direction = moveInput.y > 0 ? 1 : -1;
+    Vector2i newLadderTile{(GetCenter() - Vector2f{0, static_cast<float>(direction * spelucky_settings::g_TileSize/2)}) / spelucky_settings::g_TileSize};
+    newLadderTile.y += direction;
         
-        const TileTypes topTileType = m_WorldManager->GetCave()->GetTile(newLadderTile.x, newLadderTile.y).GetTileType();
-        if(topTileType == TileTypes::air)
-        {
-            SetVelocity(0,0);
-        }
+    const TileTypes topTileType = m_WorldManager->GetCave()->GetTile(newLadderTile.x, newLadderTile.y).GetTileType();
+    if(topTileType == TileTypes::air)
+    {
+        SetVelocity(0,0);
+    }
         
-        if(m_IsOnLadder == false)
+    if(m_IsOnLadder == false)
+    {
+        m_PlayerState = PlayerState::normal;
+    }
+}
+void PlayerObject::PlayerJump()
+{
+    if(m_InputManager->PressedJumpThisFrame())
+    {
+        if(m_IsOnGround || m_PlayerState == PlayerState::hanging || m_PlayerState == PlayerState::ladderClimbing)
         {
+            m_IsJumping = true;
             m_PlayerState = PlayerState::normal;
+            SetVelocity(GetVelocity().x, -630);
         }
     }
-
-    m_IsCrouching = false;
-    if(m_PlayerState == PlayerState::normal && m_IsOnGround && !m_IsOnLadder)
-    {
-        if(moveInput.y > 0.1)
-        {
-            m_IsCrouching = true;
-        }
-    }
-
-    // Check jumping
-    if(m_PlayerState != PlayerState::ragdoll)
-    {
-        if(m_InputManager->PressedJumpThisFrame())
-        {
-            if(m_IsOnGround || m_PlayerState == PlayerState::hanging || m_PlayerState == PlayerState::ladderClimbing)
-            {
-                m_IsJumping = true;
-                m_PlayerState = PlayerState::normal;
-                SetVelocity(GetVelocity().x, -630);
-            }
-        }
         
-        if(m_IsJumping)
+    if(m_IsJumping)
+    {
+        if(m_InputManager->IsHoldingJump() == false)
         {
-            if(m_InputManager->IsHoldingJump() == false)
-            {
-                ApplyForce(Vector2f{0, -GetVelocity().y * 0.7f});
-                m_IsJumping = false;
-            }
+            ApplyForce(Vector2f{0, -GetVelocity().y * 0.7f});
+            m_IsJumping = false;
+        }
             
-            if(GetVelocity().y >= 0)
-            {
-                m_IsJumping = false;
-            }
+        if(GetVelocity().y >= 0)
+        {
+            m_IsJumping = false;
         }
     }
-
-    // Apply gravity
-    if(m_PlayerState != PlayerState::hanging && m_PlayerState != PlayerState::ladderClimbing)
-    {
-        ApplyForce(Vector2f{0,2048} * elapsedTimes);
-    }
-
-    // Set the x velocity to 0 if really small
-    if(std::abs(GetVelocity().x) < 0.0001)
-    {
-        SetVelocity(0, GetVelocity().y);
-    }
-    else
-    {
-        // Set looking left
-        m_IsLookingToLeft = GetVelocity().x < 0;
-    }
-    
+}
+void PlayerObject::LimitSpeed()
+{
     // Limit left/right speed
     float currentMaxSpeed;
     if(m_IsCrouching)
@@ -374,19 +363,9 @@ void PlayerObject::Update(const float elapsedTimes)
         else
             SetVelocity(GetVelocity().x, -960);
     }
-
-
-    // Setup varibles for UpdatePhysics
-    m_IsOnGround = false;
-    m_IsOnLadder = false;
-    if(m_IsTouchingWall && m_PlayerState != PlayerState::hanging)
-    {
-        if(std::abs(moveInput.x) > 0)
-        {
-            m_IsTouchingWall = false;
-        }
-    }
-
+}
+void PlayerObject::CheckPickUp()
+{
     if(m_PickupItem != nullptr)
     {
         if(m_InputManager->PressedGrabItemThisFrame())
@@ -403,7 +382,9 @@ void PlayerObject::Update(const float elapsedTimes)
             m_PickupItem = nullptr;
         }
     }
-
+}
+void PlayerObject::CheckBomb()
+{
     if(m_InputManager->PressedBombThisFrame())
     {
         Bomb* bomb = m_WorldManager->GetEntityManager()->CreateBomb();
@@ -416,6 +397,76 @@ void PlayerObject::Update(const float elapsedTimes)
         else
         {
             bomb->Throw(spawnLocation, Vector2f{m_IsLookingToLeft ? -1000.0f : 1000.0f, -300.0f});
+        }
+    }
+}
+void PlayerObject::CheckCrouching(const Vector2f& moveInput)
+{
+    m_IsCrouching = false;
+    if(m_PlayerState == PlayerState::normal)
+    {
+        if(m_IsOnGround && !m_IsOnLadder)
+        {
+            if(moveInput.y > 0.1)
+            {
+                m_IsCrouching = true;
+            }
+        }
+    }
+}
+void PlayerObject::Update(const float elapsedTimes)
+{
+    const Vector2f& moveInput = m_InputManager->GetMoveInput();
+
+    if(m_PlayerState == PlayerState::normal)
+    {
+        HandleWallHanging(elapsedTimes);
+        PlayerMovement(elapsedTimes, moveInput);
+    }
+    
+    CheckCrouching(moveInput);
+
+    if(m_PlayerState == PlayerState::ladderClimbing)
+    {
+        LadderClimbing(moveInput);
+    }
+    
+    // Check jumping
+    if(m_PlayerState != PlayerState::ragdoll)
+    {
+        PlayerJump();
+    }
+    
+    // Apply gravity
+    if(m_PlayerState != PlayerState::hanging && m_PlayerState != PlayerState::ladderClimbing)
+    {
+        ApplyForce(Vector2f{0,2048} * elapsedTimes);
+    }
+    
+    // Set the x velocity to 0 if minuscule
+    if(std::abs(GetVelocity().x) < 0.0001)
+    {
+        SetVelocity(0, GetVelocity().y);
+    }
+    else
+    {
+        // Set looking left
+        m_IsLookingToLeft = GetVelocity().x < 0;
+    }
+    
+    LimitSpeed();
+    CheckPickUp();
+    CheckBomb();
+
+
+    // Setup varibles for UpdatePhysics
+    m_IsOnGround = false;
+    m_IsOnLadder = false;
+    if(m_IsTouchingWall && m_PlayerState != PlayerState::hanging)
+    {
+        if(std::abs(moveInput.x) > 0)
+        {
+            m_IsTouchingWall = false;
         }
     }
     
@@ -494,6 +545,7 @@ void PlayerObject::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, Entity
             {
                 if(m_IsCrouching && m_InputManager->PressedGrabItemThisFrame() && m_PickupItem == nullptr)
                 {
+                    // TODO: Optimize this by looping over pickedup items
                     Rock* rock = dynamic_cast<Rock*>(hitInfo[i].second);
 
                     if(rock->TryToPickUp(this))
@@ -506,17 +558,24 @@ void PlayerObject::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, Entity
             }
             break;
         case EntityType::arrow:
-            break;
         case EntityType::snake:
+        case EntityType::bat:
+        case EntityType::bomb:
             break;
         }
     }
 }
-
-// void PlayerObject::YouGotHit(int damage, const Vector2f& force)
-// {
-//     EntityRectCollider::YouGotHit(damage, force);
-// }
+void PlayerObject::YouGotHit(int damage, const Vector2f& force)
+{
+    if(force.Length() > 100)
+    {
+        m_PlayerState = PlayerState::ragdoll;
+        ChangeAnimationState(PlayerAnimationState::ragdoll);
+    }
+    
+    m_Health -= damage;
+    ApplyForce(force);
+}
 
 void PlayerObject::HandleWallHanging(const float elapsedTimes)
 {
