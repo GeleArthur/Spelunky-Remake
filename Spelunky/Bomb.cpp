@@ -2,6 +2,7 @@
 #include "Bomb.h"
 
 #include "Cave.h"
+#include "EntityManager.h"
 #include "GizmosDrawer.h"
 #include "GlobalValues.h"
 #include "SpriteSheetManager.h"
@@ -98,6 +99,12 @@ void Bomb::Explode()
                 m_WorldManager->GetCave()->ExplodeTile(center + Vector2i{x, y});
             }
         }
+    }
+
+    const std::vector<EntityRectCollider*>& entityRectColliders = m_WorldManager->GetEntityManager()->GetAllEntities();
+    for (int i = 0; i < entityRectColliders.size(); ++i)
+    {
+        
     }
 }
 void Bomb::CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo)

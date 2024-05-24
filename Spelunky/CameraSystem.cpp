@@ -15,9 +15,10 @@ CameraSystem::CameraSystem(const PlayerObject* player):
 void CameraSystem::UpdateCamera(float elapsedTime)
 {
     Vector2f cameraPos = m_Player->GetPosition();
+
     
-    cameraPos.x = std::clamp(cameraPos.x, float(spelucky_settings::g_TileSize) * 10, float(spelucky_settings::g_TileSize) * (Cave::CAVE_TILE_COUNT_X - 10));
-    cameraPos.y = std::clamp(cameraPos.y, float(spelucky_settings::g_TileSize) * 6, float(spelucky_settings::g_TileSize) * (Cave::CAVE_TILE_COUNT_Y - 6));
+    cameraPos.x = std::max(float(spelucky_settings::g_TileSize) * 10, std::min( cameraPos.x, float(spelucky_settings::g_TileSize) * (Cave::CAVE_TILE_COUNT_X - 10)));
+    cameraPos.y = std::max(float(spelucky_settings::g_TileSize) * 6, std::min( cameraPos.y, float(spelucky_settings::g_TileSize) * (Cave::CAVE_TILE_COUNT_Y - 6)));
     
     cameraPos.x -= 1280.0f/2; // TODO: Make screen size reference
     cameraPos.y -= 720.0f/2;

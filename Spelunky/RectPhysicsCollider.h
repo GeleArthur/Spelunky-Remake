@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <functional>
+#include <vector>
 
 class WorldManager;
 class EntityRectCollider;
@@ -18,6 +19,7 @@ class RectPhysicsCollider
 public:
     explicit RectPhysicsCollider(const Rectf& rect, float mass, float bounciness, WorldManager* worldManager);
     virtual ~RectPhysicsCollider() = default;
+    
     RectPhysicsCollider(const RectPhysicsCollider& other) = default;
     RectPhysicsCollider& operator=(const RectPhysicsCollider& other) = default;
     RectPhysicsCollider(RectPhysicsCollider && other) = default;

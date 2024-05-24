@@ -130,7 +130,7 @@ void Game::Reset()
     while (true)
     {
         spawnLocation += Vector2i{0,-1};
-        Tile tile = m_Cave->GetTile(spawnLocation);
+        const Tile& tile = m_Cave->GetTile(spawnLocation);
         if(tile.GetTileType() == TileTypes::ground || tile.GetTileType() == TileTypes::border )
         {
             break;

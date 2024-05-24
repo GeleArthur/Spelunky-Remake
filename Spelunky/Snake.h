@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "Enemy.h"
 #include "EntityRectCollider.h"
 
 class Cave;

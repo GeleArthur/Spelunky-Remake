@@ -3,6 +3,8 @@
 
 #include "GizmosDrawer.h"
 #include "Tile.h"
+#include "TileTypes.h"
+// #include "Tile.h"
 
 EntityPickupRectCollider::EntityPickupRectCollider(const Rectf& collider, const int health, const float mass, const float bounciness, const float frictionOnGround, WorldManager* worldManager):
     EntityRectCollider(collider, health, mass, bounciness, worldManager),

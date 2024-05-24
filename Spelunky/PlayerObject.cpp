@@ -15,7 +15,6 @@
 #include "GizmosDrawer.h"
 #include "GlobalValues.h"
 #include "InputManager.h"
-#include "magic_enum.hpp"
 #include "RectPhysicsCollider.h"
 #include "Rock.h"
 #include "SpriteSheetManager.h"
