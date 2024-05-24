@@ -19,9 +19,9 @@ protected:
 
 
 private:
-    const float m_TimerStart{2.4f};
-    float m_Timer{m_TimerStart};
-    int m_ExplodeRadius{2};
+    static constexpr int EXPLODE_RADIUS{2}; // Is this the way to avoid const member?
+    static constexpr float TIMER_START{2.4f};
+    float m_Timer{TIMER_START};
     bool m_IsOnGround{};
     const SpriteSheetManager* m_SpriteSheetManager;
     const WorldManager* m_WorldManager;

@@ -10,6 +10,7 @@
 #include "Vector2i.h"
 #include "WorldManager.h"
 
+
 Bomb::Bomb(WorldManager* worldManager)
     : EntityRectCollider(Rectf{0, 0, 34, 34}, 0, 5, 0.3f, worldManager),
     m_SpriteSheetManager(worldManager->GetSpriteSheet()),
@@ -29,7 +30,7 @@ void Bomb::Draw() const
     glTranslatef(GetCenter().x, GetCenter().y, 0);
 
     int bombImage;
-    const float invertTimer = m_TimerStart - m_Timer;
+    const float invertTimer = TIMER_START - m_Timer;
     if(m_Timer < 0.2)
     {
         bombImage = 1+static_cast<int>(std::floor(invertTimer*invertTimer*10))%2;
@@ -81,7 +82,7 @@ void Bomb::Throw(const Vector2f& position, const Vector2f& velocity)
     SetCenter(position);
     SetVelocity(velocity);
     m_IsOnGround = false;
-    m_Timer = m_TimerStart;
+    m_Timer = TIMER_START;
 }
 
 void Bomb::Explode()
@@ -90,11 +91,11 @@ void Bomb::Explode()
 
     const Vector2i center = Vector2i{GetCenter() / spelucky_settings::g_TileSize};
     
-    for (int x{-m_ExplodeRadius}; x < m_ExplodeRadius; ++x)
+    for (int x{-EXPLODE_RADIUS}; x < EXPLODE_RADIUS; ++x)
     {
-        for (int y{-m_ExplodeRadius}; y < m_ExplodeRadius; ++y)
+        for (int y{-EXPLODE_RADIUS}; y < EXPLODE_RADIUS; ++y)
         {
-            if(x*x + y*y <= m_ExplodeRadius*m_ExplodeRadius)
+            if(x*x + y*y <= EXPLODE_RADIUS*EXPLODE_RADIUS)
             {
                 m_WorldManager->GetCave()->ExplodeTile(center + Vector2i{x, y});
             }
@@ -104,7 +105,13 @@ void Bomb::Explode()
     const std::vector<EntityRectCollider*>& entityRectColliders = m_WorldManager->GetEntityManager()->GetAllEntities();
     for (int i = 0; i < entityRectColliders.size(); ++i)
     {
-        
+        //TODO: Bombs should explode other bombs
+        if(entityRectColliders[i] == this) continue;
+        Vector2f difference = entityRectColliders[i]->GetCenter() - GetCenter();
+        if(difference.SquaredLength() < spelucky_settings::g_TileSize*EXPLODE_RADIUS*spelucky_settings::g_TileSize*EXPLODE_RADIUS)
+        {
+            entityRectColliders[i]->YouGotHit(2, (difference) * 10);
+        }
     }
 }
 void Bomb::CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo)

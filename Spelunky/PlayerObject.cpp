@@ -587,7 +587,7 @@ void PlayerObject::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, Entity
 }
 void PlayerObject::YouGotHit(int damage, const Vector2f& force)
 {
-    if(force.Length() > 100)
+    if(force.SquaredLength() > 100*100)
     {
         m_PlayerState = PlayerState::ragdoll;
         m_RagDollTimer = 0.5f;
