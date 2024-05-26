@@ -16,7 +16,7 @@ public:
     bool PressedJumpThisFrame() const;
     bool IsHoldingJump() const;
     bool IsHoldingSprint() const;
-    bool PressedGrabItemThisFrame() const;
+    bool PressedActionThisFrame() const;
     bool PressedBombThisFrame() const;
 
 
@@ -37,8 +37,8 @@ private:
     bool m_PressedJumpThisFrame{};
     bool m_PressedJumpPrevState{};
     
-    bool m_PressedGrabThisFrame{};
-    bool m_PressedGrabPrevState{};
+    bool m_PressedActionThisFrame{};
+    bool m_PressedActionPrevState{};
 
     bool m_PressedBombThisFrame{};
     bool m_PressedBombPrevState{};

@@ -30,7 +30,7 @@ bool SoundEffect::Play( const int loops ) const
 	if ( m_pMixChunk != nullptr )
 	{
 		const int channel{ Mix_PlayChannel( -1, m_pMixChunk, loops ) };
-		return channel == -1 ? false : true;
+		return channel != -1;
 	}
 	else
 	{

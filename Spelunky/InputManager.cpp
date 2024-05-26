@@ -28,9 +28,9 @@ bool InputManager::IsHoldingSprint() const
     return m_HoldingSprint;
 }
 
-bool InputManager::PressedGrabItemThisFrame() const
+bool InputManager::PressedActionThisFrame() const
 {
-    return m_PressedGrabThisFrame;
+    return m_PressedActionThisFrame;
 }
 bool InputManager::PressedBombThisFrame() const
 {
@@ -42,16 +42,16 @@ void InputManager::Update()
     const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
 
     m_PressedJumpThisFrame = false;
-    m_PressedGrabThisFrame = false;
+    m_PressedActionThisFrame = false;
     m_PressedBombThisFrame = false;
 
     if(pStates[SDL_SCANCODE_Z] && static_cast<bool>(pStates[SDL_SCANCODE_Z]) != m_PressedJumpPrevState)
     {
         m_PressedJumpThisFrame = true;
     }
-    if(pStates[SDL_SCANCODE_X] && static_cast<bool>(pStates[SDL_SCANCODE_X]) != m_PressedGrabPrevState)
+    if(pStates[SDL_SCANCODE_X] && static_cast<bool>(pStates[SDL_SCANCODE_X]) != m_PressedActionPrevState)
     {
-        m_PressedGrabThisFrame = true;
+        m_PressedActionThisFrame = true;
     }
     if(pStates[SDL_SCANCODE_A] && static_cast<bool>(pStates[SDL_SCANCODE_A]) != m_PressedBombPrevState)
     {
@@ -59,7 +59,7 @@ void InputManager::Update()
     }
 
     m_PressedJumpPrevState = pStates[SDL_SCANCODE_Z];
-    m_PressedGrabPrevState = pStates[SDL_SCANCODE_X];
+    m_PressedActionPrevState = pStates[SDL_SCANCODE_X];
     m_PressedBombPrevState = pStates[SDL_SCANCODE_A];
 
     m_HoldingJump = false;

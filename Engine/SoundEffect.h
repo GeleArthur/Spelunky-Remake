@@ -14,7 +14,10 @@ public:
 	bool IsLoaded( ) const;
 	bool Play( const int loops ) const;
 	void SetVolume( const int value ); 
-	int GetVolume( ) const; 
+	int GetVolume( ) const;
+
+	
+	
 	static void StopAll( );
 	static void PauseAll( );
 	static void ResumeAll( );

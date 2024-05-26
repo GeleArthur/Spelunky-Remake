@@ -57,7 +57,7 @@ int SoundStream::GetVolume( )
 
 bool SoundStream::IsPlaying( )
 {
-	return Mix_PlayingMusic( ) == 0 ? false : true;
+	return Mix_PlayingMusic( ) != 0;
 }
 
 void SoundStream::SetVolume( int value )

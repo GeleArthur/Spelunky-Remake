@@ -14,6 +14,7 @@ struct RayVsRectInfo
     float farTime;
 };
 
+// TODO: USE COMPOSTION
 class RectPhysicsCollider
 {
 public:

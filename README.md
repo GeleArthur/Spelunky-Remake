@@ -215,7 +215,7 @@ PlayerObject and Rock inherit from PhysicsObject so they have physics and can in
 - [x] week 02 topics applied
 - [x] week 03 topics applied
 - [x] week 04 topics applied
-- [ ] week 05 topics applied
+- [x] week 05 topics applied
 - [ ] week 06 topics applied
 - [ ] week 07 topics applied
 - [ ] week 08 topics applied

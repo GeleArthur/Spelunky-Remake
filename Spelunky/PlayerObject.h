@@ -21,6 +21,7 @@ enum class PlayerAnimationState
     inAir,
     hanging,
     ladderClimbing,
+    wiping,
     ragdoll,
 };
 enum class PlayerState
@@ -64,6 +65,7 @@ private:
     void HandleWallHanging(float elapsedTimes);
     void PlayerMovement(float elapsedTimes, const Vector2f& moveInput);
     void LadderClimbing(const Vector2f& moveInput);
+    void PlayerWhipping(float elapsedTimes);
     void PlayerJump();
     void LimitSpeed();
     void CheckPickUp();
@@ -81,6 +83,9 @@ private:
     float m_MaxSprintSpeed{512};
     float m_StopSpeed{256.0f};
     float m_RagDollTimer{};
+    
+    float m_WipTimer{};
+    float m_WipHasSlaped{};
 
     float m_MaxCrouchingSpeed{64.0f};
     
@@ -88,6 +93,7 @@ private:
     bool m_IsJumping{false};
     bool m_IsOnLadder{false};
     bool m_IsCrouching{false};
+    bool m_IsWiping{false};
     
     // bool m_IsHanging{false};
     bool m_IsTouchingWall{false};

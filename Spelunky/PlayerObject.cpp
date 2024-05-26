@@ -208,6 +208,9 @@ void PlayerObject::Draw() const
         animationSource.top = 1 * 80.f;
         animationSource.left = 5 * 80.0f + static_cast<float>(m_AnimationFrame) * 80.0f;
         break;
+    case PlayerAnimationState::wiping:
+        
+        break;
     case PlayerAnimationState::ragdoll:
         if(GetVelocity().SquaredLength() < 100)
         {
@@ -296,6 +299,19 @@ void PlayerObject::LadderClimbing(const Vector2f& moveInput)
         m_PlayerState = PlayerState::normal;
     }
 }
+void PlayerObject::PlayerWhipping(float elapsedTimes)
+{
+    if(m_InputManager->PressedActionThisFrame())
+    {
+        if(m_IsWiping == false)
+        {
+            m_IsWiping = true;
+            m_WipHasSlaped = false;
+            m_WipTimer = 0.3f;
+        }
+    }
+
+}
 void PlayerObject::PlayerJump()
 {
     if(m_InputManager->PressedJumpThisFrame())
@@ -355,7 +371,7 @@ void PlayerObject::CheckPickUp()
 {
     if(m_PickupItem != nullptr)
     {
-        if(m_InputManager->PressedGrabItemThisFrame())
+        if(m_InputManager->PressedActionThisFrame())
         {
             if(m_IsCrouching)
             {
@@ -410,6 +426,7 @@ void PlayerObject::Update(const float elapsedTimes)
     {
         HandleWallHanging(elapsedTimes);
         PlayerMovement(elapsedTimes, moveInput);
+        PlayerWhipping(elapsedTimes);
     }
     
     CheckCrouching(moveInput);
@@ -563,7 +580,7 @@ void PlayerObject::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, Entity
             break;
         case EntityType::rock:
             {
-                if(m_IsCrouching && m_InputManager->PressedGrabItemThisFrame() && m_PickupItem == nullptr)
+                if(m_IsCrouching && m_InputManager->PressedActionThisFrame() && m_PickupItem == nullptr)
                 {
                     // TODO: Optimize this by looping over pickedup items
                     Rock* rock = dynamic_cast<Rock*>(hitInfo[i].second);
@@ -636,6 +653,13 @@ void PlayerObject::Respawn(const Vector2f& spawnLocation)
     m_Health = 4; // TODO DIE
     m_AnimationFrame = 0;
     m_AnimationTimer = 0;
+    
+    m_IsOnGround = false;
+    m_IsJumping = false;
+    m_IsOnLadder = false;
+    m_IsCrouching = false;
+    SetBounciness(0);
+    
     m_PickupItem = nullptr;
     m_PlayerState = PlayerState::normal;
 }
