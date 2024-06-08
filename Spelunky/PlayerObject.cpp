@@ -702,6 +702,10 @@ void PlayerObject::YouGotHit(const int damage, const Vector2f& force)
     
     m_Health -= damage;
     m_PhysicsCollider.ApplyForce(force*2);
+    if(m_Health <= 0)
+    {
+        m_PlayerState = PlayerState::dead;
+    }
 }
 void PlayerObject::HandleWallHanging(const float elapsedTimes)
 {

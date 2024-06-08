@@ -18,6 +18,7 @@ private:
 	
 	float m_AnimationTimer{};
 	int m_AnimationFrame{};
+	bool m_HitPlayerAlready{};
 
 	const Tile* m_AttachedTile;
 };

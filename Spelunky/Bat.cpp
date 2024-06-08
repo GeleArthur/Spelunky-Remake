@@ -104,7 +104,29 @@ void Bat::Update(const float elapsedTime)
 		}
 	}
 	
+	
 	m_PhysicsCollider.UpdatePhysics(elapsedTime);
+
+	const std::vector<std::pair<RayVsRectInfo, Entity*>>& entities = m_PhysicsCollider.GetEntitiesWeHit();
+
+	bool hitPlayer{};
+	for (const std::pair<RayVsRectInfo, Entity*>& entity : entities)
+	{
+		if(entity.second->GetEntityType() == EntityType::player)
+		{
+			hitPlayer = true;
+			if(m_HitPlayerAlready == false)
+			{
+				const Vector2f distance = m_WorldManager->GetPlayer()->GetPosition() - GetCenter();
+                
+                entity.second->YouGotHit(1, Vector2f{distance.Normalized() * 400});
+				m_HitPlayerAlready = true;
+			}
+		}
+	}
+
+	if(m_HitPlayerAlready == true && hitPlayer == false)
+		m_HitPlayerAlready = false;
 }
 
 
