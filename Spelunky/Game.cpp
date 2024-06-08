@@ -70,7 +70,6 @@ void Game::Update(const float elapsedSec)
     {
         Reset();
     }
-
     
     m_PrevDeltaTime = elapsedSec;
     
@@ -120,35 +119,12 @@ void Game::Reset() const
     const float elapsedSeconds = std::chrono::duration<float>(std::chrono::steady_clock::now() - t2).count();
     std::cout << "Took: " << elapsedSeconds << " sec. To generate level";
 
+
     m_EntityManager->ClearAllEntities();
-    // m_Cave->GetTiles()
+    m_EntityManager->AddEntity(m_Player);
     m_EntityManager->GenerateEntities();
     
-    m_EntityManager->AddEntity(m_Player);
-    m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{30, -64}, m_WorldManager});
-    m_EntityManager->AddEntity(new Snake{m_Cave->GetEntrance() + Vector2f{64*3, 0}, m_WorldManager});
-    m_EntityManager->AddEntity(new Bomb{m_WorldManager});
-    
-    
-    Vector2i spawnLocation{m_Cave->GetEntrance()/Game::TILE_SIZE};
-    
-    while (true)
-    {
-        spawnLocation += Vector2i{0,-1};
-        const Tile& tile = m_Cave->GetTile(spawnLocation);
-        if(tile.GetTileType() == TileTypes::ground || tile.GetTileType() == TileTypes::border )
-        {
-            break;
-        }
-    }
-
-    m_EntityManager->AddEntity(new Bat{&m_Cave->GetTile(spawnLocation), m_WorldManager});
-    // m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{50, -64}, m_WorldManager});
-    // m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{-30, -64}, m_WorldManager});
-    // m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{-50, -64}, m_WorldManager});
-    m_Player->Respawn(/*Vector2f{64.0f*2, 64.0f*2}*/m_Cave->GetEntrance() + Vector2f{
-        Game::TILE_SIZE / 2.0f, Game::TILE_SIZE / 2.0f
-    });
+    m_Player->Respawn(m_Cave->GetEntrance() + Vector2f{TILE_SIZE / 2.0f, TILE_SIZE / 2.0f});
 }
 
 void Game::ProcessKeyDownEvent(const SDL_KeyboardEvent& e)

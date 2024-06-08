@@ -85,9 +85,6 @@ void PlayerObject::Draw() const
     glPushMatrix();
     const Vector2f position = GetCenter();
     glTranslatef(position.x, position.y, 0);
-    
-    GizmosDrawer::SetColor({1,1,1});
-    GizmosDrawer::DrawQText(position + Vector2f{0, 50}, GetVelocity().ToString());
 
     if(m_IsLookingToLeft)
         glScalef(-1,1,1);

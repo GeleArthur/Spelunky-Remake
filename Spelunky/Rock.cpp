@@ -25,8 +25,6 @@ void Rock::Draw() const
     {
         DrawPickedUp();
     }
-
-    GizmosDrawer::DrawQText(GetCenter() - Vector2f{0, 50}, GetVelocity().ToString());
 }
 
 void Rock::DrawPickedUp() const

@@ -24,12 +24,12 @@ EntityType Bat::GetEntityType() const
 void Bat::Draw() const
 {
 	if(IsDead()) return;
-
 	
 	glPushMatrix();
+	glTranslatef(GetCenter().x, GetCenter().y, 0);
+
 	if(m_IsAttacking)
 	{
-		glTranslatef(GetCenter().x, GetCenter().y, 0);
 		if(GetVelocity().x < 0)
 			glScalef(-1,1,1);
 		
@@ -39,7 +39,6 @@ void Bat::Draw() const
 	}
 	else
 	{
-		glTranslatef(GetCenter().x, GetCenter().y, 0);
 		m_SpriteSheetManager->GetMonsterTexture3()->Draw(
 			Vector2f{-40,-40},
 			Rectf{0,5*80.0f,80.0f,80.0f});
@@ -49,7 +48,6 @@ void Bat::Draw() const
 void Bat::Update(const float elapsedTime)
 {
 	if(IsDead()) return;
-	
 	
 	if(m_IsAttacking)
 	{

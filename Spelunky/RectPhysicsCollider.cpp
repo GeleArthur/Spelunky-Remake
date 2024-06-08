@@ -96,9 +96,16 @@ bool RectPhysicsCollider::IsOverlapping(const RectPhysicsCollider& other) const
 bool RectPhysicsCollider::PredictCollision(const Vector2f& startPoint, const Vector2f& moveDirection,
                                            const RectPhysicsCollider& otherPhysicsRect, RayVsRectInfo& out) const
 {
-    const Rectf otherRect{otherPhysicsRect.GetRect()};
-    const Rectf thisRect{GetRect()};
+    const Rectf& otherRect{otherPhysicsRect.GetRect()};
+    const Rectf& thisRect{GetRect()};
 
+    const float distanceBetweenBlock = (otherPhysicsRect.GetCenter() - startPoint).SquaredLength();
+    const float minWeHaveMoved = moveDirection.SquaredLength() + std::max(otherRect.height*otherRect.height, thisRect.height*thisRect.height) + std::max(otherRect.width*otherRect.width, thisRect.width*thisRect.width);
+    if(distanceBetweenBlock > minWeHaveMoved)
+    {
+        return false;
+    }
+    
     const Rectf extendedRect{
         otherRect.left - thisRect.width / 2,
         otherRect.top - thisRect.height / 2,
@@ -122,8 +129,8 @@ bool RectPhysicsCollider::RayCastCollision(const Vector2f& startPoint, const Vec
     if (std::isnan(nearTimeY)) nearTimeY = 1;
     if (std::isnan(farTimeX)) farTimeX = 0;
     if (std::isnan(farTimeY)) farTimeY = 0;
-
-
+    
+    
     if (nearTimeX > farTimeX) std::swap(nearTimeX, farTimeX);
     if (nearTimeY > farTimeY) std::swap(nearTimeY, farTimeY);
 
@@ -159,7 +166,7 @@ bool RectPhysicsCollider::RayCastCollision(const Vector2f& startPoint, const Vec
 //TODO: If you build up velocity on the floor by elapsedTime we should ignore it if there is a bounch
 void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
 {
-    const std::vector<std::vector<Tile*>>& tiles = m_WorldManager->GetCave()->GetTiles();
+    const Cave* cave = m_WorldManager->GetCave();
 
     bool isColliding = true;
 
@@ -175,19 +182,30 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
         --limitCount;
 
         m_HitsCache.clear();
-
-        // TODO: Optimise so it only checks around the collider based on the velocity
-        for (int i{}; i < static_cast<int>(tiles.size()); ++i)
+        
+        Vector2i center = Vector2i{GetCenter() / Game::TILE_SIZE};
+        const int maxDistanceFromNextTile = static_cast<int>(std::ceil(std::min(1.0f, (m_Velocity.Length() / Game::TILE_SIZE))));
+        
+        for (int x{-maxDistanceFromNextTile}; x < maxDistanceFromNextTile+1; ++x)
         {
-            for (int j{}; j < static_cast<int>(tiles[i].size()); ++j)
+            for (int y{-maxDistanceFromNextTile}; y < maxDistanceFromNextTile+1; ++y)
             {
-                const Tile* currentTile = tiles[i][j];
-                if (currentTile->GetTileType() == TileTypes::air) continue;
+                Vector2i tileToCheck = center + Vector2i{x,y};
+
+                if(tileToCheck.x < 0 || tileToCheck.x > Cave::CAVE_TILE_COUNT_X ||
+                    tileToCheck.y < 0 || tileToCheck.y > Cave::CAVE_TILE_COUNT_Y)
+                {
+                    continue;
+                }
+                
+                const Tile& currentTile = cave->GetTile(tileToCheck);
+
+                if (currentTile.GetTileType() == TileTypes::air) continue;
 
                 RayVsRectInfo rayResult;
-                if (PredictCollision(collidedPosition, collidedVelocity, *currentTile, rayResult))
+                if (PredictCollision(collidedPosition, collidedVelocity, currentTile, rayResult))
                 {
-                    m_HitsCache.emplace_back(currentTile, rayResult);
+                    m_HitsCache.emplace_back(&currentTile, rayResult);
                 }
             }
         }
@@ -260,6 +278,8 @@ void RectPhysicsCollider::CheckEntityCollision(const Vector2f& position, const V
         {
             continue;
         }
+
+        
 
         RayVsRectInfo out;
         if(PredictCollision(position, velocity, *(*entities)[i], out))

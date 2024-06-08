@@ -14,7 +14,7 @@ public:
 private:
 	SpriteSheetManager* m_SpriteSheetManager;
 	WorldManager* m_WorldManager;
-	bool m_IsAttacking{};
+	bool m_IsAttacking{false};
 	
 	float m_AnimationTimer{};
 	int m_AnimationFrame{};

@@ -2,7 +2,13 @@
 #include "EntityManager.h"
 
 
+#include "Bat.h"
 #include "Bomb.h"
+#include "Cave.h"
+#include "Game.h"
+#include "GizmosDrawer.h"
+#include "Rock.h"
+#include "Snake.h"
 #include "WorldManager.h"
 
 void EntityManager::DrawEntities() const
@@ -39,9 +45,43 @@ void EntityManager::ClearAllEntities()
 
 void EntityManager::GenerateEntities()
 {
-    ClearAllEntities();
+    const std::vector<std::vector<Tile*>>& tiles = m_WorldManager->GetCave()->GetTiles();
+    for (int x = 0; x < tiles.size(); ++x)
+    {
+        for (int y = 0; y < tiles[x].size(); ++y)
+        {
+            if(tiles[x][y]->GetTileType() != TileTypes::air) continue;
 
-    
+            if(tiles[x][y-1]->GetTileType() == TileTypes::ground && tiles[x][y+1]->GetTileType() == TileTypes::air)
+            {
+                if(rand() % 15 == 0)
+                {
+                    AddEntity(new Bat{tiles[x][y-1], m_WorldManager});
+
+                }
+            }
+
+            if(
+                tiles[x][y+1]->GetTileType() == TileTypes::ground &&
+                tiles[x-1][y+1]->GetTileType() == TileTypes::ground &&
+                tiles[x+1][y+1]->GetTileType() == TileTypes::ground &&
+                tiles[x+1][y]->GetTileType() == TileTypes::air &&
+                tiles[x-1][y]->GetTileType() == TileTypes::air
+                )
+            {
+                if(rand() % 10 == 0)
+                {
+                    AddEntity(new Snake{Vector2f{static_cast<float>(x*Game::TILE_SIZE), static_cast<float>(y * Game::TILE_SIZE)}, m_WorldManager});
+                }
+                else if(rand() % 15 == 0)
+                {
+                    AddEntity(new Rock{Vector2f{static_cast<float>(x*Game::TILE_SIZE), static_cast<float>(y * Game::TILE_SIZE)}, m_WorldManager});
+                }
+            }
+
+        }
+    }
+
     
 }
 

@@ -83,7 +83,7 @@ float Vector2f::AngleWith(const Vector2f& other) const
 	return atan2(x * other.y - other.x * y, x * other.x + y * other.y);
 }
 
-Vector2f Vector2f::Normalized(float epsilon) const
+Vector2f Vector2f::Normalized(const float epsilon) const
 {
 	float length{ Length( ) };
 	if ( length < epsilon )

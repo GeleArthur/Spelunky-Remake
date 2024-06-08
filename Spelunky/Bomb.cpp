@@ -5,6 +5,7 @@
 #include "EntityManager.h"
 #include "Game.h"
 #include "GizmosDrawer.h"
+#include "Vector2f.h"
 
 #include "SpriteSheetManager.h"
 #include "Texture.h"
