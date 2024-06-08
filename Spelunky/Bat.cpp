@@ -77,7 +77,7 @@ void Bat::Update(const float elapsedTime)
 		
 		if(distance.SquaredLength() < 10*spelucky_settings::g_TileSize*10*spelucky_settings::g_TileSize)
 		{
-			const std::vector<std::vector<Tile>>& tiles = m_WorldManager->GetCave()->GetTiles();
+			const std::vector<std::vector<Tile*>>& tiles = m_WorldManager->GetCave()->GetTiles();
 
 			bool CanSeePlayer{true};
 			
@@ -85,11 +85,11 @@ void Bat::Update(const float elapsedTime)
 			{
 				for (int y{}; y < static_cast<int>(tiles[x].size()); ++y)
 				{
-					const Tile& currentTile = tiles[x][y];
-					if(currentTile.GetTileType() == TileTypes::air) continue;
+					const Tile* currentTile = tiles[x][y];
+					if(currentTile->GetTileType() == TileTypes::air) continue;
 
 					RayVsRectInfo rayResult;
-					if (RayCastCollision(GetCenter(), distance, currentTile.GetRect(), rayResult))
+					if (RayCastCollision(GetCenter(), distance, currentTile->GetRect(), rayResult))
 					{
 						CanSeePlayer = false;
 						break;

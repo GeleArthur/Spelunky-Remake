@@ -4,7 +4,7 @@
 class Cave;
 class SpriteSheetManager;
 
-class Snake: public EntityRectCollider
+class Snake final : public EntityRectCollider
 {
 public:
     Snake(const Vector2f& position, WorldManager* worldManager);

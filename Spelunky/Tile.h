@@ -7,7 +7,8 @@
 class Tile final : public RectPhysicsCollider
 {
 public:
-    explicit Tile(TileTypes tileType, Vector2i tileIndex, WorldManager* worldManager);
+    explicit Tile(TileTypes tileType, const Vector2i& tileIndex, WorldManager* worldManager);
+    
     
     void Draw() const;
     const Vector2i& GetIndexPosition() const;

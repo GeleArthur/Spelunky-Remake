@@ -28,13 +28,24 @@ Cave::Cave(WorldManager* worldManager):
         
         for (int y{}; y < CAVE_TILE_COUNT_Y; ++y)
         {
-            m_Tiles[x].push_back(Tile{TileTypes::border, Vector2i{x,y}, worldManager});
+            m_Tiles[x].push_back(new Tile{TileTypes::border, Vector2i{x,y}, worldManager});
             
-            m_Tiles[x][y].SetVariantIndex(x%2 + 2*(y%2));
+            m_Tiles[x][y]->SetVariantIndex(x%2 + 2*(y%2));
         }
     }
     
     worldManager->SetCave(this);
+}
+Cave::~Cave()
+{
+    for (int x = 0; x < m_Tiles.size(); ++x)
+    {
+        for (int y = 0; y < m_Tiles[x].size(); ++y)
+        {
+            delete m_Tiles[x][y];
+        }
+    }
+    m_Tiles.clear();
 }
 
 void Cave::GenerateLevel()
@@ -50,15 +61,15 @@ void Cave::GenerateLevel()
             const int xWithBorder = x + TILES_BORDER_X;
             const int yWithBorder = y + TILES_BORDER_Y;
             
-            m_Tiles[xWithBorder][yWithBorder].SetTileType(tileTypes[x][y]);
+            m_Tiles[xWithBorder][yWithBorder]->SetTileType(tileTypes[x][y]);
 
             switch (tileTypes[x][y])
             {
             case TileTypes::ground:
-                m_Tiles[xWithBorder][yWithBorder].SetVariantIndex(variantIndexes[utils::Random(0, 3)]);
+                m_Tiles[xWithBorder][yWithBorder]->SetVariantIndex(variantIndexes[utils::Random(0, 3)]);
                 break;
             case TileTypes::spikes:
-                m_Tiles[xWithBorder][yWithBorder].SetVariantIndex(utils::Random(0, 2));
+                m_Tiles[xWithBorder][yWithBorder]->SetVariantIndex(utils::Random(0, 2));
                 break;
             case TileTypes::entrance:
                 m_EntranceLocation = Vector2f{float(xWithBorder) * spelucky_settings::g_TileSize, float(yWithBorder) * spelucky_settings::g_TileSize};
@@ -84,7 +95,7 @@ void Cave::Draw() const
     {
         for (int y{}; y < CAVE_TILE_COUNT_Y; ++y)
         {
-            m_Tiles[x][y].Draw();
+            m_Tiles[x][y]->Draw();
         }
     }
     
@@ -421,30 +432,30 @@ Vector2f Cave::GetExit() const
     return m_ExitLocation;
 }
 
-const std::vector<std::vector<Tile>>& Cave::GetTiles() const
+const std::vector<std::vector<Tile*>>& Cave::GetTiles() const
 {
     return m_Tiles;
 }
 
-const Tile& Cave::GetTile(const int x, const int y)
+const Tile& Cave::GetTile(const int x, const int y) const
 {
-    return m_Tiles.at(x).at(y);
+    return *m_Tiles.at(x).at(y);
 }
 
-const Tile& Cave::GetTile(const Vector2i& location)
+const Tile& Cave::GetTile(const Vector2i& location) const
 {
-    return m_Tiles.at(location.x).at(location.y);
+    return *m_Tiles.at(location.x).at(location.y);
 }
 
-void Cave::ExplodeTile(const Vector2i& tileIndex)
+void Cave::ExplodeTile(const Vector2i& tileIndex) const
 {
     if(tileIndex.x < 0 || tileIndex.x > CAVE_TILE_COUNT_X ||
     tileIndex.y < 0 || tileIndex.y > CAVE_TILE_COUNT_Y) return;
     
-    Tile& tile = m_Tiles.at(tileIndex.x).at(tileIndex.y);
-    const TileTypes tileType = tile.GetTileType();
+    Tile* tile = m_Tiles.at(tileIndex.x).at(tileIndex.y);
+    const TileTypes tileType = tile->GetTileType();
     if(tileType != TileTypes::border && tileType != TileTypes::exit && tileType != TileTypes::entrance)
     {
-        tile.SetTileType(TileTypes::air);
+        tile->SetTileType(TileTypes::air);
     }
 }

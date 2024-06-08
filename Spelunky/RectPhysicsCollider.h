@@ -21,10 +21,10 @@ public:
     explicit RectPhysicsCollider(const Rectf& rect, float mass, float bounciness, WorldManager* worldManager);
     virtual ~RectPhysicsCollider() = default;
     
-    RectPhysicsCollider(const RectPhysicsCollider& other) = default;
-    RectPhysicsCollider& operator=(const RectPhysicsCollider& other) = default;
-    RectPhysicsCollider(RectPhysicsCollider && other) = default;
-    RectPhysicsCollider& operator=(RectPhysicsCollider&& other) = default;
+    RectPhysicsCollider(const RectPhysicsCollider& other) = delete;
+    RectPhysicsCollider& operator=(const RectPhysicsCollider& other) = delete;
+    RectPhysicsCollider(RectPhysicsCollider && other) = delete;
+    RectPhysicsCollider& operator=(RectPhysicsCollider&& other) = delete;
     
     // virtual ColliderTypes GetColliderType() const override;
     

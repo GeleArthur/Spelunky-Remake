@@ -5,12 +5,7 @@ class WorldManager;
 class InputManager final
 {
 public:
-    InputManager(WorldManager* worldManager);
-    ~InputManager() = default;
-    InputManager(const InputManager&) = delete;
-    InputManager& operator=(const InputManager& other) = delete;
-    InputManager(InputManager&& other) = delete;
-    InputManager& operator=(InputManager&& other) = delete;
+    explicit InputManager(WorldManager* worldManager);
     
     const Vector2f& GetMoveInput() const;
     bool PressedJumpThisFrame() const;

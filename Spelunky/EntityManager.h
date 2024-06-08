@@ -3,6 +3,7 @@
 #include <vector>
 
 
+class EntityPickupRectCollider;
 class Bomb;
 class EntityRectCollider;
 class PickUp;
@@ -13,11 +14,12 @@ class EntityManager final
 {
 public:
     explicit EntityManager(WorldManager* worldManager);
-    virtual ~EntityManager();
+    ~EntityManager();
     EntityManager(const EntityManager& other) = delete;
     EntityManager& operator=(const EntityManager& other) = delete;
     EntityManager(EntityManager && other) = delete;
-    EntityManager& operator=(const EntityManager&& other) = delete;
+    EntityManager& operator=(EntityManager&& other) = delete;
+    
     
     void AddEntity(EntityRectCollider* entity);
     Bomb* CreateBomb();
@@ -26,11 +28,12 @@ public:
     void UpdateEntity(float elapsedTime) const;
     std::vector<EntityRectCollider*>* GetAllEntities();
     void ClearAllEntities();
+    void GenerateEntities();
     
 private:
     std::vector<EntityRectCollider*> m_Entities;
     std::vector<EntityRectCollider*> m_EntitiesWithoutPlayer;
-    std::vector<PickUp*> m_EntitiesWithPickUp;
+    std::vector<EntityPickupRectCollider*> m_EntitiesWithPickUp;
     std::vector<Bomb*> m_BombObjectPool;
     // std::vector<PickupItem*> m_PickupItems;
 };

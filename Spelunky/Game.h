@@ -13,17 +13,16 @@ class Game final : public BaseGame
 {
 public:
 	explicit Game( const Window& window );
-	virtual ~Game() override;
+	~Game() override;
 	
 	Game(const Game& other) = delete;
 	Game& operator=(const Game& other) = delete;
 	Game( Game&& other) = delete;
 	Game& operator=(Game&& other) = delete;
-	// http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rh-override
 
 	virtual void Update( float elapsedSec ) override;
 	virtual void Draw( ) const override;
-	void Reset();
+	void Reset() const;
 
 	// Event handling
 	virtual void ProcessKeyDownEvent( const SDL_KeyboardEvent& e ) override;

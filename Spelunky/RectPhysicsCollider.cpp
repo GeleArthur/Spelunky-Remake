@@ -159,7 +159,7 @@ bool RectPhysicsCollider::RayCastCollision(const Vector2f& startPoint, const Vec
 //TODO: If you build up velocity on the floor by elapsedTime we should ignore it if there is a bounch
 void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
 {
-    const std::vector<std::vector<Tile>>& tiles = m_WorldManager->GetCave()->GetTiles();
+    const std::vector<std::vector<Tile*>>& tiles = m_WorldManager->GetCave()->GetTiles();
 
     bool isColliding = true;
 
@@ -181,13 +181,13 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
         {
             for (int j{}; j < static_cast<int>(tiles[i].size()); ++j)
             {
-                const Tile& currentTile = tiles[i][j];
-                if (currentTile.GetTileType() == TileTypes::air) continue;
+                const Tile* currentTile = tiles[i][j];
+                if (currentTile->GetTileType() == TileTypes::air) continue;
 
                 RayVsRectInfo rayResult;
-                if (PredictCollision(collidedPosition, collidedVelocity, currentTile, rayResult))
+                if (PredictCollision(collidedPosition, collidedVelocity, *currentTile, rayResult))
                 {
-                    m_HitsCache.emplace_back(&currentTile, rayResult);
+                    m_HitsCache.emplace_back(currentTile, rayResult);
                 }
             }
         }

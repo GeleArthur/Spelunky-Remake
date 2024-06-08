@@ -18,7 +18,7 @@ class Cave final
 {
 public:
 	explicit Cave(WorldManager* worldManager);
-	virtual ~Cave() = default;
+	~Cave();
 	Cave(const Cave& other) = delete;
 	Cave& operator=(const Cave& other) = delete;
 	Cave(Cave && other) = delete;
@@ -29,10 +29,10 @@ public:
 	void GenerateLevel();
 	Vector2f GetEntrance() const;
 	Vector2f GetExit() const;
-	const std::vector<std::vector<Tile>>& GetTiles() const;
-	const Tile& GetTile(int x, int y);
-	const Tile& GetTile(const Vector2i& location);
-	void ExplodeTile(const Vector2i& tileIndex);
+	const std::vector<std::vector<Tile*>>& GetTiles() const;
+	const Tile& GetTile(int x, int y) const;
+	const Tile& GetTile(const Vector2i& location) const;
+	void ExplodeTile(const Vector2i& tileIndex) const;
 	const static int MAX_ROOMS_X{4};
 	const static int MAX_ROOMS_Y{4};
 	const static int TILES_PER_ROOM_X{10};
@@ -47,7 +47,7 @@ public:
 
 private:
 	SpriteSheetManager* m_SpriteSheetManager;
-	std::vector<std::vector<Tile>> m_Tiles;
+	std::vector<std::vector<Tile*>> m_Tiles;
 
 	Vector2f m_EntranceLocation;
 	Vector2f m_ExitLocation;

@@ -5,13 +5,6 @@
 // Row major matrix
 struct Matrix4X4 final
 {
-	Matrix4X4() = default;
-	~Matrix4X4() = default;
-	Matrix4X4(const Matrix4X4& other) = default;
-	Matrix4X4& operator=(const Matrix4X4& other) = default;
-	Matrix4X4(Matrix4X4 && other) = default;
-	Matrix4X4& operator=(Matrix4X4&& other) = default;
-
 	void OpenGlArray(GLfloat (&array)[16]) const;
 	void GlMultiMatrix() const;
 	static Matrix4X4 IdentityMatrix();

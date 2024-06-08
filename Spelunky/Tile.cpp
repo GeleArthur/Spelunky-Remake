@@ -11,7 +11,7 @@
 
 using namespace spelucky_settings;
 
-Tile::Tile(const TileTypes tileType, const Vector2i tileIndex, WorldManager* worldManager):
+Tile::Tile(const TileTypes tileType, const Vector2i& tileIndex, WorldManager* worldManager):
     RectPhysicsCollider{
         Rectf{
             static_cast<float>((tileIndex.x * g_TileSize)), static_cast<float>((tileIndex.y * g_TileSize)),

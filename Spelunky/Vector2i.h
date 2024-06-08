@@ -10,12 +10,6 @@ struct Vector2i final
 	explicit Vector2i( int x, int y );
 	explicit Vector2i(const Vector2f& vector);
 
-	virtual ~Vector2i() = default;
-	Vector2i(const Vector2i& other) = default;
-	Vector2i& operator=(const Vector2i& other) = default;
-	Vector2i(Vector2i && other) = default;
-	Vector2i& operator=(Vector2i&& other) = default;
-
 	// -------------------------
 	// Member operators
 	// -------------------------

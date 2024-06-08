@@ -9,12 +9,7 @@ class Cave;
 class WorldManager final
 {
 public:
-    explicit WorldManager();
-    virtual ~WorldManager() = default;
-    WorldManager(const WorldManager& other) = delete;
-    WorldManager& operator=(const WorldManager& other) = delete;
-    WorldManager( WorldManager&& other) = delete;
-    WorldManager& operator=(WorldManager&& other) = delete;
+    explicit WorldManager();00
     
     static WorldManager* GetSingleton();
 

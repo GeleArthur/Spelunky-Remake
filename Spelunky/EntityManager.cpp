@@ -37,6 +37,14 @@ void EntityManager::ClearAllEntities()
     m_BombObjectPool.clear();
 }
 
+void EntityManager::GenerateEntities()
+{
+    ClearAllEntities();
+
+    
+    
+}
+
 EntityManager::EntityManager(WorldManager* worldManager)
 {
     worldManager->SetEntityManager(this);

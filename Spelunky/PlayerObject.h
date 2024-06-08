@@ -5,7 +5,6 @@
 #include "EntityRectCollider.h"
 #include "RectPhysicsCollider.h"
 
-class PickUp;
 class EntityPickupRectCollider;
 class InputManager;
 class WorldManager;
@@ -39,12 +38,8 @@ class PlayerObject final : public EntityRectCollider
 {
 public:
     explicit PlayerObject(WorldManager* worldManager);
-    virtual ~PlayerObject() override = default;
-    PlayerObject(const PlayerObject& other) = delete;
-    PlayerObject& operator=(const PlayerObject& other) = delete;
-    PlayerObject(PlayerObject && other) = delete;
-    PlayerObject& operator=(PlayerObject&& other) = delete;
 
+    
     virtual void Draw() const override;
     virtual void Update(float elapsedTimes) override;
     void Respawn(const Vector2f& spawnLocation);
@@ -101,7 +96,7 @@ private:
     bool m_IsTouchingWall{false};
     bool m_IsTouchingLeftWall{false};
     
-    PickUp* m_PickupItem{};
+    EntityPickupRectCollider* m_PickupItem{};
 
     SpriteSheetManager* m_SpriteSheetManager;
     InputManager* m_InputManager;
