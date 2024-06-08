@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
 #include "Tile.h"
 
-#include "GlobalValues.h"
+
 #include "TileTypes.h"
 #include "SpriteSheetManager.h"
 #include "Texture.h"
@@ -9,13 +9,13 @@
 #include "WorldManager.h"
 #include <limits>
 
-using namespace spelucky_settings;
+#include "Game.h"
 
 Tile::Tile(const TileTypes tileType, const Vector2i& tileIndex, WorldManager* worldManager):
     RectPhysicsCollider{
         Rectf{
-            static_cast<float>((tileIndex.x * g_TileSize)), static_cast<float>((tileIndex.y * g_TileSize)),
-            g_TileSize, g_TileSize
+            static_cast<float>((tileIndex.x * Game::TILE_SIZE)), static_cast<float>((tileIndex.y * Game::TILE_SIZE)),
+            Game::TILE_SIZE, Game::TILE_SIZE
         },
         0,
         0,
@@ -48,39 +48,39 @@ void Tile::Draw() const
         break;
     case TileTypes::ground:
         {
-            const float variantX = static_cast<float>(m_VariantIndex % 4) * g_TileSize;
-            const float variantY = static_cast<float>(m_VariantIndex / 4) * g_TileSize;
-            levelTexture->Draw(position, Rectf{variantX, g_TileSize + variantY, g_TileSize, g_TileSize});
+            const float variantX = static_cast<float>(m_VariantIndex % 4) * Game::TILE_SIZE;
+            const float variantY = static_cast<float>(m_VariantIndex / 4) * Game::TILE_SIZE;
+            levelTexture->Draw(position, Rectf{variantX, Game::TILE_SIZE + variantY, Game::TILE_SIZE, Game::TILE_SIZE});
         }
         break;
     case TileTypes::border:
         {
-            const float variantX = static_cast<float>(m_VariantIndex % 2) * g_TileSize;
-            const float variantY = static_cast<float>(m_VariantIndex / 2) * g_TileSize;
-            levelTexture->Draw(position, Rectf{1536 + variantX, 512 + variantY, g_TileSize, g_TileSize});
+            const float variantX = static_cast<float>(m_VariantIndex % 2) * Game::TILE_SIZE;
+            const float variantY = static_cast<float>(m_VariantIndex / 2) * Game::TILE_SIZE;
+            levelTexture->Draw(position, Rectf{1536 + variantX, 512 + variantY, Game::TILE_SIZE, Game::TILE_SIZE});
         }
         break;
     case TileTypes::ladderTop:
-        levelTexture->Draw(position, Rectf{192.0f, 0.0f, g_TileSize, g_TileSize});
+        levelTexture->Draw(position, Rectf{192.0f, 0.0f, Game::TILE_SIZE, Game::TILE_SIZE});
         break;
     case TileTypes::ladder:
-        levelTexture->Draw(position, Rectf{128.0f, 0.0f, g_TileSize, g_TileSize});
+        levelTexture->Draw(position, Rectf{128.0f, 0.0f, Game::TILE_SIZE, Game::TILE_SIZE});
         break;
     case TileTypes::spikes:
         {
-            const float variantX = static_cast<float>(m_VariantIndex) * g_TileSize;
-            levelTexture->Draw(position, Rectf{256 + variantX, 384, g_TileSize, g_TileSize});
+            const float variantX = static_cast<float>(m_VariantIndex) * Game::TILE_SIZE;
+            levelTexture->Draw(position, Rectf{256 + variantX, 384, Game::TILE_SIZE, Game::TILE_SIZE});
         }
         break;
     case TileTypes::pushBlock:
         // TODO: Replace with object
-        levelTexture->Draw(position, Rectf{0.0f, 0.0f, g_TileSize, g_TileSize});
+        levelTexture->Draw(position, Rectf{0.0f, 0.0f, Game::TILE_SIZE, Game::TILE_SIZE});
         break;
     case TileTypes::entrance:
     case TileTypes::exit:
         break;
     case TileTypes::unknown:
-        levelTexture->Draw(position, Rectf{15 * g_TileSize, 26 * g_TileSize, g_TileSize, g_TileSize});
+        levelTexture->Draw(position, Rectf{15 * Game::TILE_SIZE, 26 * Game::TILE_SIZE, Game::TILE_SIZE, Game::TILE_SIZE});
         break;
     default:
         throw;

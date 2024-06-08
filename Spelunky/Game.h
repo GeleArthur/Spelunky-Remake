@@ -31,6 +31,8 @@ public:
 	virtual void ProcessMouseDownEvent( const SDL_MouseButtonEvent& e ) override;
 	virtual void ProcessMouseUpEvent( const SDL_MouseButtonEvent& e ) override;
 	virtual void ProcessWheelEvent( const SDL_MouseWheelEvent& e ) override;
+
+	static constexpr int TILE_SIZE{64};
 	
 private:
 
@@ -49,6 +51,7 @@ private:
 
 	float m_PrevDeltaTime{};
 	float m_CurrentTime{};
+
 
 	// FUNCTIONS
 	void Cleanup( );

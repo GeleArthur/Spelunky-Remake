@@ -13,7 +13,7 @@
 #include "Cave.h"
 #include "EntityManager.h"
 #include "GizmosDrawer.h"
-#include "GlobalValues.h"
+
 #include "InputManager.h"
 #include "Matrix.h"
 #include "PlayerObject.h"
@@ -100,7 +100,7 @@ void Game::Draw() const
         for (int y{}; y < 64 * 8 * 4 / 256; ++y)
         {
             m_SpriteSheetManager->GetBackGroundTexture()->Draw(Vector2f{
-                spelucky_settings::g_TileSize * 2 + x * 256.0f, spelucky_settings::g_TileSize * 2 + y * 256.f
+                Game::TILE_SIZE * 2 + x * 256.0f, Game::TILE_SIZE * 2 + y * 256.f
             });
         }
     }
@@ -130,7 +130,7 @@ void Game::Reset() const
     m_EntityManager->AddEntity(new Bomb{m_WorldManager});
     
     
-    Vector2i spawnLocation{m_Cave->GetEntrance()/spelucky_settings::g_TileSize};
+    Vector2i spawnLocation{m_Cave->GetEntrance()/Game::TILE_SIZE};
     
     while (true)
     {
@@ -147,7 +147,7 @@ void Game::Reset() const
     // m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{-30, -64}, m_WorldManager});
     // m_EntityManager->AddEntity(new Rock{m_Cave->GetEntrance() + Vector2f{-50, -64}, m_WorldManager});
     m_Player->Respawn(/*Vector2f{64.0f*2, 64.0f*2}*/m_Cave->GetEntrance() + Vector2f{
-        spelucky_settings::g_TileSize / 2.0f, spelucky_settings::g_TileSize / 2.0f
+        Game::TILE_SIZE / 2.0f, Game::TILE_SIZE / 2.0f
     });
 }
 

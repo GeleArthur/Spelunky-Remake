@@ -3,8 +3,9 @@
 
 #include "Cave.h"
 #include "EntityManager.h"
+#include "Game.h"
 #include "GizmosDrawer.h"
-#include "GlobalValues.h"
+
 #include "SpriteSheetManager.h"
 #include "Texture.h"
 #include "Vector2i.h"
@@ -89,7 +90,7 @@ void Bomb::Explode()
 {
     m_Health = 0;
 
-    const Vector2i center = Vector2i{GetCenter() / spelucky_settings::g_TileSize};
+    const Vector2i center = Vector2i{GetCenter() / Game::TILE_SIZE};
     
     for (int x{-EXPLODE_RADIUS}; x < EXPLODE_RADIUS; ++x)
     {
@@ -108,7 +109,7 @@ void Bomb::Explode()
         //TODO: Bombs should explode other bombs
         if((*entityRectColliders)[i] == this) continue;
         Vector2f difference = (*entityRectColliders)[i]->GetCenter() - GetCenter();
-        if(difference.SquaredLength() < spelucky_settings::g_TileSize*EXPLODE_RADIUS*spelucky_settings::g_TileSize*EXPLODE_RADIUS)
+        if(difference.SquaredLength() < Game::TILE_SIZE*EXPLODE_RADIUS*Game::TILE_SIZE*EXPLODE_RADIUS)
         {
             (*entityRectColliders)[i]->YouGotHit(2, (difference) * 10);
         }

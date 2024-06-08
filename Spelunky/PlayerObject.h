@@ -38,7 +38,6 @@ class PlayerObject final : public EntityRectCollider
 {
 public:
     explicit PlayerObject(WorldManager* worldManager);
-
     
     virtual void Draw() const override;
     virtual void Update(float elapsedTimes) override;

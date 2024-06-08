@@ -4,7 +4,7 @@
 #include <algorithm>
 
 #include "Game.h"
-#include "GlobalValues.h"
+
 #include "Cave.h"
 
 CameraSystem::CameraSystem(const PlayerObject* player):
@@ -17,8 +17,8 @@ void CameraSystem::UpdateCamera(float elapsedTime)
     Vector2f cameraPos = m_Player->GetPosition();
 
     
-    cameraPos.x = std::max(float(spelucky_settings::g_TileSize) * 10, std::min( cameraPos.x, float(spelucky_settings::g_TileSize) * (Cave::CAVE_TILE_COUNT_X - 10)));
-    cameraPos.y = std::max(float(spelucky_settings::g_TileSize) * 6, std::min( cameraPos.y, float(spelucky_settings::g_TileSize) * (Cave::CAVE_TILE_COUNT_Y - 6)));
+    cameraPos.x = std::max(float(Game::TILE_SIZE) * 10, std::min( cameraPos.x, float(Game::TILE_SIZE) * (Cave::CAVE_TILE_COUNT_X - 10)));
+    cameraPos.y = std::max(float(Game::TILE_SIZE) * 6, std::min( cameraPos.y, float(Game::TILE_SIZE) * (Cave::CAVE_TILE_COUNT_Y - 6)));
     
     cameraPos.x -= 1280.0f/2; // TODO: Make screen size reference
     cameraPos.y -= 720.0f/2;

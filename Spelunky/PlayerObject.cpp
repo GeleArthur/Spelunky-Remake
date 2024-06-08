@@ -13,7 +13,7 @@
 
 #include "Game.h"
 #include "GizmosDrawer.h"
-#include "GlobalValues.h"
+
 #include "InputManager.h"
 #include "RectPhysicsCollider.h"
 #include "Rock.h"
@@ -246,7 +246,7 @@ void PlayerObject::CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectI
             }
             else if(m_PlayerState != PlayerState::ladderClimbing && m_InputManager->GetMoveInput().y < 0 && m_IsJumping == false)
             {
-                if((hitInfo[i].first->GetCenter() - GetCenter()).SquaredLength() < (spelucky_settings::g_TileSize/2.0f)*(spelucky_settings::g_TileSize/2.0f))
+                if((hitInfo[i].first->GetCenter() - GetCenter()).SquaredLength() < (Game::TILE_SIZE/2.0f)*(Game::TILE_SIZE/2.0f))
                 {
                     m_PlayerState = PlayerState::ladderClimbing;
                     m_IsTouchingWall = false;
@@ -507,10 +507,10 @@ void PlayerObject::PlayerMovement(const float elapsedTimes, const Vector2f& move
 }
 void PlayerObject::LadderClimbing(const Vector2f& moveInput)
 {
-    SetVelocity(0, moveInput.y * spelucky_settings::g_TileSize*3);
+    SetVelocity(0, moveInput.y * Game::TILE_SIZE*3);
 
     const int direction = moveInput.y > 0 ? 1 : -1;
-    Vector2i newLadderTile{(GetCenter() - Vector2f{0, static_cast<float>(direction * spelucky_settings::g_TileSize/2)}) / spelucky_settings::g_TileSize};
+    Vector2i newLadderTile{(GetCenter() - Vector2f{0, static_cast<float>(direction * Game::TILE_SIZE/2)}) / Game::TILE_SIZE};
     newLadderTile.y += direction;
         
     const TileTypes topTileType = m_WorldManager->GetCave()->GetTile(newLadderTile.x, newLadderTile.y).GetTileType();
@@ -699,12 +699,12 @@ void PlayerObject::HandleWallHanging(const float elapsedTimes)
             const float characterTopHeight = GetRect().top ;
             const float characterNewTopHeight = GetRect().top + GetVelocity().y * elapsedTimes;
 
-            const int characterTileY = int(characterTopHeight / spelucky_settings::g_TileSize);
-            const int characterNewTileY = int(characterNewTopHeight / spelucky_settings::g_TileSize);
+            const int characterTileY = int(characterTopHeight / Game::TILE_SIZE);
+            const int characterNewTileY = int(characterNewTopHeight / Game::TILE_SIZE);
                 
             if(characterTileY != characterNewTileY)
             {
-                const Vector2i currentTileIndex{int(GetPosition().x / spelucky_settings::g_TileSize), characterTileY};
+                const Vector2i currentTileIndex{int(GetPosition().x / Game::TILE_SIZE), characterTileY};
                 const Vector2i hangingDirection = m_IsTouchingLeftWall ? Vector2i{-1, 0} : Vector2i{1, 0};
                     
                 Cave* cave = m_WorldManager->GetCave();
@@ -715,7 +715,7 @@ void PlayerObject::HandleWallHanging(const float elapsedTimes)
                     m_PlayerState = PlayerState::hanging;
                     m_IsWiping = false;
                     SetVelocity(0, 0);
-                    SetRect(Rectf{GetRect().left, float(currentTileIndex.y+1) * spelucky_settings::g_TileSize, GetRect().width, GetRect().height});
+                    SetRect(Rectf{GetRect().left, float(currentTileIndex.y+1) * Game::TILE_SIZE, GetRect().width, GetRect().height});
                 }
             }
         }

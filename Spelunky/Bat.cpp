@@ -2,14 +2,15 @@
 #include "Bat.h"
 
 #include "Cave.h"
+#include "Game.h"
 #include "GizmosDrawer.h"
-#include "GlobalValues.h"
+
 #include "SpriteSheetManager.h"
 #include "Texture.h"
 #include "Tile.h"
 #include "utils.h"
 Bat::Bat(const Tile* attachedTile, WorldManager* worldManager):
-	EntityRectCollider(Rectf{attachedTile->GetCenter().x - 25, attachedTile->GetCenter().y - 25 + spelucky_settings::g_TileSize, 50, 50 }, 1, 1, 0, worldManager),
+	EntityRectCollider(Rectf{attachedTile->GetCenter().x - 25, attachedTile->GetCenter().y - 25 + Game::TILE_SIZE, 50, 50 }, 1, 1, 0, worldManager),
 	m_SpriteSheetManager(worldManager->GetSpriteSheet()),
 	m_WorldManager(worldManager),
 	m_AttachedTile(attachedTile)
@@ -75,7 +76,7 @@ void Bat::Update(const float elapsedTime)
 
 		Vector2f distance = m_WorldManager->GetPlayer()->GetPosition() - GetCenter();
 		
-		if(distance.SquaredLength() < 10*spelucky_settings::g_TileSize*10*spelucky_settings::g_TileSize)
+		if(distance.SquaredLength() < 10*Game::TILE_SIZE*10*Game::TILE_SIZE)
 		{
 			const std::vector<std::vector<Tile*>>& tiles = m_WorldManager->GetCave()->GetTiles();
 

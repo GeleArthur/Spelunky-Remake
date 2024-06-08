@@ -2,7 +2,7 @@
 #include "GizmosDrawer.h"
 
 #include "Game.h"
-#include "GlobalValues.h"
+
 
 #include "Texture.h"
 #include "utils.h"

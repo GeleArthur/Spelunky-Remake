@@ -9,7 +9,7 @@ class Cave;
 class WorldManager final
 {
 public:
-    explicit WorldManager();00
+    explicit WorldManager();
     
     static WorldManager* GetSingleton();
 

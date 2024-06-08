@@ -2,8 +2,9 @@
 #include "Snake.h"
 
 #include "Cave.h"
+#include "Game.h"
 #include "GizmosDrawer.h"
-#include "GlobalValues.h"
+
 #include "SpriteSheetManager.h"
 #include "Texture.h"
 #include "Vector2i.h"
@@ -35,8 +36,8 @@ void Snake::Draw() const
 void Snake::Update(const float elapsedTime)
 {
     SetVelocity(m_MovingLeft ? Vector2f{100 , GetVelocity().y} : Vector2f{-100, GetVelocity().y});
-    const Vector2i nextTile = Vector2i((GetCenter() + (m_MovingLeft ? Vector2f{-25, 0}: Vector2f{25, 0}))  / spelucky_settings::g_TileSize) + Vector2i{m_MovingLeft ? 1 : -1, 0};
-    const Vector2i nextTileBottom = Vector2i((GetCenter() + Vector2f{0, spelucky_settings::g_TileSize} + (m_MovingLeft ? Vector2f{-25, 0}: Vector2f{25, 0}))  / spelucky_settings::g_TileSize) + Vector2i{m_MovingLeft ? 1 : -1, 0};
+    const Vector2i nextTile = Vector2i((GetCenter() + (m_MovingLeft ? Vector2f{-25, 0}: Vector2f{25, 0}))  / Game::TILE_SIZE) + Vector2i{m_MovingLeft ? 1 : -1, 0};
+    const Vector2i nextTileBottom = Vector2i((GetCenter() + Vector2f{0, Game::TILE_SIZE} + (m_MovingLeft ? Vector2f{-25, 0}: Vector2f{25, 0}))  / Game::TILE_SIZE) + Vector2i{m_MovingLeft ? 1 : -1, 0};
     
     const TileTypes InFrontOfMe = m_Cave->GetTile(nextTile).GetTileType();
     const TileTypes UnderMe = m_Cave->GetTile(nextTileBottom).GetTileType();

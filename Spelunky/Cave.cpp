@@ -5,7 +5,8 @@
 #include <iomanip>
 #include <iostream>
 
-#include "GlobalValues.h"
+
+#include "Game.h"
 #include "magic_enum.hpp"
 #include "RoomTemplates.h"
 #include "SpriteSheetManager.h"
@@ -72,10 +73,10 @@ void Cave::GenerateLevel()
                 m_Tiles[xWithBorder][yWithBorder]->SetVariantIndex(utils::Random(0, 2));
                 break;
             case TileTypes::entrance:
-                m_EntranceLocation = Vector2f{float(xWithBorder) * spelucky_settings::g_TileSize, float(yWithBorder) * spelucky_settings::g_TileSize};
+                m_EntranceLocation = Vector2f{float(xWithBorder) * Game::TILE_SIZE, float(yWithBorder) * Game::TILE_SIZE};
                 break;
             case TileTypes::exit:
-                m_ExitLocation = Vector2f{float(xWithBorder) * spelucky_settings::g_TileSize, float(yWithBorder) * spelucky_settings::g_TileSize};
+                m_ExitLocation = Vector2f{float(xWithBorder) * Game::TILE_SIZE, float(yWithBorder) * Game::TILE_SIZE};
                 break;
             default:
                 break;
