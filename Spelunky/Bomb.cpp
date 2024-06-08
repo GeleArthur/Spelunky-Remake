@@ -108,10 +108,13 @@ void Bomb::Explode()
     {
         //TODO: Bombs should explode other bombs
         if((*entityRectColliders)[i] == this) continue;
-        Vector2f difference = (*entityRectColliders)[i]->GetCenter() - GetCenter();
-        if(difference.SquaredLength() < Game::TILE_SIZE*EXPLODE_RADIUS*Game::TILE_SIZE*EXPLODE_RADIUS)
+        
+        const Vector2f difference = (*entityRectColliders)[i]->GetCenter() - GetCenter();
+        const float length = difference.Length();
+        
+        if(length < Game::TILE_SIZE*EXPLODE_RADIUS)
         {
-            (*entityRectColliders)[i]->YouGotHit(2, (difference) * 10);
+            (*entityRectColliders)[i]->YouGotHit(2, difference.Normalized() * 1.0f/length*30000 );
         }
     }
 }

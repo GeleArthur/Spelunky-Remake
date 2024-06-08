@@ -1,34 +1,36 @@
 ﻿#include "pch.h"
 #include "WorldManager.h"
+#include <cassert>
 
 
 Cave* WorldManager::GetCave() const
 {
+    assert(m_Cave != nullptr && "Cave doesn't exist yet but we are tring to access it");
     return m_Cave;
 }
 
 PlayerObject* WorldManager::GetPlayer() const
 {
+    assert(m_Player != nullptr && "Player doesn't exist yet but we are tring to access it");
     return m_Player;
 }
 
 SpriteSheetManager* WorldManager::GetSpriteSheet() const
 {
+    assert(m_SpriteSheetManager != nullptr && "SpriteSheet doesn't exist yet but we are tring to access it");
     return m_SpriteSheetManager;
 }
 
 EntityManager* WorldManager::GetEntityManager() const
 {
+    assert(m_EntityManager != nullptr && "EntityManager doesn't exist yet but we are tring to access it");
     return m_EntityManager;
 }
 
-void WorldManager::SetInputManager(InputManager* inputManager)
-{
-    m_InputManager = inputManager;
-}
 
 InputManager* WorldManager::GetInputManager() const
 {
+    assert(m_InputManager != nullptr && "InputManager doesn't exist yet but we are tring to access it");
     return m_InputManager;
 }
 
@@ -51,3 +53,9 @@ void WorldManager::SetEntityManager(EntityManager* entityManager)
 {
     m_EntityManager = entityManager;
 }
+
+void WorldManager::SetInputManager(InputManager* inputManager)
+{
+    m_InputManager = inputManager;
+}
+

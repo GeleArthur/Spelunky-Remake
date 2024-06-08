@@ -37,5 +37,4 @@ private:
     std::vector<Bomb*> m_BombObjectPool;
 
     WorldManager* m_WorldManager;
-    // std::vector<PickupItem*> m_PickupItems;
 };
