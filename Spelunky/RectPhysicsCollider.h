@@ -3,7 +3,7 @@
 #include <vector>
 
 class WorldManager;
-class EntityRectCollider;
+class Entity;
 class Tile;
 
 struct RayVsRectInfo
@@ -14,24 +14,17 @@ struct RayVsRectInfo
     float farTime;
 };
 
-// TODO: USE COMPOSTION
-class RectPhysicsCollider
+class RectPhysicsCollider final
 {
 public:
     explicit RectPhysicsCollider(const Rectf& rect, float mass, float bounciness, WorldManager* worldManager);
-    virtual ~RectPhysicsCollider() = default;
-    
-    RectPhysicsCollider(const RectPhysicsCollider& other) = delete;
-    RectPhysicsCollider& operator=(const RectPhysicsCollider& other) = delete;
-    RectPhysicsCollider(RectPhysicsCollider && other) = delete;
-    RectPhysicsCollider& operator=(RectPhysicsCollider&& other) = delete;
     
     // virtual ColliderTypes GetColliderType() const override;
     
     void DebugDraw() const;
     const Rectf& GetRect() const;
     void SetRect(const Rectf& rect);
-    
+
     Vector2f GetCenter() const;
     void SetCenter(const Vector2f& position);
 
@@ -47,14 +40,12 @@ public:
     bool PredictCollision(const Vector2f& startPoint, const Vector2f& moveDirection, const RectPhysicsCollider& otherPhysicsRect, RayVsRectInfo& out) const;
     void UpdatePhysics(float elapsedTime);
     
-    void CheckEntityCollision(const Vector2f& position, const Vector2f& velocity) const;
+    void CheckEntityCollision(const Vector2f& position, const Vector2f& velocity);
     static bool RayCastCollision(const Vector2f& startPoint, const Vector2f& moveDirection, const Rectf& rect, RayVsRectInfo& out);
 
-    
-protected:
-    virtual void CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo);
-    virtual void CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, EntityRectCollider*>>& hitInfo);
-    
+    const std::vector<std::pair<const Tile*, RayVsRectInfo>>& GetTilesWeHit();
+    const std::vector<std::pair<RayVsRectInfo, Entity*>>& GetEntitiesWeHit();
+
 private:
     Rectf m_Rect;
     Vector2f m_Velocity{};
@@ -65,9 +56,9 @@ private:
 
     WorldManager* m_WorldManager;
 
+    std::vector<std::pair<const Tile*, RayVsRectInfo>> m_BlocksWeHit;
+    std::vector<std::pair<RayVsRectInfo, Entity*>> m_EntitiesWeHit;
+
     // cache vector memory so the array can be reused
     static std::vector<std::pair<const Tile*, RayVsRectInfo>> m_HitsCache;
-    static std::vector<std::pair<const Tile*, RayVsRectInfo>> m_BlocksWeHit;
-    static std::vector<std::pair<RayVsRectInfo, EntityRectCollider*>> m_EntitiesWeHit;
-
 };

@@ -7,7 +7,7 @@
 // #include "Tile.h"
 
 EntityPickupRectCollider::EntityPickupRectCollider(const Rectf& collider, const int health, const float mass, const float bounciness, const float frictionOnGround, WorldManager* worldManager):
-    EntityRectCollider(collider, health, mass, bounciness, worldManager),
+    Entity(collider, health, mass, bounciness, worldManager),
     m_FrictionOnFloor(frictionOnGround)
 {
 }
@@ -16,25 +16,29 @@ void EntityPickupRectCollider::Update(const float elapsedTime)
 {
     if(m_IsOnGround)
     {
-        const Vector2f& velocity = GetVelocity();
+        const Vector2f& velocity = m_PhysicsCollider.GetVelocity();
         Vector2f newVelocity{
             std::max(std::abs(velocity.x) * m_FrictionOnFloor - 0.2f, 0.0f) * (velocity.x >= 0 ? 1.0f : -1.0f),
             std::max(std::abs(velocity.y) * m_FrictionOnFloor - 0.2f, 0.0f) * (velocity.y >= 0 ? 1.0f : -1.0f)
         };
         
-        SetVelocity(newVelocity);
+        m_PhysicsCollider.SetVelocity(newVelocity);
     }
     
     m_IsOnGround = false;
     if(m_PickedUpBy != nullptr)
     {
-        SetCenter(m_CenterOfTarget);
-        SetVelocity((m_CenterOfTarget - m_GoingToPosition) / elapsedTime );
-        UpdatePhysics(elapsedTime);
+        m_PhysicsCollider.SetCenter(m_CenterOfTarget);
+        m_PhysicsCollider.SetVelocity((m_CenterOfTarget - m_GoingToPosition) / elapsedTime );
+        m_PhysicsCollider.UpdatePhysics(elapsedTime);
     }
     else
     {
-        EntityRectCollider::Update(elapsedTime);
+        Entity::Update(elapsedTime);
+
+        TilesWeHitCheck(m_PhysicsCollider.GetEntitiesWeHit());
+        EntitiesWeHitCheck(m_PhysicsCollider.GetTilesWeHit());
+        
     }
 }
 
@@ -43,10 +47,10 @@ void EntityPickupRectCollider::Throw(const Vector2f& force)
     m_HitPrevFrame.push_back(m_PickedUpBy);
     m_PickedUpBy = nullptr;
 
-    SetVelocity(force);
+    m_PhysicsCollider.SetVelocity(force);
 }
 
-bool EntityPickupRectCollider::TryToPickUp(EntityRectCollider* pickedUpBy)
+bool EntityPickupRectCollider::TryToPickUp(Entity* pickedUpBy)
 {
     if(CanBePickedUp())
     {
@@ -79,7 +83,7 @@ bool EntityPickupRectCollider::IsOnGround() const
     return m_IsOnGround;
 }
 
-void EntityPickupRectCollider::CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo)
+void EntityPickupRectCollider::EntitiesWeHitCheck(const std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo)
 {
     for (int i{}; i < hitInfo.size(); ++i)
     {
@@ -98,14 +102,14 @@ void EntityPickupRectCollider::CallBackHitTile(std::vector<std::pair<const Tile*
     }
 }
 
-void EntityPickupRectCollider::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, EntityRectCollider*>>& hitInfo)
+void EntityPickupRectCollider::TilesWeHitCheck(const std::vector<std::pair<RayVsRectInfo, Entity*>>& hitInfo)
 {
     if(!IsOnGround() && !IsPickedUp() )
     {
 
-        if(GetVelocity().SquaredLength() > 450*450)
+        if(m_PhysicsCollider.GetVelocity().SquaredLength() > 450*450)
         {
-            std::vector<EntityRectCollider*> entitiesHitNow{hitInfo.size()};
+            std::vector<Entity*> entitiesHitNow{hitInfo.size()};
             
             for (int i{}; i < hitInfo.size(); ++i)
             {
@@ -122,7 +126,7 @@ void EntityPickupRectCollider::CallBackHitEntity(std::vector<std::pair<RayVsRect
                 }
                 
                 if(alReadyHit) continue;
-                hitInfo[i].second->YouGotHit(1, GetVelocity());
+                hitInfo[i].second->YouGotHit(1, m_PhysicsCollider.GetVelocity());
             }
 
             m_HitPrevFrame = entitiesHitNow; // ?? Copy Assignment constructor

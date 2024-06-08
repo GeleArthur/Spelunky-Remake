@@ -11,7 +11,7 @@
 #include "WorldManager.h"
 
 Snake::Snake(const Vector2f& position, WorldManager* worldManager) :
-    EntityRectCollider(Rectf{position.x, position.y, 52, 52}, 1, 1, 0, worldManager),
+    Entity(Rectf{position.x, position.y, 52, 52}, 1, 1, 0, worldManager),
     m_SpriteSheetManager(worldManager->GetSpriteSheet()),
     m_Cave(worldManager->GetCave())
 {
@@ -35,7 +35,7 @@ void Snake::Draw() const
 
 void Snake::Update(const float elapsedTime)
 {
-    SetVelocity(m_MovingLeft ? Vector2f{100 , GetVelocity().y} : Vector2f{-100, GetVelocity().y});
+    m_PhysicsCollider.SetVelocity(m_MovingLeft ? Vector2f{100 , m_PhysicsCollider.GetVelocity().y} : Vector2f{-100, m_PhysicsCollider.GetVelocity().y});
     const Vector2i nextTile = Vector2i((GetCenter() + (m_MovingLeft ? Vector2f{-25, 0}: Vector2f{25, 0}))  / Game::TILE_SIZE) + Vector2i{m_MovingLeft ? 1 : -1, 0};
     const Vector2i nextTileBottom = Vector2i((GetCenter() + Vector2f{0, Game::TILE_SIZE} + (m_MovingLeft ? Vector2f{-25, 0}: Vector2f{25, 0}))  / Game::TILE_SIZE) + Vector2i{m_MovingLeft ? 1 : -1, 0};
     
@@ -46,7 +46,7 @@ void Snake::Update(const float elapsedTime)
         m_MovingLeft = !m_MovingLeft;
     }
     
-    EntityRectCollider::Update(elapsedTime);
+    Entity::Update(elapsedTime);
 }
 
 EntityType Snake::GetEntityType() const

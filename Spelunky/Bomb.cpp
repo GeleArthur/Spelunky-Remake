@@ -14,7 +14,7 @@
 
 
 Bomb::Bomb(WorldManager* worldManager)
-    : EntityRectCollider(Rectf{0, 0, 34, 34}, 0, 5, 0.3f, worldManager),
+    : Entity(Rectf{0, 0, 34, 34}, 0, 5, 0.3f, worldManager),
     m_SpriteSheetManager(worldManager->GetSpriteSheet()),
     m_WorldManager{worldManager}
 {
@@ -52,23 +52,49 @@ void Bomb::Draw() const
     glPopMatrix();
 }
 
-void Bomb::Update(float elapsedTime)
+void Bomb::Update(const float elapsedTime)
 {
     if(IsDead()) return;
 
     if(m_IsOnGround)
     {
-        const Vector2f& velocity = GetVelocity();
+        const Vector2f& velocity = m_PhysicsCollider.GetVelocity();
         const Vector2f newVelocity{
             std::max(std::abs(velocity.x) * 0.3f - 0.2f, 0.0f) * (velocity.x >= 0 ? 1.0f : -1.0f),
             std::max(std::abs(velocity.y) * 0.3f - 0.2f, 0.0f) * (velocity.y >= 0 ? 1.0f : -1.0f)
         };
         
-        SetVelocity(newVelocity);
+        m_PhysicsCollider.SetVelocity(newVelocity);
     }
-    m_IsOnGround = false;
     
-    EntityRectCollider::Update(elapsedTime);
+    Entity::Update(elapsedTime);
+
+    const std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitTiles = m_PhysicsCollider.GetTilesWeHit();
+
+    m_IsOnGround = false;
+    for (int i{}; i < hitTiles.size(); ++i)
+    {
+        switch (hitTiles[i].first->GetTileType())
+        {
+        case TileTypes::ground:
+        case TileTypes::border:
+            if(hitTiles[i].second.normal.y < 0)
+            {
+                m_IsOnGround = true;
+            }
+            break;
+        case TileTypes::air:
+        case TileTypes::ladderTop:
+        case TileTypes::ladder:
+        case TileTypes::spikes:
+        case TileTypes::pushBlock:
+        case TileTypes::entrance:
+        case TileTypes::exit:
+        case TileTypes::unknown:
+            break;
+        }
+    }
+    
 
     m_Timer -= elapsedTime;
 
@@ -81,8 +107,8 @@ void Bomb::Update(float elapsedTime)
 void Bomb::Throw(const Vector2f& position, const Vector2f& velocity)
 {
     m_Health = 9999;
-    SetCenter(position);
-    SetVelocity(velocity);
+    m_PhysicsCollider.SetCenter(position);
+    m_PhysicsCollider.SetVelocity(velocity);
     m_IsOnGround = false;
     m_Timer = TIMER_START;
 }
@@ -104,36 +130,19 @@ void Bomb::Explode()
         }
     }
 
-    const std::vector<EntityRectCollider*>* entityRectColliders = m_WorldManager->GetEntityManager()->GetAllEntities();
-    for (int i = 0; i < entityRectColliders->size(); ++i)
+    const std::vector<Entity*>& entityRectColliders = m_WorldManager->GetEntityManager()->GetAllEntities();
+    for (int i = 0; i < entityRectColliders.size(); ++i)
     {
         //TODO: Bombs should explode other bombs
-        if((*entityRectColliders)[i] == this) continue;
+        if((entityRectColliders)[i] == this) continue;
         
-        const Vector2f difference = (*entityRectColliders)[i]->GetCenter() - GetCenter();
+        const Vector2f difference = (entityRectColliders)[i]->GetCenter() - GetCenter();
         const float length = difference.Length();
         
         if(length < Game::TILE_SIZE*EXPLODE_RADIUS)
         {
-            (*entityRectColliders)[i]->YouGotHit(2, difference.Normalized() * 1.0f/length*30000 );
+            (entityRectColliders)[i]->YouGotHit(2, difference.Normalized() * 1.0f/length*30000 );
         }
     }
 }
-void Bomb::CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo)
-{
-    for (int i{}; i < hitInfo.size(); ++i)
-    {
-        switch (hitInfo[i].first->GetTileType())
-        {
-        case TileTypes::ground:
-        case TileTypes::border:
-            if(hitInfo[i].second.normal.y < 0)
-            {
-                m_IsOnGround = true;
-            }
-            break;
-        default:
-            break;
-        }
-    }
-}
+

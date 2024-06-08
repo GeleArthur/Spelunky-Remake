@@ -1,10 +1,10 @@
 ﻿#pragma once
-#include "EntityRectCollider.h"
+#include "Entity.h"
 
 class Cave;
 class SpriteSheetManager;
 
-class Snake final : public EntityRectCollider
+class Snake final : public Entity
 {
 public:
     Snake(const Vector2f& position, WorldManager* worldManager);

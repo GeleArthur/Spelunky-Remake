@@ -13,7 +13,7 @@
 
 void EntityManager::DrawEntities() const
 {
-    for (const EntityRectCollider* entity : m_EntitiesWithoutPlayer)
+    for (const Entity* entity : m_EntitiesWithoutPlayer)
     {
         entity->Draw();
     }
@@ -21,15 +21,15 @@ void EntityManager::DrawEntities() const
 
 void EntityManager::UpdateEntity(const float elapsedTime) const
 {
-    for (EntityRectCollider* entity : m_EntitiesWithoutPlayer)
+    for (Entity* entity : m_EntitiesWithoutPlayer)
     {
         entity->Update(elapsedTime);
     }
 }
 
-std::vector<EntityRectCollider*>* EntityManager::GetAllEntities()
+const std::vector<Entity*>& EntityManager::GetAllEntities()
 {
-    return &m_Entities;
+    return m_Entities;
 }
 
 void EntityManager::ClearAllEntities()
@@ -96,7 +96,7 @@ EntityManager::~EntityManager()
     ClearAllEntities();
 }
 
-void EntityManager::AddEntity(EntityRectCollider* entity)
+void EntityManager::AddEntity(Entity* entity)
 {
     const EntityType type = entity->GetEntityType();
 

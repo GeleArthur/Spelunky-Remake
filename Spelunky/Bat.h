@@ -1,9 +1,9 @@
 #pragma once
-#include "EntityRectCollider.h"
+#include "Entity.h"
 #include "WorldManager.h"
 
 class SpriteSheetManager;
-class Bat final : public EntityRectCollider
+class Bat final : public Entity
 {
 public:
 	Bat(const Tile* attachedTile, WorldManager* worldManager);

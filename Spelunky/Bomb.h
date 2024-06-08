@@ -1,10 +1,10 @@
 ﻿#pragma once
-#include "EntityRectCollider.h"
+#include "Entity.h"
 
 class Cave;
 class SpriteSheetManager;
 
-class Bomb final : public EntityRectCollider
+class Bomb final : public Entity
 {
 public:
     explicit Bomb(WorldManager* worldManager);
@@ -13,10 +13,6 @@ public:
     virtual void Update(float elapsedTime) override;
     void Throw(const Vector2f& position, const Vector2f& velocity);
     void Explode();
-
-protected:
-    virtual void CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo) override;
-
 
 private:
     static constexpr int EXPLODE_RADIUS{2}; // Is this the way to avoid const member?

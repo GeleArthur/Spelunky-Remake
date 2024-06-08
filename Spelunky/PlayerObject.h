@@ -2,13 +2,13 @@
 #include <vector>
 
 
-#include "EntityRectCollider.h"
+#include "Entity.h"
 #include "RectPhysicsCollider.h"
 
 class EntityPickupRectCollider;
 class InputManager;
 class WorldManager;
-class EntityRectCollider;
+class Entity;
 class Tile;
 class SpriteSheetManager;
 
@@ -35,7 +35,7 @@ enum class PlayerState
 };
 
 
-class PlayerObject final : public EntityRectCollider
+class PlayerObject final : public Entity
 {
 public:
     explicit PlayerObject(WorldManager* worldManager);
@@ -43,15 +43,14 @@ public:
     virtual void Draw() const override;
     virtual void Update(float elapsedTimes) override;
     void Respawn(const Vector2f& spawnLocation);
-    
+
     Vector2f GetPosition() const;
     PlayerState GetPlayerState() const;
     virtual EntityType GetEntityType() const override;
     bool CanPlayerLeave() const;
 
 protected:
-    virtual void CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo) override;
-    virtual void CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, EntityRectCollider*>>& hitInfo) override;
+
     // virtual void YouGotHit(int damage, Vector2f force, HitType hitType) override;
     virtual void YouGotHit(int damage, const Vector2f& force) override;
     
@@ -68,6 +67,9 @@ private:
     void CheckBomb() const;
     void CheckCrouching(const Vector2f& moveInput);
     void PlayerInteract();
+
+    void TilesWeHitCheck(const std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo);
+    void EntitiesWeHitCheck(const std::vector<std::pair<RayVsRectInfo, Entity*>>& hitInfo);
 
     static constexpr float WIPING_AMOUNT_TIMER{0.45f};
     

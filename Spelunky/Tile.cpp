@@ -12,16 +12,13 @@
 #include "Game.h"
 
 Tile::Tile(const TileTypes tileType, const Vector2i& tileIndex, WorldManager* worldManager):
-    RectPhysicsCollider{
+    m_SpriteSheetManager(worldManager->GetSpriteSheet()),
+    m_PhysicsCollider{
         Rectf{
             static_cast<float>((tileIndex.x * Game::TILE_SIZE)), static_cast<float>((tileIndex.y * Game::TILE_SIZE)),
             Game::TILE_SIZE, Game::TILE_SIZE
-        },
-        0,
-        0,
-        worldManager
+        },0,0,worldManager
     },
-    m_SpriteSheetManager(worldManager->GetSpriteSheet()),
     m_IndexPosition(tileIndex),
     m_TileType(tileType)
 {
@@ -39,7 +36,7 @@ void Tile::Draw() const
     const Texture* levelTexture = m_SpriteSheetManager->GetLevelTexture();
     const Texture* doorsTexture = m_SpriteSheetManager->GetDoorsTexture();
 
-    const Rectf rect = GetRect();
+    const Rectf rect = m_PhysicsCollider.GetRect();
     const Vector2f position = Vector2f{rect.left, rect.top};
 
     switch (m_TileType)
@@ -100,4 +97,16 @@ void Tile::SetTileType(const TileTypes newTileType)
 TileTypes Tile::GetTileType() const
 {
     return m_TileType;
+}
+const Vector2f& Tile::GetCenter() const
+{
+    return m_PhysicsCollider.GetCenter();
+}
+const Rectf& Tile::GetRect() const
+{
+    return m_PhysicsCollider.GetRect();
+}
+const RectPhysicsCollider& Tile::GetCollider() const
+{
+    return m_PhysicsCollider;
 }

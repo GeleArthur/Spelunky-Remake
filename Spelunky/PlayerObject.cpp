@@ -23,7 +23,7 @@
 #include "WorldManager.h"
 
 PlayerObject::PlayerObject(WorldManager* worldManager):
-    EntityRectCollider(Rectf{0, 0, 40, 56}, 4, 60, 0.0f, worldManager),
+    Entity(Rectf{0, 0, 40, 56}, 4, 60, 0.0f, worldManager),
     m_SpriteSheetManager(worldManager->GetSpriteSheet()),
     m_InputManager(worldManager->GetInputManager()),
     m_WorldManager(worldManager)
@@ -68,7 +68,7 @@ void PlayerObject::Draw() const
         animationSource.left = static_cast<float>(m_AnimationFrame) * 80.0f;
         break;
     case PlayerAnimationState::ragdoll:
-        if(GetVelocity().SquaredLength() < 100)
+        if(m_PhysicsCollider.GetVelocity().SquaredLength() < 100)
         {
             animationSource.top = 0 * 80.f;
             animationSource.left = 9 * 80.0f;
@@ -138,7 +138,7 @@ void PlayerObject::Update(const float elapsedTimes)
     // Apply gravity
     if(m_PlayerState != PlayerState::hanging && m_PlayerState != PlayerState::ladderClimbing)
     {
-        ApplyForce(Vector2f{0,2048} * elapsedTimes);
+        m_PhysicsCollider.ApplyForce(Vector2f{0,2048} * elapsedTimes);
     }
 
     if(m_PlayerState != PlayerState::ragdoll)
@@ -149,15 +149,15 @@ void PlayerObject::Update(const float elapsedTimes)
     }
     
     // Set the x velocity to 0 if minuscule
-    if(std::abs(GetVelocity().x) < 0.0001)
+    if(std::abs(m_PhysicsCollider.GetVelocity().x) < 0.0001)
     {
-        SetVelocity(0, GetVelocity().y);
+        m_PhysicsCollider.SetVelocity(0, m_PhysicsCollider.GetVelocity().y);
     }
     else
     {
         if(m_IsWiping == false)
         {
-            m_IsLookingToLeft = GetVelocity().x < 0;
+            m_IsLookingToLeft = m_PhysicsCollider.GetVelocity().x < 0;
         }
     }
 
@@ -165,21 +165,21 @@ void PlayerObject::Update(const float elapsedTimes)
     {
         if(m_IsOnGround)
         {
-            const Vector2f& velocity = GetVelocity();
+            const Vector2f& velocity = m_PhysicsCollider.GetVelocity();
             Vector2f newVelocity{
                 std::max(std::abs(velocity.x) * 0.7f - 0.2f, 0.0f) * (velocity.x >= 0 ? 1.0f : -1.0f),
                 std::max(std::abs(velocity.y) * 0.7f - 0.2f, 0.0f) * (velocity.y >= 0 ? 1.0f : -1.0f)
             };
         
-            SetVelocity(newVelocity);
+            m_PhysicsCollider.SetVelocity(newVelocity);
             
-            if(GetVelocity().SquaredLength() < 100)
+            if(m_PhysicsCollider.GetVelocity().SquaredLength() < 100)
             {
                 m_RagDollTimer -= elapsedTimes;
                 if(m_RagDollTimer < 0)
                 {
                     m_PlayerState = PlayerState::normal;
-                    SetBounciness(0);
+                    m_PhysicsCollider.SetBounciness(0);
                 }
             }
             else
@@ -188,8 +188,9 @@ void PlayerObject::Update(const float elapsedTimes)
             }
         }
     }
+    
+    m_PhysicsCollider.UpdatePhysics(elapsedTimes);
 
-    // Setup varibles for UpdatePhysics
     m_IsOnGround = false;
     m_IsOnLadder = false;
     m_CanLeaveCave = false;
@@ -200,9 +201,10 @@ void PlayerObject::Update(const float elapsedTimes)
             m_IsTouchingWall = false;
         }
     }
-
-    //TODO: ReWrite with getters!!!!
-    UpdatePhysics(elapsedTimes);
+    
+    TilesWeHitCheck(m_PhysicsCollider.GetTilesWeHit());
+    EntitiesWeHitCheck(m_PhysicsCollider.GetEntitiesWeHit());
+    
     UpdateAnimationState(elapsedTimes);
 
     if(m_PickupItem != nullptr)
@@ -212,7 +214,7 @@ void PlayerObject::Update(const float elapsedTimes)
     }
 }
 
-void PlayerObject::CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo)
+void PlayerObject::TilesWeHitCheck(const std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo)
 {
     for (int i{}; i < hitInfo.size(); ++i)
     {
@@ -231,7 +233,7 @@ void PlayerObject::CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectI
             }
             break;
         case TileTypes::spikes:
-            if(GetVelocity().y > 0)
+            if(m_PhysicsCollider.GetVelocity().y > 0)
             {
                 m_PlayerState = PlayerState::dead;
             }
@@ -251,8 +253,8 @@ void PlayerObject::CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectI
                     m_IsTouchingWall = false;
                     m_IsOnLadder = true;
                     m_IsWiping = false;
-                    SetCenter(Vector2f{hitInfo[i].first->GetCenter().x, GetPosition().y});
-                    SetVelocity(0,0);
+                    m_PhysicsCollider.SetCenter(Vector2f{hitInfo[i].first->GetCenter().x, GetPosition().y});
+                    m_PhysicsCollider.SetVelocity(0,0);
                 }
             }
             break;
@@ -268,14 +270,12 @@ void PlayerObject::CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectI
         }
     }
 }
-void PlayerObject::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, EntityRectCollider*>>& hitInfo)
+void PlayerObject::EntitiesWeHitCheck(const std::vector<std::pair<RayVsRectInfo, Entity*>>& hitInfo)
 {
     for (int i{}; i < hitInfo.size(); ++i)
     {
         switch (hitInfo[i].second->GetEntityType())
         {
-        case EntityType::player:
-            break;
         case EntityType::rock:
             {
                 if(m_IsCrouching && m_InputManager->PressedActionThisFrame() && m_PickupItem == nullptr)
@@ -292,6 +292,7 @@ void PlayerObject::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, Entity
                 }
             }
             break;
+        case EntityType::player:
         case EntityType::arrow:
         case EntityType::snake:
         case EntityType::bat:
@@ -312,7 +313,7 @@ void PlayerObject::UpdateAnimationState(const float elapsedTimes)
         {
             ChangeAnimationState(PlayerAnimationState::inAir);
         }
-        else if (GetVelocity().SquaredLength() > 0.01)
+        else if (m_PhysicsCollider.GetVelocity().SquaredLength() > 0.01)
         {
             ChangeAnimationState(PlayerAnimationState::walk);
         }
@@ -330,7 +331,7 @@ void PlayerObject::UpdateAnimationState(const float elapsedTimes)
         {
             ChangeAnimationState(PlayerAnimationState::inAir);
         }
-        else if (GetVelocity().SquaredLength() < 0.01)
+        else if (m_PhysicsCollider.GetVelocity().SquaredLength() < 0.01)
         {
             ChangeAnimationState(PlayerAnimationState::idle);
         }
@@ -370,7 +371,7 @@ void PlayerObject::UpdateAnimationState(const float elapsedTimes)
         }
         else
         {
-            const Vector2f velocity = GetVelocity();
+            const Vector2f& velocity = m_PhysicsCollider.GetVelocity();
             if (velocity.y > 0 && velocity.y < 50)
             {
                 m_AnimationFrame = 4;
@@ -407,7 +408,7 @@ void PlayerObject::UpdateAnimationState(const float elapsedTimes)
         }
         else
         {
-            if (std::abs(GetVelocity().y) > 0.1f)
+            if (std::abs(m_PhysicsCollider.GetVelocity().y) > 0.1f)
             {
                 if (m_AnimationTimer > 0.1)
                 {
@@ -429,7 +430,7 @@ void PlayerObject::UpdateAnimationState(const float elapsedTimes)
         }
         else
         {
-            if (std::abs(GetVelocity().x) > 0.1f)
+            if (std::abs(m_PhysicsCollider.GetVelocity().x) > 0.1f)
             {
                 if (m_AnimationTimer > 0.04)
                 {
@@ -485,31 +486,31 @@ void PlayerObject::PlayerMovement(const float elapsedTimes, const Vector2f& move
     if(std::abs(moveInput.x) < 0.1f)
     {
         float slowDownSpeed = m_StopSpeed * elapsedTimes / 0.1f;
-        const float overShooting = std::abs(GetVelocity().x) - slowDownSpeed;
+        const float overShooting = std::abs(m_PhysicsCollider.GetVelocity().x) - slowDownSpeed;
         if(overShooting < 0)
         {
             slowDownSpeed += overShooting;
         }
             
-        const float direction = GetVelocity().x > 0 ? -1.f : 1.f;
+        const float direction = m_PhysicsCollider.GetVelocity().x > 0 ? -1.f : 1.f;
         inputVelocity.x += direction * slowDownSpeed;
     }
 
     // DeAcceleration to help the player turn
-    if(std::abs(moveInput.x) > 0.1f && moveInput.x > 0 != GetVelocity().x > 0)
+    if(std::abs(moveInput.x) > 0.1f && moveInput.x > 0 != m_PhysicsCollider.GetVelocity().x > 0)
     {
         const float slowDownSpeed = m_StopSpeed * elapsedTimes / 0.1f;
-        const float direction = GetVelocity().x > 0 ? -1.f : 1.f;
+        const float direction = m_PhysicsCollider.GetVelocity().x > 0 ? -1.f : 1.f;
         inputVelocity.x += direction * slowDownSpeed;
     }
         
     // Accelerating
     inputVelocity += Vector2f{moveInput.x * m_MaxSpeed/0.2f * elapsedTimes, 0};
-    ApplyForce(inputVelocity);
+    m_PhysicsCollider.ApplyForce(inputVelocity);
 }
 void PlayerObject::LadderClimbing(const Vector2f& moveInput)
 {
-    SetVelocity(0, moveInput.y * Game::TILE_SIZE*3);
+    m_PhysicsCollider.SetVelocity(0, moveInput.y * Game::TILE_SIZE*3);
 
     const int direction = moveInput.y > 0 ? 1 : -1;
     Vector2i newLadderTile{(GetCenter() - Vector2f{0, static_cast<float>(direction * Game::TILE_SIZE/2)}) / Game::TILE_SIZE};
@@ -518,7 +519,7 @@ void PlayerObject::LadderClimbing(const Vector2f& moveInput)
     const TileTypes topTileType = m_WorldManager->GetCave()->GetTile(newLadderTile.x, newLadderTile.y).GetTileType();
     if(topTileType == TileTypes::air)
     {
-        SetVelocity(0,0);
+        m_PhysicsCollider.SetVelocity(0,0);
     }
         
     if(m_IsOnLadder == false)
@@ -544,16 +545,16 @@ void PlayerObject::PlayerWhipping(const float elapsedTimes)
 
         if(m_WipHasHit == false && m_WipTimer < 5*WIPING_AMOUNT_TIMER/11.0f)
         {
-            const std::vector<EntityRectCollider*>* entities = m_WorldManager->GetEntityManager()->GetAllEntities();
-            for (int i = 0; i < entities->size(); ++i)
+            const std::vector<Entity*>& entities = m_WorldManager->GetEntityManager()->GetAllEntities();
+            for (int i = 0; i < entities.size(); ++i)
             {
-                if((*entities)[i] == this) continue;
-                if((*entities)[i]->IsDead()) continue;
+                if((entities)[i] == this) continue;
+                if((entities)[i]->IsDead()) continue;
                 
                 RayVsRectInfo out;
-                if(RayCastCollision(GetPosition() + Vector2f{0, 0}, Vector2f{80.0f * (m_IsLookingToLeft?-1.0f:1.0f), 0}, (*entities)[i]->GetRect(), out))
+                if(RectPhysicsCollider::RayCastCollision(GetPosition() + Vector2f{0, 0}, Vector2f{80.0f * (m_IsLookingToLeft?-1.0f:1.0f), 0}, (entities)[i]->GetRect(), out))
                 {
-                    (*entities)[i]->YouGotHit(1, Vector2f{m_IsLookingToLeft? -300.0f: 300.0f, -300});
+                    (entities)[i]->YouGotHit(1, Vector2f{m_IsLookingToLeft? -300.0f: 300.0f, -300});
                     m_WipHasHit = true;
                 }
             }
@@ -577,7 +578,7 @@ void PlayerObject::PlayerJump()
         {
             m_IsJumping = true;
             m_PlayerState = PlayerState::normal;
-            SetVelocity(GetVelocity().x, -630);
+            m_PhysicsCollider.SetVelocity(m_PhysicsCollider.GetVelocity().x, -630);
         }
     }
         
@@ -585,11 +586,11 @@ void PlayerObject::PlayerJump()
     {
         if(m_InputManager->IsHoldingJump() == false)
         {
-            ApplyForce(Vector2f{0, -GetVelocity().y * 0.7f});
+            m_PhysicsCollider.ApplyForce(Vector2f{0, -m_PhysicsCollider.GetVelocity().y * 0.7f});
             m_IsJumping = false;
         }
             
-        if(GetVelocity().y >= 0)
+        if(m_PhysicsCollider.GetVelocity().y >= 0)
         {
             m_IsJumping = false;
         }
@@ -607,21 +608,21 @@ void PlayerObject::LimitSpeed()
     {
         currentMaxSpeed = m_InputManager->IsHoldingSprint() ? m_MaxSprintSpeed : m_MaxSpeed;
     }
-    if(std::abs(GetVelocity().x) > currentMaxSpeed)
+    if(std::abs(m_PhysicsCollider.GetVelocity().x) > currentMaxSpeed)
     {
-        if(GetVelocity().x > 0)
-            SetVelocity(currentMaxSpeed, GetVelocity().y);
+        if(m_PhysicsCollider.GetVelocity().x > 0)
+            m_PhysicsCollider.SetVelocity(currentMaxSpeed, m_PhysicsCollider.GetVelocity().y);
         else
-            SetVelocity(-currentMaxSpeed, GetVelocity().y);
+            m_PhysicsCollider.SetVelocity(-currentMaxSpeed, m_PhysicsCollider.GetVelocity().y);
     }
 
     // Limit falling/up speed
-    if(std::abs(GetVelocity().y) > 960)
+    if(std::abs(m_PhysicsCollider.GetVelocity().y) > 960)
     {
-        if(GetVelocity().y > 0)
-            SetVelocity(GetVelocity().x, 960);
+        if(m_PhysicsCollider.GetVelocity().y > 0)
+            m_PhysicsCollider.SetVelocity(m_PhysicsCollider.GetVelocity().x, 960);
         else
-            SetVelocity(GetVelocity().x, -960);
+            m_PhysicsCollider.SetVelocity(m_PhysicsCollider.GetVelocity().x, -960);
     }
 }
 void PlayerObject::CheckPickUp()
@@ -696,11 +697,11 @@ void PlayerObject::YouGotHit(const int damage, const Vector2f& force)
         m_IsOnLadder = false;
         m_IsCrouching = false;
         ChangeAnimationState(PlayerAnimationState::ragdoll);
-        SetBounciness(0.3f);
+        m_PhysicsCollider.SetBounciness(0.3f);
     }
     
     m_Health -= damage;
-    ApplyForce(force*2);
+    m_PhysicsCollider.ApplyForce(force*2);
 }
 void PlayerObject::HandleWallHanging(const float elapsedTimes)
 {
@@ -709,7 +710,7 @@ void PlayerObject::HandleWallHanging(const float elapsedTimes)
         if(m_IsJumping == false)
         {
             const float characterTopHeight = GetRect().top ;
-            const float characterNewTopHeight = GetRect().top + GetVelocity().y * elapsedTimes;
+            const float characterNewTopHeight = GetRect().top + m_PhysicsCollider.GetVelocity().y * elapsedTimes;
 
             const int characterTileY = int(characterTopHeight / Game::TILE_SIZE);
             const int characterNewTileY = int(characterNewTopHeight / Game::TILE_SIZE);
@@ -726,8 +727,8 @@ void PlayerObject::HandleWallHanging(const float elapsedTimes)
                 {
                     m_PlayerState = PlayerState::hanging;
                     m_IsWiping = false;
-                    SetVelocity(0, 0);
-                    SetRect(Rectf{GetRect().left, float(currentTileIndex.y+1) * Game::TILE_SIZE, GetRect().width, GetRect().height});
+                    m_PhysicsCollider.SetVelocity(0, 0);
+                    m_PhysicsCollider.SetRect(Rectf{GetRect().left, static_cast<float>(currentTileIndex.y + 1) * Game::TILE_SIZE, GetRect().width, GetRect().height});
                 }
             }
         }
@@ -735,7 +736,7 @@ void PlayerObject::HandleWallHanging(const float elapsedTimes)
 }
 void PlayerObject::Respawn(const Vector2f& spawnLocation)
 {
-    SetCenter(spawnLocation);
+    m_PhysicsCollider.SetCenter(spawnLocation);
     m_Health = 4; // TODO DIE
     m_AnimationFrame = 0;
     m_AnimationTimer = 0;
@@ -744,7 +745,7 @@ void PlayerObject::Respawn(const Vector2f& spawnLocation)
     m_IsJumping = false;
     m_IsOnLadder = false;
     m_IsCrouching = false;
-    SetBounciness(0);
+    m_PhysicsCollider.SetBounciness(0);
     
     m_PickupItem = nullptr;
     m_PlayerState = PlayerState::normal;

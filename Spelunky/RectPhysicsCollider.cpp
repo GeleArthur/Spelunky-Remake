@@ -5,15 +5,13 @@
 
 #include "Cave.h"
 #include "EntityManager.h"
-#include "EntityRectCollider.h"
+#include "Entity.h"
 #include "Game.h"
 #include "GizmosDrawer.h"
 #include "utils.h"
 #include "WorldManager.h"
 
 std::vector<std::pair<const Tile*, RayVsRectInfo>> RectPhysicsCollider::m_HitsCache{};
-std::vector<std::pair<const Tile*, RayVsRectInfo>> RectPhysicsCollider::m_BlocksWeHit{};
-std::vector<std::pair<RayVsRectInfo, EntityRectCollider*>> RectPhysicsCollider::m_EntitiesWeHit{};
 
 RectPhysicsCollider::RectPhysicsCollider(const Rectf& rect, const float mass, const float bounciness,
                                          WorldManager* worldManager):
@@ -163,7 +161,15 @@ bool RectPhysicsCollider::RayCastCollision(const Vector2f& startPoint, const Vec
     return true;
 }
 
-//TODO: If you build up velocity on the floor by elapsedTime we should ignore it if there is a bounch
+const std::vector<std::pair<const Tile*, RayVsRectInfo>>& RectPhysicsCollider::GetTilesWeHit()
+{
+    return m_BlocksWeHit;
+}
+const std::vector<std::pair<RayVsRectInfo, Entity*>>& RectPhysicsCollider::GetEntitiesWeHit()
+{
+    return m_EntitiesWeHit;
+}
+
 void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
 {
     const Cave* cave = m_WorldManager->GetCave();
@@ -182,8 +188,8 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
         --limitCount;
 
         m_HitsCache.clear();
-        
-        Vector2i center = Vector2i{GetCenter() / Game::TILE_SIZE};
+
+        const Vector2i center = Vector2i{GetCenter() / Game::TILE_SIZE};
         const int maxDistanceFromNextTile = static_cast<int>(std::ceil(std::min(1.0f, (m_Velocity.Length() / Game::TILE_SIZE))));
         
         for (int x{-maxDistanceFromNextTile}; x < maxDistanceFromNextTile+1; ++x)
@@ -203,7 +209,7 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
                 if (currentTile.GetTileType() == TileTypes::air) continue;
 
                 RayVsRectInfo rayResult;
-                if (PredictCollision(collidedPosition, collidedVelocity, currentTile, rayResult))
+                if (PredictCollision(collidedPosition, collidedVelocity, currentTile.GetCollider(), rayResult))
                 {
                     m_HitsCache.emplace_back(&currentTile, rayResult);
                 }
@@ -259,40 +265,24 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
     
     collidedPosition += collidedVelocity;
     SetCenter(collidedPosition);
-    
-    CallBackHitTile(m_BlocksWeHit);
-    CallBackHitEntity(m_EntitiesWeHit);
-    
-    // GizmosDrawer::SetColor({1,1,1});
-    // GizmosDrawer::DrawCircle(collidedPosition, 3);
 }
 
-void RectPhysicsCollider::CheckEntityCollision(const Vector2f& position, const Vector2f& velocity) const
+void RectPhysicsCollider::CheckEntityCollision(const Vector2f& position, const Vector2f& velocity)
 {
-    std::vector<EntityRectCollider*>* entities = m_WorldManager->GetEntityManager()->GetAllEntities();
+    const std::vector<Entity*>& entities = m_WorldManager->GetEntityManager()->GetAllEntities();
     m_EntitiesWeHit.clear();
     
-    for (int i{}; i < static_cast<int>(entities->size()); ++i)
+    for (int i{}; i < static_cast<int>(entities.size()); ++i)
     {
-        if((*entities)[i] == this || (*entities)[i]->IsDead())
+        if(&(entities)[i]->GetCollider() == this || (entities)[i]->IsDead())
         {
             continue;
         }
 
-        
-
         RayVsRectInfo out;
-        if(PredictCollision(position, velocity, *(*entities)[i], out))
+        if(PredictCollision(position, velocity, entities[i]->GetCollider(), out))
         {
-            m_EntitiesWeHit.emplace_back(out, (*entities)[i]);
+            m_EntitiesWeHit.emplace_back(out, entities[i]);
         }
     }
-}
-
-void RectPhysicsCollider::CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo)
-{
-}
-
-void RectPhysicsCollider::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, EntityRectCollider*>>& hitInfo)
-{
 }

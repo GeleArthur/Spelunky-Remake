@@ -7,6 +7,7 @@
 #include <iostream>
 #include <ostream>
 
+#include "Bat.h"
 #include "Bomb.h"
 #include "CameraSystem.h"
 #include "Cave.h"
@@ -112,11 +113,9 @@ void Game::Reset() const
     const float elapsedSeconds = std::chrono::duration<float>(std::chrono::steady_clock::now() - t2).count();
     std::cout << "Took: " << elapsedSeconds << " sec. To generate level";
 
-
     m_EntityManager->ClearAllEntities();
     m_EntityManager->AddEntity(m_Player);
     m_EntityManager->GenerateEntities();
-    
     m_Player->Respawn(m_Cave->GetEntrance() + Vector2f{TILE_SIZE / 2.0f, TILE_SIZE / 2.0f});
 }
 

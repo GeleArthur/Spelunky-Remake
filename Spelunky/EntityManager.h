@@ -5,7 +5,7 @@
 
 class EntityPickupRectCollider;
 class Bomb;
-class EntityRectCollider;
+class Entity;
 class PickUp;
 class RectPhysicsCollider;
 class WorldManager;
@@ -21,18 +21,18 @@ public:
     EntityManager& operator=(EntityManager&& other) = delete;
     
     
-    void AddEntity(EntityRectCollider* entity);
+    void AddEntity(Entity* entity);
     Bomb* CreateBomb();
     
     void DrawEntities() const;
     void UpdateEntity(float elapsedTime) const;
-    std::vector<EntityRectCollider*>* GetAllEntities();
+    const std::vector<Entity*>& GetAllEntities();
     void ClearAllEntities();
     void GenerateEntities();
     
 private:
-    std::vector<EntityRectCollider*> m_Entities;
-    std::vector<EntityRectCollider*> m_EntitiesWithoutPlayer;
+    std::vector<Entity*> m_Entities;
+    std::vector<Entity*> m_EntitiesWithoutPlayer;
     std::vector<EntityPickupRectCollider*> m_EntitiesWithPickUp;
     std::vector<Bomb*> m_BombObjectPool;
 
