@@ -9,10 +9,6 @@ class Cave;
 class WorldManager final
 {
 public:
-    explicit WorldManager();
-    
-    static WorldManager* GetSingleton();
-
     void SetCave(Cave* cave);
     Cave* GetCave() const;
     
@@ -29,10 +25,9 @@ public:
     InputManager* GetInputManager() const;
     
 private:
-    static WorldManager* m_WorldManager;
-    Cave* m_Cave;
-    PlayerObject* m_Player;
-    SpriteSheetManager* m_SpriteSheetManager;
-    EntityManager* m_EntityManager;
-    InputManager* m_InputManager;
+    Cave* m_Cave{};
+    PlayerObject* m_Player{};
+    SpriteSheetManager* m_SpriteSheetManager{};
+    EntityManager* m_EntityManager{};
+    InputManager* m_InputManager{};
 };

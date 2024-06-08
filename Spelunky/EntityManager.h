@@ -35,5 +35,7 @@ private:
     std::vector<EntityRectCollider*> m_EntitiesWithoutPlayer;
     std::vector<EntityPickupRectCollider*> m_EntitiesWithPickUp;
     std::vector<Bomb*> m_BombObjectPool;
+
+    WorldManager* m_WorldManager;
     // std::vector<PickupItem*> m_PickupItems;
 };

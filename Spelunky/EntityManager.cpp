@@ -45,7 +45,8 @@ void EntityManager::GenerateEntities()
     
 }
 
-EntityManager::EntityManager(WorldManager* worldManager)
+EntityManager::EntityManager(WorldManager* worldManager):
+    m_WorldManager(worldManager)
 {
     worldManager->SetEntityManager(this);
 }
@@ -82,7 +83,7 @@ Bomb* EntityManager::CreateBomb()
         }
     }
 
-    Bomb* bomb = new Bomb{WorldManager::GetSingleton()};
+    Bomb* bomb = new Bomb{m_WorldManager};
     AddEntity(bomb);
 
     return bomb;

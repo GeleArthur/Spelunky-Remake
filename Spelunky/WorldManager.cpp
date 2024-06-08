@@ -1,12 +1,6 @@
 ﻿#include "pch.h"
 #include "WorldManager.h"
 
-WorldManager* WorldManager::m_WorldManager{nullptr};
-
-WorldManager::WorldManager()
-{
-    m_WorldManager = this;
-}
 
 Cave* WorldManager::GetCave() const
 {
@@ -36,12 +30,6 @@ void WorldManager::SetInputManager(InputManager* inputManager)
 InputManager* WorldManager::GetInputManager() const
 {
     return m_InputManager;
-}
-
-WorldManager* WorldManager::GetSingleton()
-{
-    if (m_WorldManager == nullptr) throw;
-    return m_WorldManager;
 }
 
 void WorldManager::SetCave(Cave* cave)
