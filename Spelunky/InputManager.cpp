@@ -36,6 +36,10 @@ bool InputManager::PressedBombThisFrame() const
 {
     return m_PressedBombThisFrame;
 }
+bool InputManager::PressedInteractThisFrame() const
+{
+    return m_PressedInteractThisFrame;
+}
 
 void InputManager::Update()
 {
@@ -44,23 +48,30 @@ void InputManager::Update()
     m_PressedJumpThisFrame = false;
     m_PressedActionThisFrame = false;
     m_PressedBombThisFrame = false;
+    m_PressedInteractThisFrame = false;
 
-    if(pStates[SDL_SCANCODE_Z] && static_cast<bool>(pStates[SDL_SCANCODE_Z]) != m_PressedJumpPrevState)
+    if(pStates[SDL_SCANCODE_Z] && pStates[SDL_SCANCODE_Z] != m_PressedJumpPrevState)
     {
         m_PressedJumpThisFrame = true;
     }
-    if(pStates[SDL_SCANCODE_X] && static_cast<bool>(pStates[SDL_SCANCODE_X]) != m_PressedActionPrevState)
+    if(pStates[SDL_SCANCODE_X] && pStates[SDL_SCANCODE_X] != m_PressedActionPrevState)
     {
         m_PressedActionThisFrame = true;
     }
-    if(pStates[SDL_SCANCODE_A] && static_cast<bool>(pStates[SDL_SCANCODE_A]) != m_PressedBombPrevState)
+    if(pStates[SDL_SCANCODE_A] && pStates[SDL_SCANCODE_A] != m_PressedBombPrevState)
     {
         m_PressedBombThisFrame = true;
     }
+    if(pStates[SDL_SCANCODE_SPACE] && pStates[SDL_SCANCODE_SPACE] != m_PressedBombPrevState)
+    {
+        m_PressedInteractThisFrame = true;
+    }
+    
 
     m_PressedJumpPrevState = pStates[SDL_SCANCODE_Z];
     m_PressedActionPrevState = pStates[SDL_SCANCODE_X];
     m_PressedBombPrevState = pStates[SDL_SCANCODE_A];
+    m_PressedInteractPrevState = pStates[SDL_SCANCODE_A];
 
     m_HoldingJump = false;
     m_HoldingSprint = false;
@@ -96,26 +107,3 @@ void InputManager::Update()
 
 }
 
-void InputManager::ProcessKeyDownEvent(const SDL_KeyboardEvent& e)
-{
-}
-
-void InputManager::ProcessKeyUpEvent(const SDL_KeyboardEvent& e)
-{
-}
-
-void InputManager::ProcessMouseMotionEvent(const SDL_MouseMotionEvent& e)
-{
-}
-
-void InputManager::ProcessMouseDownEvent(const SDL_MouseButtonEvent& e)
-{
-}
-
-void InputManager::ProcessMouseUpEvent(const SDL_MouseButtonEvent& e)
-{
-}
-
-void InputManager::ProcessWheelEvent(const SDL_MouseWheelEvent& e)
-{
-}

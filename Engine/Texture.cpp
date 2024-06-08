@@ -132,16 +132,16 @@ void Texture::CreateFromString( const std::string& text, TTF_Font *pFont, const 
 	SDL_FreeSurface( pLoadedSurface );
 }
 
-void Texture::CreateFromSurface( SDL_Surface* pSurface )
+void Texture::CreateFromSurface(const SDL_Surface* pSurface )
 {
 	m_CreationOk = true;
 
 	//Get image dimensions
-	m_Width = float(pSurface->w);
-	m_Height =float( pSurface->h);
+	m_Width = static_cast<float>(pSurface->w);
+	m_Height = static_cast<float>(pSurface->h);
 
 	// Get pixel format information and translate to OpenGl format
-	GLenum pixelFormat{ GL_RGB };
+	GLenum pixelFormat;
 	switch ( pSurface->format->BytesPerPixel )
 	{
 	case 3:
@@ -233,12 +233,13 @@ void Texture::Draw( const Vector2f& dstTopLeft, const Rectf& srcRect ) const
 	else
 	{
 		Rectf dstRect{ dstTopLeft.x, dstTopLeft.y, srcRect.width, srcRect.height };
+		Rectf srcRect2{ srcRect };
 		if (!(srcRect.width > epsilon && srcRect.height > epsilon)) // No srcRect specified
 		{
-			dstRect.width = m_Width;
-			dstRect.height = m_Height;
+			srcRect2.width = m_Width;
+			srcRect2.height = m_Height;
 		}
-		Draw( dstRect, srcRect );
+		Draw( dstRect, srcRect2 );
 	}
 }
 

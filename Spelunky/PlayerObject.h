@@ -30,7 +30,8 @@ enum class PlayerState
     ragdoll,
     ladderClimbing,
 
-    dead
+    dead,
+    enteringLeaving
 };
 
 
@@ -46,6 +47,7 @@ public:
     Vector2f GetPosition() const;
     PlayerState GetPlayerState() const;
     virtual EntityType GetEntityType() const override;
+    bool CanPlayerLeave() const;
 
 protected:
     virtual void CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo) override;
@@ -65,6 +67,7 @@ private:
     void CheckPickUp();
     void CheckBomb() const;
     void CheckCrouching(const Vector2f& moveInput);
+    void PlayerInteract();
 
     static constexpr float WIPING_AMOUNT_TIMER{0.45f};
     
@@ -90,6 +93,8 @@ private:
     bool m_IsOnLadder{false};
     bool m_IsCrouching{false};
     bool m_IsWiping{false};
+
+    bool m_CanLeaveCave{false};
     
     // bool m_IsHanging{false};
     bool m_IsTouchingWall{false};

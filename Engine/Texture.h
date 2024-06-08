@@ -32,7 +32,7 @@ private:
 	void CreateFromImage( const std::string& path );
 	void CreateFromString( const std::string& text, TTF_Font *pFont, const Color4f& textColor );
 	void CreateFromString( const std::string& text, const std::string& fontPath, int ptSize, const Color4f& textColor );
-	void CreateFromSurface( SDL_Surface *pSurface );
+	void CreateFromSurface(const SDL_Surface *pSurface );
 	SDL_Surface * STBImageLoad( const std::string& path );
 	void DrawFilledRect(const Rectf& dstRect) const;
 };

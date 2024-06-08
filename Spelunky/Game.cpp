@@ -7,7 +7,6 @@
 #include <iostream>
 #include <ostream>
 
-#include "Bat.h"
 #include "Bomb.h"
 #include "CameraSystem.h"
 #include "Cave.h"
@@ -18,12 +17,9 @@
 #include "Matrix.h"
 #include "PlayerObject.h"
 #include "RectPhysicsCollider.h"
-#include "Rock.h"
-#include "Snake.h"
 #include "SpriteSheetManager.h"
 #include "Texture.h"
 #include "WorldManager.h"
-
 
 Game::Game(const Window& window):
     BaseGame{window},
@@ -66,7 +62,7 @@ void Game::Update(const float elapsedSec)
 
     m_CameraSystem->UpdateCamera(elapsedSec);
 
-    if(m_Player->GetPlayerState() == PlayerState::dead)
+    if(m_Player->GetPlayerState() == PlayerState::dead || m_Player->GetPlayerState() == PlayerState::enteringLeaving)
     {
         Reset();
     }
@@ -75,16 +71,6 @@ void Game::Update(const float elapsedSec)
     
     GizmosDrawer::SetColor({0, 1.0f, 0});
     GizmosDrawer::DrawQText(-m_CameraSystem->GetCameraPosition(), std::to_string((1 / m_PrevDeltaTime)));
-    // Check keyboard state
-    //const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
-    //if ( pStates[SDL_SCANCODE_RIGHT] )
-    //{
-    //	std::cout << "Right arrow key is down\n";
-    //}
-    //if ( pStates[SDL_SCANCODE_LEFT] && pStates[SDL_SCANCODE_UP])
-    //{
-    //	std::cout << "Left and up arrow keys are down\n";
-    //}
 }
 
 void Game::Draw() const
@@ -108,6 +94,13 @@ void Game::Draw() const
     m_EntityManager->DrawEntities();
     m_Player->Draw();
 
+    if(m_Player->CanPlayerLeave())
+    {
+        const Rectf location{m_Cave->GetExit().x - 32*0.3f, m_Cave->GetExit().y - 64, 64*2 * 0.7f , 64 * 0.7f};
+        m_SpriteSheetManager->GetHudElementTexture()->Draw(location, Rectf{64, 9*64,64,64});
+        m_SpriteSheetManager->GetSpaceText()->Draw(Vector2f{location.left+10, location.top});
+    }
+    
     GizmosDrawer::Draw();
     m_CameraSystem->PopCamera();
 }

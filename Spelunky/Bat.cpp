@@ -106,3 +106,5 @@ void Bat::Update(const float elapsedTime)
 	
 	UpdatePhysics(elapsedTime);
 }
+
+

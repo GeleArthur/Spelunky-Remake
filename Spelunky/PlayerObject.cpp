@@ -119,6 +119,7 @@ void PlayerObject::Update(const float elapsedTimes)
         HandleWallHanging(elapsedTimes);
         PlayerMovement(elapsedTimes, moveInput);
         PlayerWhipping(elapsedTimes);
+        PlayerInteract();
     }
     
     CheckCrouching(moveInput);
@@ -186,13 +187,12 @@ void PlayerObject::Update(const float elapsedTimes)
                 m_RagDollTimer = 0.5f;
             }
         }
-        
-
     }
 
     // Setup varibles for UpdatePhysics
     m_IsOnGround = false;
     m_IsOnLadder = false;
+    m_CanLeaveCave = false;
     if(m_IsTouchingWall && m_PlayerState != PlayerState::hanging)
     {
         if(std::abs(moveInput.x) > 0)
@@ -200,7 +200,8 @@ void PlayerObject::Update(const float elapsedTimes)
             m_IsTouchingWall = false;
         }
     }
-    
+
+    //TODO: ReWrite with getters!!!!
     UpdatePhysics(elapsedTimes);
     UpdateAnimationState(elapsedTimes);
 
@@ -210,6 +211,7 @@ void PlayerObject::Update(const float elapsedTimes)
         m_PickupItem->SetTargetPosition(GetCenter(), GetCenter() + Vector2f{m_IsLookingToLeft ? 20.0f : -20.0f, -10});
     }
 }
+
 void PlayerObject::CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo)
 {
     for (int i{}; i < hitInfo.size(); ++i)
@@ -254,10 +256,13 @@ void PlayerObject::CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectI
                 }
             }
             break;
+        case TileTypes::exit:
+            m_CanLeaveCave = true;
+            break;
+
         case TileTypes::air:
         case TileTypes::pushBlock:
         case TileTypes::entrance:
-        case TileTypes::exit:
         case TileTypes::unknown:
             break;
         }
@@ -670,6 +675,16 @@ void PlayerObject::CheckCrouching(const Vector2f& moveInput)
         }
     }
 }
+void PlayerObject::PlayerInteract()
+{
+    if(m_InputManager->PressedInteractThisFrame())
+    {
+        if(m_CanLeaveCave)
+        {
+            m_PlayerState = PlayerState::enteringLeaving;
+        }
+    }
+}
 
 void PlayerObject::YouGotHit(const int damage, const Vector2f& force)
 {
@@ -746,4 +761,8 @@ PlayerState PlayerObject::GetPlayerState() const
 EntityType PlayerObject::GetEntityType() const
 {
     return EntityType::player;
+}
+bool PlayerObject::CanPlayerLeave() const
+{
+    return m_CanLeaveCave;
 }

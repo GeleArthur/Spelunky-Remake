@@ -10,7 +10,7 @@ public:
 	virtual EntityType GetEntityType() const override;
 	virtual void Draw() const override;
 	virtual void Update(float elapsedTime) override;
-
+	
 private:
 	SpriteSheetManager* m_SpriteSheetManager;
 	WorldManager* m_WorldManager;

@@ -13,17 +13,10 @@ public:
     bool IsHoldingSprint() const;
     bool PressedActionThisFrame() const;
     bool PressedBombThisFrame() const;
-
+    bool PressedInteractThisFrame() const;
 
     void Update();
-    void ProcessKeyDownEvent(const SDL_KeyboardEvent& e);
-    void ProcessKeyUpEvent(const SDL_KeyboardEvent& e);
-    void ProcessMouseMotionEvent(const SDL_MouseMotionEvent& e);
-    void ProcessMouseDownEvent(const SDL_MouseButtonEvent& e);
-    void ProcessMouseUpEvent(const SDL_MouseButtonEvent& e);
-    void ProcessWheelEvent(const SDL_MouseWheelEvent& e);
 
-    // TODO: controllers
 private:
     Vector2f m_MoveInput{};
     bool m_HoldingJump{};
@@ -37,4 +30,7 @@ private:
 
     bool m_PressedBombThisFrame{};
     bool m_PressedBombPrevState{};
+
+    bool m_PressedInteractThisFrame{};
+    bool m_PressedInteractPrevState{};
 };
