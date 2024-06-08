@@ -21,9 +21,9 @@ void EntityManager::UpdateEntity(const float elapsedTime) const
     }
 }
 
-std::vector<EntityRectCollider*>& EntityManager::GetAllEntities()
+std::vector<EntityRectCollider*>* EntityManager::GetAllEntities()
 {
-    return m_Entities;
+    return &m_Entities;
 }
 
 void EntityManager::ClearAllEntities()

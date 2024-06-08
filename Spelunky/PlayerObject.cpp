@@ -31,151 +31,6 @@ PlayerObject::PlayerObject(WorldManager* worldManager):
     worldManager->SetPlayer(this);
 }
 
-void PlayerObject::UpdateAnimationState(const float elapsedTimes)
-{
-    m_AnimationTimer += elapsedTimes;
-    
-    switch (m_CurrentAnimation)
-    {
-    case PlayerAnimationState::idle:
-        if(m_IsOnGround == false)
-        {
-            ChangeAnimationState(PlayerAnimationState::inAir);
-        }
-        else if(GetVelocity().SquaredLength() > 0.01)
-        {
-            ChangeAnimationState(PlayerAnimationState::walk);
-        }
-        else if(m_IsCrouching)
-        {
-            ChangeAnimationState(PlayerAnimationState::crouching);
-        }
-        break;
-    case PlayerAnimationState::walk:
-        if(m_IsOnGround == false)
-        {
-            ChangeAnimationState(PlayerAnimationState::inAir);
-        }
-        else if(GetVelocity().SquaredLength() < 0.01)
-        {
-            ChangeAnimationState(PlayerAnimationState::idle);
-        }
-        else if(m_IsCrouching)
-        {
-            ChangeAnimationState(PlayerAnimationState::crouching);
-        }
-        else
-        {
-            if(m_AnimationTimer > (m_InputManager->IsHoldingSprint() ? 0.05f : 0.06f)  )
-            {
-                m_AnimationTimer = 0;
-                m_AnimationFrame++;
-            }
-        }
-        break;
-    case PlayerAnimationState::inAir:
-        if(m_PlayerState == PlayerState::hanging)
-        {
-            ChangeAnimationState(PlayerAnimationState::hanging);
-        }
-        else if(m_IsOnGround == true)
-        {
-            ChangeAnimationState(PlayerAnimationState::walk);
-        }
-        else if(m_IsOnLadder == true)
-        {
-            ChangeAnimationState(PlayerAnimationState::ladderClimbing);
-        }
-        else
-        {
-            const Vector2f velocity = GetVelocity();
-            if(velocity.y > 0 && velocity.y < 50)
-            {
-                m_AnimationFrame = 4;
-            }
-            else if(velocity.y > 50 && velocity.y < 200)
-            {
-                m_AnimationFrame = 5;
-            }
-            else if(velocity.y > 200)
-            {
-                m_AnimationFrame = 7;
-            }
-        }
-        break;
-    case PlayerAnimationState::hanging:
-        if(m_PlayerState != PlayerState::hanging)
-        {
-            ChangeAnimationState(PlayerAnimationState::inAir);
-        }
-        else
-        {
-            if(m_AnimationTimer > 0.05)
-            {
-                m_AnimationFrame++;
-                m_AnimationTimer = 0;
-            }
-        }
-
-        break;
-    case PlayerAnimationState::ladderClimbing:
-        if(m_IsOnLadder == false)
-        {
-            ChangeAnimationState(PlayerAnimationState::inAir);
-        }
-        else
-        {
-            if(std::abs(GetVelocity().y) > 0.1f )
-            {
-                if(m_AnimationTimer > 0.1)
-                {
-                    m_AnimationFrame = (m_AnimationFrame+1)%6;
-                    m_AnimationTimer = 0;
-                }
-            }
-            else
-            {
-                m_AnimationFrame = 0;
-            }
-        }
-        
-        break;
-    case PlayerAnimationState::crouching:
-        if(m_IsCrouching == false)
-        {
-            ChangeAnimationState(PlayerAnimationState::walk);
-        }
-        else
-        {
-            if(std::abs(GetVelocity().x) > 0.1f )
-            {
-                if(m_AnimationTimer > 0.04)
-                {
-                    m_AnimationFrame = (m_AnimationFrame+1)%7;
-                    m_AnimationTimer = 0;
-                }
-            }
-            else
-            {
-                m_AnimationFrame = 3;
-            }
-        }
-        break;
-    case PlayerAnimationState::ragdoll:
-        if(m_PlayerState != PlayerState::ragdoll)
-        {
-            ChangeAnimationState(PlayerAnimationState::idle);
-        }
-        break;
-    }
-}
-
-void PlayerObject::ChangeAnimationState(const PlayerAnimationState newAnimationState)
-{
-    m_CurrentAnimation = newAnimationState;
-    m_AnimationTimer = 0;
-    m_AnimationFrame = 0;
-}
 
 void PlayerObject::Draw() const
 {
@@ -209,7 +64,8 @@ void PlayerObject::Draw() const
         animationSource.left = 5 * 80.0f + static_cast<float>(m_AnimationFrame) * 80.0f;
         break;
     case PlayerAnimationState::wiping:
-        
+        animationSource.top = 4 * 80.f;
+        animationSource.left = static_cast<float>(m_AnimationFrame) * 80.0f;
         break;
     case PlayerAnimationState::ragdoll:
         if(GetVelocity().SquaredLength() < 100)
@@ -233,14 +89,22 @@ void PlayerObject::Draw() const
     GizmosDrawer::SetColor({1,1,1});
     GizmosDrawer::DrawQText(position + Vector2f{0, 50}, GetVelocity().ToString());
 
-    // std::stringstream yes;
-    // yes << "IsTouchingWall: " << std::boolalpha << std::to_string(m_IsTouchingWall) << " IsLeft: " + std::to_string(m_IsTouchingLeftWall);
-
-    // GizmosDrawer::DrawQText(position + Vector2f{0, 30}, yes.str());
-
     if(m_IsLookingToLeft)
         glScalef(-1,1,1);
-    m_SpriteSheetManager->GetCurrentPlayerTexture()->Draw(-Vector2f{40,40}, animationSource);
+    
+    if(m_IsWiping && m_AnimationTimer < (WIPING_AMOUNT_TIMER/11.0f)*5.0f)
+    {
+        const float animationFrame = std::floor(m_AnimationTimer / (WIPING_AMOUNT_TIMER/11.0f));
+        m_SpriteSheetManager->GetItemsTexture()->Draw(Vector2f{-40,-60}, Rectf{80*3 + animationFrame*80.0f, 80*5, 80, 80});
+    }
+
+    m_SpriteSheetManager->GetCurrentPlayerTexture()->Draw(Vector2f{-40,-40}, animationSource);
+
+    if(m_IsWiping && m_AnimationTimer > (WIPING_AMOUNT_TIMER/11.0f)*5.0f)
+    {
+        const float animationFrame = std::floor(m_AnimationTimer / (WIPING_AMOUNT_TIMER/11.0f));
+        m_SpriteSheetManager->GetItemsTexture()->Draw(Vector2f{-40 + 45,-35}, Rectf{80*3 + animationFrame*80.0f, 80*5, 80, 80});
+    }
     
     glPopMatrix();
 
@@ -248,6 +112,367 @@ void PlayerObject::Draw() const
     {
         m_PickupItem->DrawPickedUp();
     }
+}
+void PlayerObject::Update(const float elapsedTimes)
+{
+    const Vector2f& moveInput = m_InputManager->GetMoveInput();
+
+    if(m_PlayerState == PlayerState::normal)
+    {
+        HandleWallHanging(elapsedTimes);
+        PlayerMovement(elapsedTimes, moveInput);
+        PlayerWhipping(elapsedTimes);
+    }
+    
+    CheckCrouching(moveInput);
+
+    if(m_PlayerState == PlayerState::ladderClimbing)
+    {
+        LadderClimbing(moveInput);
+    }
+    
+    // Check jumping
+    if(m_PlayerState != PlayerState::ragdoll)
+    {
+        PlayerJump();
+    }
+    
+    // Apply gravity
+    if(m_PlayerState != PlayerState::hanging && m_PlayerState != PlayerState::ladderClimbing)
+    {
+        ApplyForce(Vector2f{0,2048} * elapsedTimes);
+    }
+
+    if(m_PlayerState != PlayerState::ragdoll)
+    {
+        LimitSpeed();
+        CheckPickUp();
+        CheckBomb();
+    }
+    
+    // Set the x velocity to 0 if minuscule
+    if(std::abs(GetVelocity().x) < 0.0001)
+    {
+        SetVelocity(0, GetVelocity().y);
+    }
+    else
+    {
+        if(m_IsWiping == false)
+        {
+            m_IsLookingToLeft = GetVelocity().x < 0;
+        }
+    }
+
+    if(m_PlayerState == PlayerState::ragdoll)
+    {
+        if(m_IsOnGround)
+        {
+            const Vector2f& velocity = GetVelocity();
+            Vector2f newVelocity{
+                std::max(std::abs(velocity.x) * 0.7f - 0.2f, 0.0f) * (velocity.x >= 0 ? 1.0f : -1.0f),
+                std::max(std::abs(velocity.y) * 0.7f - 0.2f, 0.0f) * (velocity.y >= 0 ? 1.0f : -1.0f)
+            };
+        
+            SetVelocity(newVelocity);
+            
+            if(GetVelocity().SquaredLength() < 100)
+            {
+                m_RagDollTimer -= elapsedTimes;
+                if(m_RagDollTimer < 0)
+                {
+                    m_PlayerState = PlayerState::normal;
+                    SetBounciness(0);
+                }
+            }
+            else
+            {
+                m_RagDollTimer = 0.5f;
+            }
+        }
+        
+
+    }
+
+    // Setup varibles for UpdatePhysics
+    m_IsOnGround = false;
+    m_IsOnLadder = false;
+    if(m_IsTouchingWall && m_PlayerState != PlayerState::hanging)
+    {
+        if(std::abs(moveInput.x) > 0)
+        {
+            m_IsTouchingWall = false;
+        }
+    }
+    
+    UpdatePhysics(elapsedTimes);
+    UpdateAnimationState(elapsedTimes);
+
+    if(m_PickupItem != nullptr)
+    {
+        // m_PickupItem->SetTargetPosition(GetCenter() + Vector2f{m_IsLookingToLeft ? -20.0f : 20.0f, 10});
+        m_PickupItem->SetTargetPosition(GetCenter(), GetCenter() + Vector2f{m_IsLookingToLeft ? 20.0f : -20.0f, -10});
+    }
+}
+void PlayerObject::CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo)
+{
+    for (int i{}; i < hitInfo.size(); ++i)
+    {
+        switch (hitInfo[i].first->GetTileType())
+        {
+        case TileTypes::ground:
+        case TileTypes::border:
+            if(hitInfo[i].second.normal.y < 0)
+            {
+                m_IsOnGround = true;
+            }
+            if(hitInfo[i].second.normal.x != 0)
+            {
+                m_IsTouchingWall = true;
+                m_IsTouchingLeftWall = hitInfo[i].second.normal.x > 0;
+            }
+            break;
+        case TileTypes::spikes:
+            if(GetVelocity().y > 0)
+            {
+                m_PlayerState = PlayerState::dead;
+            }
+            break;
+
+        case TileTypes::ladder:
+        case TileTypes::ladderTop:
+            if(m_PlayerState == PlayerState::ladderClimbing && m_IsOnLadder == false)
+            {
+                m_IsOnLadder = true;
+            }
+            else if(m_PlayerState != PlayerState::ladderClimbing && m_InputManager->GetMoveInput().y < 0 && m_IsJumping == false)
+            {
+                if((hitInfo[i].first->GetCenter() - GetCenter()).SquaredLength() < (spelucky_settings::g_TileSize/2.0f)*(spelucky_settings::g_TileSize/2.0f))
+                {
+                    m_PlayerState = PlayerState::ladderClimbing;
+                    m_IsTouchingWall = false;
+                    m_IsOnLadder = true;
+                    m_IsWiping = false;
+                    SetCenter(Vector2f{hitInfo[i].first->GetCenter().x, GetPosition().y});
+                    SetVelocity(0,0);
+                }
+            }
+            break;
+        case TileTypes::air:
+        case TileTypes::pushBlock:
+        case TileTypes::entrance:
+        case TileTypes::exit:
+        case TileTypes::unknown:
+            break;
+        }
+    }
+}
+void PlayerObject::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, EntityRectCollider*>>& hitInfo)
+{
+    for (int i{}; i < hitInfo.size(); ++i)
+    {
+        switch (hitInfo[i].second->GetEntityType())
+        {
+        case EntityType::player:
+            break;
+        case EntityType::rock:
+            {
+                if(m_IsCrouching && m_InputManager->PressedActionThisFrame() && m_PickupItem == nullptr)
+                {
+                    // TODO: Optimize this by looping over pickedup items
+                    Rock* rock = dynamic_cast<Rock*>(hitInfo[i].second);
+
+                    if(rock->TryToPickUp(this))
+                    {
+                        rock->SetTargetPosition(GetCenter(), GetCenter() + Vector2f{m_IsLookingToLeft ? 20.0f : -20.0f, -10});
+                        m_PickupItem = rock;
+                        return;
+                    }
+                }
+            }
+            break;
+        case EntityType::arrow:
+        case EntityType::snake:
+        case EntityType::bat:
+        case EntityType::bomb:
+            break;
+        }
+    }
+}
+
+void PlayerObject::UpdateAnimationState(const float elapsedTimes)
+{
+    m_AnimationTimer += elapsedTimes;
+
+    switch (m_CurrentAnimation)
+    {
+    case PlayerAnimationState::idle:
+        if (m_IsOnGround == false)
+        {
+            ChangeAnimationState(PlayerAnimationState::inAir);
+        }
+        else if (GetVelocity().SquaredLength() > 0.01)
+        {
+            ChangeAnimationState(PlayerAnimationState::walk);
+        }
+        else if (m_IsCrouching)
+        {
+            ChangeAnimationState(PlayerAnimationState::crouching);
+        }
+        else if(m_IsWiping)
+        {
+            ChangeAnimationState(PlayerAnimationState::wiping);
+        }
+        break;
+    case PlayerAnimationState::walk:
+        if (m_IsOnGround == false)
+        {
+            ChangeAnimationState(PlayerAnimationState::inAir);
+        }
+        else if (GetVelocity().SquaredLength() < 0.01)
+        {
+            ChangeAnimationState(PlayerAnimationState::idle);
+        }
+        else if (m_IsCrouching)
+        {
+            ChangeAnimationState(PlayerAnimationState::crouching);
+        }
+        else if(m_IsWiping)
+        {
+            ChangeAnimationState(PlayerAnimationState::wiping);
+        }
+        else
+        {
+            if (m_AnimationTimer > (m_InputManager->IsHoldingSprint() ? 0.05f : 0.06f))
+            {
+                m_AnimationTimer = 0;
+                m_AnimationFrame++;
+            }
+        }
+        break;
+    case PlayerAnimationState::inAir:
+        if (m_PlayerState == PlayerState::hanging)
+        {
+            ChangeAnimationState(PlayerAnimationState::hanging);
+        }
+        else if (m_IsOnGround == true)
+        {
+            ChangeAnimationState(PlayerAnimationState::walk);
+        }
+        else if (m_IsOnLadder == true)
+        {
+            ChangeAnimationState(PlayerAnimationState::ladderClimbing);
+        }
+        else if(m_IsWiping)
+        {
+            ChangeAnimationState(PlayerAnimationState::wiping);
+        }
+        else
+        {
+            const Vector2f velocity = GetVelocity();
+            if (velocity.y > 0 && velocity.y < 50)
+            {
+                m_AnimationFrame = 4;
+            }
+            else if (velocity.y > 50 && velocity.y < 200)
+            {
+                m_AnimationFrame = 5;
+            }
+            else if (velocity.y > 200)
+            {
+                m_AnimationFrame = 7;
+            }
+        }
+        break;
+    case PlayerAnimationState::hanging:
+        if (m_PlayerState != PlayerState::hanging)
+        {
+            ChangeAnimationState(PlayerAnimationState::inAir);
+        }
+        else
+        {
+            if (m_AnimationTimer > 0.05)
+            {
+                m_AnimationFrame++;
+                m_AnimationTimer = 0;
+            }
+        }
+
+        break;
+    case PlayerAnimationState::ladderClimbing:
+        if (m_IsOnLadder == false)
+        {
+            ChangeAnimationState(PlayerAnimationState::inAir);
+        }
+        else
+        {
+            if (std::abs(GetVelocity().y) > 0.1f)
+            {
+                if (m_AnimationTimer > 0.1)
+                {
+                    m_AnimationFrame = (m_AnimationFrame + 1) % 6;
+                    m_AnimationTimer = 0;
+                }
+            }
+            else
+            {
+                m_AnimationFrame = 0;
+            }
+        }
+
+        break;
+    case PlayerAnimationState::crouching:
+        if (m_IsCrouching == false)
+        {
+            ChangeAnimationState(PlayerAnimationState::walk);
+        }
+        else
+        {
+            if (std::abs(GetVelocity().x) > 0.1f)
+            {
+                if (m_AnimationTimer > 0.04)
+                {
+                    m_AnimationFrame = (m_AnimationFrame + 1) % 7;
+                    m_AnimationTimer = 0;
+                }
+            }
+            else
+            {
+                m_AnimationFrame = 3;
+            }
+        }
+        break;
+    case PlayerAnimationState::ragdoll:
+        if (m_PlayerState != PlayerState::ragdoll)
+        {
+            ChangeAnimationState(PlayerAnimationState::idle);
+        }
+        break;
+    case PlayerAnimationState::wiping:
+        if(m_PlayerState != PlayerState::normal)
+        {
+            ChangeAnimationState(PlayerAnimationState::walk);
+        }
+        else
+        {
+            if (m_AnimationTimer > WIPING_AMOUNT_TIMER)
+            {
+                ChangeAnimationState(PlayerAnimationState::walk);
+            }
+            else
+            {
+                m_AnimationFrame = static_cast<int>(m_AnimationTimer / (WIPING_AMOUNT_TIMER/6.0f));
+            }
+        }
+        
+        break;
+    }
+
+}
+void PlayerObject::ChangeAnimationState(const PlayerAnimationState newAnimationState)
+{
+    m_CurrentAnimation = newAnimationState;
+    m_AnimationTimer = 0;
+    m_AnimationFrame = 0;
 }
 
 void PlayerObject::PlayerMovement(const float elapsedTimes, const Vector2f& moveInput)
@@ -299,19 +524,49 @@ void PlayerObject::LadderClimbing(const Vector2f& moveInput)
         m_PlayerState = PlayerState::normal;
     }
 }
-void PlayerObject::PlayerWhipping(float elapsedTimes)
+
+void PlayerObject::PlayerWhipping(const float elapsedTimes)
 {
-    if(m_InputManager->PressedActionThisFrame())
+    if(m_InputManager->PressedActionThisFrame() && m_PickupItem == nullptr && m_IsCrouching == false)
     {
         if(m_IsWiping == false)
         {
             m_IsWiping = true;
-            m_WipHasSlaped = false;
-            m_WipTimer = 0.3f;
+            m_WipHasHit = false;
+            m_WipTimer = WIPING_AMOUNT_TIMER;
         }
+    }
+    if(m_IsWiping)
+    {
+        m_WipTimer -= elapsedTimes;
+
+        if(m_WipHasHit == false && m_WipTimer < 5*WIPING_AMOUNT_TIMER/11.0f)
+        {
+            const std::vector<EntityRectCollider*>* entities = m_WorldManager->GetEntityManager()->GetAllEntities();
+            for (int i = 0; i < entities->size(); ++i)
+            {
+                if((*entities)[i] == this) continue;
+                if((*entities)[i]->IsDead()) continue;
+                
+                RayVsRectInfo out;
+                if(RayCastCollision(GetPosition() + Vector2f{0, 0}, Vector2f{80.0f * (m_IsLookingToLeft?-1.0f:1.0f), 0}, (*entities)[i]->GetRect(), out))
+                {
+                    (*entities)[i]->YouGotHit(1, Vector2f{m_IsLookingToLeft? -300.0f: 300.0f, -300});
+                    m_WipHasHit = true;
+                }
+            }
+            
+        }
+        
+        if(m_WipTimer <= 0)
+        {
+            m_IsWiping = false;
+        }
+        
     }
 
 }
+
 void PlayerObject::PlayerJump()
 {
     if(m_InputManager->PressedJumpThisFrame())
@@ -386,7 +641,8 @@ void PlayerObject::CheckPickUp()
         }
     }
 }
-void PlayerObject::CheckBomb()
+
+void PlayerObject::CheckBomb() const
 {
     if(m_InputManager->PressedBombThisFrame())
     {
@@ -418,196 +674,15 @@ void PlayerObject::CheckCrouching(const Vector2f& moveInput)
     }
 }
 
-void PlayerObject::Update(const float elapsedTimes)
-{
-    const Vector2f& moveInput = m_InputManager->GetMoveInput();
-
-    if(m_PlayerState == PlayerState::normal)
-    {
-        HandleWallHanging(elapsedTimes);
-        PlayerMovement(elapsedTimes, moveInput);
-        PlayerWhipping(elapsedTimes);
-    }
-    
-    CheckCrouching(moveInput);
-
-    if(m_PlayerState == PlayerState::ladderClimbing)
-    {
-        LadderClimbing(moveInput);
-    }
-    
-    // Check jumping
-    if(m_PlayerState != PlayerState::ragdoll)
-    {
-        PlayerJump();
-    }
-    
-    // Apply gravity
-    if(m_PlayerState != PlayerState::hanging && m_PlayerState != PlayerState::ladderClimbing)
-    {
-        ApplyForce(Vector2f{0,2048} * elapsedTimes);
-    }
-
-    if(m_PlayerState != PlayerState::ragdoll)
-    {
-        LimitSpeed();
-        CheckPickUp();
-        CheckBomb();
-    }
-    
-    // Set the x velocity to 0 if minuscule
-    if(std::abs(GetVelocity().x) < 0.0001)
-    {
-        SetVelocity(0, GetVelocity().y);
-    }
-    else
-    {
-        // Set looking left
-        m_IsLookingToLeft = GetVelocity().x < 0;
-    }
-
-    if(m_PlayerState == PlayerState::ragdoll)
-    {
-        if(m_IsOnGround)
-        {
-            const Vector2f& velocity = GetVelocity();
-            Vector2f newVelocity{
-                std::max(std::abs(velocity.x) * 0.7f - 0.2f, 0.0f) * (velocity.x >= 0 ? 1.0f : -1.0f),
-                std::max(std::abs(velocity.y) * 0.7f - 0.2f, 0.0f) * (velocity.y >= 0 ? 1.0f : -1.0f)
-            };
-        
-            SetVelocity(newVelocity);
-            
-            if(GetVelocity().SquaredLength() < 100)
-            {
-                m_RagDollTimer -= elapsedTimes;
-                if(m_RagDollTimer < 0)
-                {
-                    m_PlayerState = PlayerState::normal;
-                    SetBounciness(0);
-                }
-            }
-            else
-            {
-                m_RagDollTimer = 0.5f;
-            }
-        }
-        
-
-    }
-
-    // Setup varibles for UpdatePhysics
-    m_IsOnGround = false;
-    m_IsOnLadder = false;
-    if(m_IsTouchingWall && m_PlayerState != PlayerState::hanging)
-    {
-        if(std::abs(moveInput.x) > 0)
-        {
-            m_IsTouchingWall = false;
-        }
-    }
-    
-    UpdatePhysics(elapsedTimes);
-    UpdateAnimationState(elapsedTimes);
-
-    if(m_PickupItem != nullptr)
-    {
-        // m_PickupItem->SetTargetPosition(GetCenter() + Vector2f{m_IsLookingToLeft ? -20.0f : 20.0f, 10});
-        m_PickupItem->SetTargetPosition(GetCenter(), GetCenter() + Vector2f{m_IsLookingToLeft ? 20.0f : -20.0f, -10});
-    }
-}
-
-void PlayerObject::CallBackHitTile(std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo)
-{
-    for (int i{}; i < hitInfo.size(); ++i)
-    {
-        switch (hitInfo[i].first->GetTileType())
-        {
-        case TileTypes::ground:
-        case TileTypes::border:
-            if(hitInfo[i].second.normal.y < 0)
-            {
-                m_IsOnGround = true;
-            }
-            if(hitInfo[i].second.normal.x != 0)
-            {
-                m_IsTouchingWall = true;
-                m_IsTouchingLeftWall = hitInfo[i].second.normal.x > 0;
-            }
-            break;
-        case TileTypes::spikes:
-            if(GetVelocity().y > 0)
-            {
-                m_PlayerState = PlayerState::dead;
-            }
-            break;
-
-        case TileTypes::ladder:
-        case TileTypes::ladderTop:
-            if(m_PlayerState == PlayerState::ladderClimbing && m_IsOnLadder == false)
-            {
-                m_IsOnLadder = true;
-            }
-            else if(m_PlayerState != PlayerState::ladderClimbing && m_InputManager->GetMoveInput().y < 0 && m_IsJumping == false)
-            {
-                if((hitInfo[i].first->GetCenter() - GetCenter()).SquaredLength() < (spelucky_settings::g_TileSize/2.0f)*(spelucky_settings::g_TileSize/2.0f))
-                {
-                    m_PlayerState = PlayerState::ladderClimbing;
-                    m_IsTouchingWall = false;
-                    m_IsOnLadder = true;
-                    SetCenter(Vector2f{hitInfo[i].first->GetCenter().x, GetPosition().y});
-                    SetVelocity(0,0);
-                }
-            }
-            break;
-        case TileTypes::air:
-        case TileTypes::pushBlock:
-        case TileTypes::entrance:
-        case TileTypes::exit:
-        case TileTypes::unknown:
-            break;
-        }
-    }
-}
-
-void PlayerObject::CallBackHitEntity(std::vector<std::pair<RayVsRectInfo, EntityRectCollider*>>& hitInfo)
-{
-    for (int i{}; i < hitInfo.size(); ++i)
-    {
-        switch (hitInfo[i].second->GetEntityType())
-        {
-        case EntityType::player:
-            break;
-        case EntityType::rock:
-            {
-                if(m_IsCrouching && m_InputManager->PressedActionThisFrame() && m_PickupItem == nullptr)
-                {
-                    // TODO: Optimize this by looping over pickedup items
-                    Rock* rock = dynamic_cast<Rock*>(hitInfo[i].second);
-
-                    if(rock->TryToPickUp(this))
-                    {
-                        rock->SetTargetPosition(GetCenter(), GetCenter() + Vector2f{m_IsLookingToLeft ? 20.0f : -20.0f, -10});
-                        m_PickupItem = rock;
-                        return;
-                    }
-                }
-            }
-            break;
-        case EntityType::arrow:
-        case EntityType::snake:
-        case EntityType::bat:
-        case EntityType::bomb:
-            break;
-        }
-    }
-}
-void PlayerObject::YouGotHit(int damage, const Vector2f& force)
+void PlayerObject::YouGotHit(const int damage, const Vector2f& force)
 {
     if(force.SquaredLength() > 100*100)
     {
         m_PlayerState = PlayerState::ragdoll;
         m_RagDollTimer = 0.5f;
+        m_IsWiping = false;
+        m_IsOnLadder = false;
+        m_IsCrouching = false;
         ChangeAnimationState(PlayerAnimationState::ragdoll);
         SetBounciness(0.3f);
     }
@@ -615,7 +690,6 @@ void PlayerObject::YouGotHit(int damage, const Vector2f& force)
     m_Health -= damage;
     ApplyForce(force*2);
 }
-
 void PlayerObject::HandleWallHanging(const float elapsedTimes)
 {
     if(m_IsTouchingWall && !(m_InputManager->GetMoveInput().y > 0))
@@ -639,6 +713,7 @@ void PlayerObject::HandleWallHanging(const float elapsedTimes)
                 )
                 {
                     m_PlayerState = PlayerState::hanging;
+                    m_IsWiping = false;
                     SetVelocity(0, 0);
                     SetRect(Rectf{GetRect().left, float(currentTileIndex.y+1) * spelucky_settings::g_TileSize, GetRect().width, GetRect().height});
                 }
@@ -646,7 +721,6 @@ void PlayerObject::HandleWallHanging(const float elapsedTimes)
         }
     }
 }
-
 void PlayerObject::Respawn(const Vector2f& spawnLocation)
 {
     SetCenter(spawnLocation);
@@ -668,12 +742,10 @@ Vector2f PlayerObject::GetPosition() const
 {
     return GetCenter();
 }
-
 PlayerState PlayerObject::GetPlayerState() const
 {
     return m_PlayerState;
 }
-
 EntityType PlayerObject::GetEntityType() const
 {
     return EntityType::player;

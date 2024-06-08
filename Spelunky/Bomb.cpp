@@ -102,15 +102,15 @@ void Bomb::Explode()
         }
     }
 
-    const std::vector<EntityRectCollider*>& entityRectColliders = m_WorldManager->GetEntityManager()->GetAllEntities();
-    for (int i = 0; i < entityRectColliders.size(); ++i)
+    const std::vector<EntityRectCollider*>* entityRectColliders = m_WorldManager->GetEntityManager()->GetAllEntities();
+    for (int i = 0; i < entityRectColliders->size(); ++i)
     {
         //TODO: Bombs should explode other bombs
-        if(entityRectColliders[i] == this) continue;
-        Vector2f difference = entityRectColliders[i]->GetCenter() - GetCenter();
+        if((*entityRectColliders)[i] == this) continue;
+        Vector2f difference = (*entityRectColliders)[i]->GetCenter() - GetCenter();
         if(difference.SquaredLength() < spelucky_settings::g_TileSize*EXPLODE_RADIUS*spelucky_settings::g_TileSize*EXPLODE_RADIUS)
         {
-            entityRectColliders[i]->YouGotHit(2, (difference) * 10);
+            (*entityRectColliders)[i]->YouGotHit(2, (difference) * 10);
         }
     }
 }

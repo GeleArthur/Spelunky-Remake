@@ -24,7 +24,7 @@ public:
     
     void DrawEntities() const;
     void UpdateEntity(float elapsedTime) const;
-    std::vector<EntityRectCollider*>& GetAllEntities();
+    std::vector<EntityRectCollider*>* GetAllEntities();
     void ClearAllEntities();
     
 private:

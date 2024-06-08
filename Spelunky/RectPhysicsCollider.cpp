@@ -251,20 +251,20 @@ void RectPhysicsCollider::UpdatePhysics(const float elapsedTime)
 
 void RectPhysicsCollider::CheckEntityCollision(const Vector2f& position, const Vector2f& velocity) const
 {
-    const std::vector<EntityRectCollider*>& entities = m_WorldManager->GetEntityManager()->GetAllEntities();
+    std::vector<EntityRectCollider*>* entities = m_WorldManager->GetEntityManager()->GetAllEntities();
     m_EntitiesWeHit.clear();
     
-    for (int i{}; i < static_cast<int>(entities.size()); ++i)
+    for (int i{}; i < static_cast<int>(entities->size()); ++i)
     {
-        if(entities[i] == this || entities[i]->IsDead())
+        if((*entities)[i] == this || (*entities)[i]->IsDead())
         {
             continue;
         }
 
         RayVsRectInfo out;
-        if(PredictCollision(position, velocity, *entities[i], out))
+        if(PredictCollision(position, velocity, *(*entities)[i], out))
         {
-            m_EntitiesWeHit.emplace_back(out, entities[i]);
+            m_EntitiesWeHit.emplace_back(out, (*entities)[i]);
         }
     }
 }

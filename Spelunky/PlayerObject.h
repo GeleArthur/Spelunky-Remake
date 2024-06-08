@@ -47,8 +47,6 @@ public:
 
     virtual void Draw() const override;
     virtual void Update(float elapsedTimes) override;
-    void UpdateAnimationState(float elapsedTimes);
-    void ChangeAnimationState(PlayerAnimationState newAnimationState);
     void Respawn(const Vector2f& spawnLocation);
     
     Vector2f GetPosition() const;
@@ -62,6 +60,8 @@ protected:
     virtual void YouGotHit(int damage, const Vector2f& force) override;
     
 private:
+    void UpdateAnimationState(float elapsedTimes);
+    void ChangeAnimationState(PlayerAnimationState newAnimationState);
     void HandleWallHanging(float elapsedTimes);
     void PlayerMovement(float elapsedTimes, const Vector2f& moveInput);
     void LadderClimbing(const Vector2f& moveInput);
@@ -69,9 +69,11 @@ private:
     void PlayerJump();
     void LimitSpeed();
     void CheckPickUp();
-    void CheckBomb();
+    void CheckBomb() const;
     void CheckCrouching(const Vector2f& moveInput);
 
+    static constexpr float WIPING_AMOUNT_TIMER{0.45f};
+    
     PlayerAnimationState m_CurrentAnimation{PlayerAnimationState::idle};
     PlayerState m_PlayerState{PlayerState::normal};
     
@@ -85,7 +87,7 @@ private:
     float m_RagDollTimer{};
     
     float m_WipTimer{};
-    float m_WipHasSlaped{};
+    bool m_WipHasHit{};
 
     float m_MaxCrouchingSpeed{64.0f};
     

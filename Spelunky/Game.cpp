@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Game.h"
 
+#include <assert.h>
 #include <chrono>
 #include <complex>
 #include <iostream>
@@ -90,6 +91,7 @@ void Game::Update(const float elapsedSec)
 void Game::Draw() const
 {
     ClearBackground();
+
     m_CameraSystem->PushCamera();
 
     // Background
