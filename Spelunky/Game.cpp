@@ -29,12 +29,12 @@ Game::Game(const Window& window):
     m_WorldManager(new WorldManager{}),
     m_SpriteSheetManager(new SpriteSheetManager{m_WorldManager}),
     m_InputManager(new InputManager{m_WorldManager}),
+    m_SoundManager(new SoundManager{m_WorldManager}),
     m_Cave(new Cave{m_WorldManager}),
     m_Player(new PlayerObject{m_WorldManager}),
     m_EntityManager(new EntityManager{m_WorldManager}),
     m_CameraSystem(new CameraSystem{m_Player}),
-    m_UiManager(new UiManager{m_WorldManager}),
-    m_SoundManager(new SoundManager{m_WorldManager})
+    m_UiManager(new UiManager{m_WorldManager})
 {
     GizmosDrawer::SetTimePointer(&m_CurrentTime);
     m_CameraSystem->EnableDebugCamera(true);

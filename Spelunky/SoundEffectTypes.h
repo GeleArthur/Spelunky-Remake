@@ -4,6 +4,9 @@ enum class SoundEffectTypes
 {
 	whip,
 	pickup,
-	hurt,
+	throwItem,
+	dropItem,
+	hit,
+	land,
 	
 };

@@ -94,7 +94,7 @@ private:
     float m_WipTimer{};
     bool m_WipHasHit{};
 
-    
+    bool m_PrevIsOnGround{false};
     bool m_IsOnGround{false};
     bool m_IsJumping{false};
     bool m_IsOnLadder{false};

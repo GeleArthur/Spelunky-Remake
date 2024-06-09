@@ -234,6 +234,13 @@ void PlayerObject::Update(const float elapsedTimes)
         // m_PickupItem->SetTargetPosition(GetCenter() + Vector2f{m_IsLookingToLeft ? -20.0f : 20.0f, 10});
         m_PickupItem->SetTargetPosition(GetCenter(), GetCenter() + Vector2f{m_IsLookingToLeft ? 20.0f : -20.0f, -10});
     }
+
+    if(m_IsOnGround == true && m_PrevIsOnGround != m_IsOnGround)
+    {
+        
+        m_SoundManager->PlaySoundEffect(SoundEffectTypes::land);
+    }
+    m_PrevIsOnGround = m_IsOnGround;
 }
 
 void PlayerObject::TilesWeHitCheck(const std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo)
@@ -306,7 +313,7 @@ void PlayerObject::EntitiesWeHitCheck(const std::vector<std::pair<RayVsRectInfo,
 
                     if(rock->TryToPickUp(this))
                     {
-                        m_WorldManager->GetSoundManager()->PlaySoundEffect(SoundEffectTypes::pickup);
+                        m_SoundManager->PlaySoundEffect(SoundEffectTypes::pickup);
                         rock->SetTargetPosition(GetCenter(), GetCenter() + Vector2f{m_IsLookingToLeft ? 20.0f : -20.0f, -10});
                         m_PickupItem = rock;
                         return;
@@ -561,7 +568,7 @@ void PlayerObject::PlayerWhipping(const float elapsedTimes)
     {
         if(m_IsWiping == false)
         {
-            m_WorldManager->GetSoundManager()->PlaySoundEffect(SoundEffectTypes::whip);
+            m_SoundManager->PlaySoundEffect(SoundEffectTypes::whip);
             m_IsWiping = true;
             m_WipHasHit = false;
             m_WipTimer = WIPING_AMOUNT_TIMER;
@@ -624,6 +631,7 @@ void PlayerObject::PlayerJump()
         }
     }
 }
+
 void PlayerObject::LimitSpeed()
 {
     // Limit left/right speed
@@ -661,10 +669,12 @@ void PlayerObject::CheckPickUp()
         {
             if(m_IsCrouching)
             {
+                m_SoundManager->PlaySoundEffect(SoundEffectTypes::dropItem);
                 m_PickupItem->Throw(Vector2f{m_IsLookingToLeft ? -300.0f : 300.0f, -10.0f});
             }
             else
             {
+                m_SoundManager->PlaySoundEffect(SoundEffectTypes::throwItem);
                 m_PickupItem->Throw(Vector2f{m_IsLookingToLeft ? -1000.0f : 1000.0f, -300.0f});
             }
             
@@ -722,6 +732,8 @@ void PlayerObject::YouGotHit(const int damage, const Vector2f& force)
     if(m_InvisibilityFrames) return;
     m_InvisibilityFrames = true;
     m_InvisibilityTimer = 0.5f;
+
+    m_SoundManager->PlaySoundEffect(SoundEffectTypes::hit);
     
     if(force.SquaredLength() > 100*100)
     {

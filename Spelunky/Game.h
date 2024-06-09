@@ -41,12 +41,12 @@ private:
 	WorldManager* m_WorldManager;
 	SpriteSheetManager* m_SpriteSheetManager;
 	InputManager* m_InputManager;
+	SoundManager* m_SoundManager;
 	Cave* m_Cave;
 	PlayerObject* m_Player;
 	EntityManager* m_EntityManager;
 	CameraSystem* m_CameraSystem;
 	UiManager* m_UiManager;
-	SoundManager* m_SoundManager;
 	
 
 	Matrix4X4 m_ZoomMatrix{Matrix4X4::IdentityMatrix()};

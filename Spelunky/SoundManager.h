@@ -19,4 +19,8 @@ private:
 	Mix_Music* m_Music;
 	Mix_Chunk* m_WhipEffect;
 	Mix_Chunk* m_PickUpEffect;
+	Mix_Chunk* m_ThrowItemEffect;
+	Mix_Chunk* m_DropItemEffect;
+	Mix_Chunk* m_HitEffect;
+	Mix_Chunk* m_LandEffect;
 };

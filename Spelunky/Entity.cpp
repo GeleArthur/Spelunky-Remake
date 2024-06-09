@@ -1,9 +1,13 @@
 ﻿#include "pch.h"
 #include "Entity.h"
 
+#include "SoundManager.h"
+#include "WorldManager.h"
+
 Entity::Entity(const Rectf& collider, const int health, const float mass, const float bounciness, WorldManager* worldManager):
     m_Health(health),
-    m_PhysicsCollider(collider, mass, bounciness, worldManager)
+    m_PhysicsCollider(collider, mass, bounciness, worldManager),
+    m_SoundManager(worldManager->GetSoundManager())
 {
 }
 
@@ -19,6 +23,8 @@ void Entity::YouGotHit(const int damage, const Vector2f& force)
 {
     m_Health -= damage;
     m_PhysicsCollider.ApplyForce(force);
+
+    m_SoundManager->PlaySoundEffect(SoundEffectTypes::hit);
 
     // Spawn Blood particle
 }

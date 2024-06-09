@@ -3,6 +3,7 @@
 #include "HitType.h"
 #include "RectPhysicsCollider.h"
 
+class SoundManager;
 class Entity
 {
 public:
@@ -35,4 +36,5 @@ public:
 protected:
     int m_Health;
     RectPhysicsCollider m_PhysicsCollider;
+    SoundManager* m_SoundManager;
 };
