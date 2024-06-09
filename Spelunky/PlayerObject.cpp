@@ -34,6 +34,13 @@ PlayerObject::PlayerObject(WorldManager* worldManager):
 
 void PlayerObject::Draw() const
 {
+    if(m_InvisibilityFrames)
+    {
+        if(static_cast<int>(std::floor(static_cast<int>(m_InvisibilityTimer * 1.0f / 0.2f) % 2)) == 0)
+        {
+            return;
+        }
+    }
     Rectf animationSource{0,0,80,80};
 
     //TODO: move hardcoded animation numbers
@@ -188,6 +195,16 @@ void PlayerObject::Update(const float elapsedTimes)
             }
         }
     }
+
+    if(m_InvisibilityFrames)
+    {
+        m_InvisibilityTimer -= elapsedTimes;
+        if(m_InvisibilityTimer < 0)
+        {
+            m_InvisibilityFrames = false;
+        }
+    }
+    
     
     m_PhysicsCollider.UpdatePhysics(elapsedTimes);
 
@@ -508,6 +525,7 @@ void PlayerObject::PlayerMovement(const float elapsedTimes, const Vector2f& move
     inputVelocity += Vector2f{moveInput.x * m_MaxSpeed/0.2f * elapsedTimes, 0};
     m_PhysicsCollider.ApplyForce(inputVelocity);
 }
+
 void PlayerObject::LadderClimbing(const Vector2f& moveInput)
 {
     m_PhysicsCollider.SetVelocity(0, moveInput.y * Game::TILE_SIZE*3);
@@ -689,6 +707,7 @@ void PlayerObject::PlayerInteract()
 
 void PlayerObject::YouGotHit(const int damage, const Vector2f& force)
 {
+    if(m_InvisibilityFrames) return;
     if(force.SquaredLength() > 100*100)
     {
         m_PlayerState = PlayerState::ragdoll;
@@ -706,6 +725,10 @@ void PlayerObject::YouGotHit(const int damage, const Vector2f& force)
     {
         m_PlayerState = PlayerState::dead;
     }
+
+    m_InvisibilityFrames = true;
+    m_InvisibilityTimer = 0.5f;
+    
 }
 void PlayerObject::HandleWallHanging(const float elapsedTimes)
 {
@@ -752,6 +775,7 @@ void PlayerObject::Respawn(const Vector2f& spawnLocation)
     m_PhysicsCollider.SetBounciness(0);
     
     m_PickupItem = nullptr;
+    m_InvisibilityFrames = false;
     m_PlayerState = PlayerState::normal;
 }
 

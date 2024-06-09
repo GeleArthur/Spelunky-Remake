@@ -11,7 +11,7 @@
 #include "WorldManager.h"
 
 Snake::Snake(const Vector2f& position, WorldManager* worldManager) :
-    Entity(Rectf{position.x, position.y, 52, 52}, 1, 1, 0, worldManager),
+    EnemyEntity(Rectf{position.x, position.y, 52, 52}, 1, 1, 0, worldManager),
     m_SpriteSheetManager(worldManager->GetSpriteSheet()),
     m_Cave(worldManager->GetCave())
 {
@@ -47,6 +47,7 @@ void Snake::Update(const float elapsedTime)
     }
     
     Entity::Update(elapsedTime);
+    CheckToHurtPlayer();
 }
 
 EntityType Snake::GetEntityType() const

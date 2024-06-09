@@ -1,9 +1,10 @@
 #pragma once
+#include "EnemyEntity.h"
 #include "Entity.h"
 #include "WorldManager.h"
 
 class SpriteSheetManager;
-class Bat final : public Entity
+class Bat final : public EnemyEntity
 {
 public:
 	Bat(const Tile* attachedTile, WorldManager* worldManager);
@@ -13,12 +14,10 @@ public:
 	
 private:
 	SpriteSheetManager* m_SpriteSheetManager;
-	WorldManager* m_WorldManager;
 	bool m_IsAttacking{false};
 	
 	float m_AnimationTimer{};
 	int m_AnimationFrame{};
-	bool m_HitPlayerAlready{};
 
 	const Tile* m_AttachedTile;
 };

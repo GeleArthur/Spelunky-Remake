@@ -1,10 +1,11 @@
 ﻿#pragma once
+#include "EnemyEntity.h"
 #include "Entity.h"
 
 class Cave;
 class SpriteSheetManager;
 
-class Snake final : public Entity
+class Snake final : public EnemyEntity
 {
 public:
     Snake(const Vector2f& position, WorldManager* worldManager);

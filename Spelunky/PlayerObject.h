@@ -96,6 +96,9 @@ private:
     bool m_IsCrouching{false};
     bool m_IsWiping{false};
 
+    bool m_InvisibilityFrames{false};
+    float m_InvisibilityTimer{0};
+    
     bool m_CanLeaveCave{false};
     
     // bool m_IsHanging{false};
