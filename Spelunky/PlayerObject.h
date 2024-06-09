@@ -49,6 +49,9 @@ public:
     virtual EntityType GetEntityType() const override;
     bool CanPlayerLeave() const;
 
+    int GetBombsAmount() const;
+    int GetRopeAmount() const;
+
 protected:
 
     // virtual void YouGotHit(int damage, Vector2f force, HitType hitType) override;
@@ -64,7 +67,7 @@ private:
     void PlayerJump();
     void LimitSpeed();
     void CheckPickUp();
-    void CheckBomb() const;
+    void CheckBomb();
     void CheckCrouching(const Vector2f& moveInput);
     void PlayerInteract();
 
@@ -72,23 +75,25 @@ private:
     void EntitiesWeHitCheck(const std::vector<std::pair<RayVsRectInfo, Entity*>>& hitInfo);
 
     static constexpr float WIPING_AMOUNT_TIMER{0.45f};
+    static constexpr float MAX_SPEED{256.0f};
+    static constexpr float MAX_SPRINT_SPEED{512};
+    static constexpr float STOP_SPEED{256.0f};
+    static constexpr float MAX_CROUCHING_SPEED{64.0f};
     
     PlayerAnimationState m_CurrentAnimation{PlayerAnimationState::idle};
     PlayerState m_PlayerState{PlayerState::normal};
+
+    int m_BombLeftAmount{4};
     
     int m_AnimationFrame{};
     float m_AnimationTimer{};
     bool m_IsLookingToLeft{true};
-    
-    float m_MaxSpeed{256.0f};
-    float m_MaxSprintSpeed{512};
-    float m_StopSpeed{256.0f};
+
     float m_RagDollTimer{};
     
     float m_WipTimer{};
     bool m_WipHasHit{};
 
-    float m_MaxCrouchingSpeed{64.0f};
     
     bool m_IsOnGround{false};
     bool m_IsJumping{false};
@@ -100,11 +105,10 @@ private:
     float m_InvisibilityTimer{0};
     float m_InvisibilityAnimationTimer{};
     
-    bool m_CanLeaveCave{false};
-    
-    // bool m_IsHanging{false};
     bool m_IsTouchingWall{false};
     bool m_IsTouchingLeftWall{false};
+
+    bool m_CanLeaveCave{false};
     
     EntityPickupRectCollider* m_PickupItem{};
 

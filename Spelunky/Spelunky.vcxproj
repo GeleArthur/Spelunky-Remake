@@ -194,6 +194,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="Snake.cpp" />
     <ClCompile Include="SpriteSheetManager.cpp" />
     <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="Vector2i.cpp" />
     <ClCompile Include="WorldManager.cpp" />
   </ItemGroup>
@@ -223,6 +224,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="SpriteSheetManager.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileTypes.h" />
+    <ClInclude Include="UIManager.h" />
     <ClInclude Include="Vector2i.h" />
     <ClInclude Include="WorldManager.h" />
   </ItemGroup>

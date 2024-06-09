@@ -510,7 +510,7 @@ void PlayerObject::PlayerMovement(const float elapsedTimes, const Vector2f& move
     // No player input
     if(std::abs(moveInput.x) < 0.1f)
     {
-        float slowDownSpeed = m_StopSpeed * elapsedTimes / 0.1f;
+        float slowDownSpeed = STOP_SPEED * elapsedTimes / 0.1f;
         const float overShooting = std::abs(m_PhysicsCollider.GetVelocity().x) - slowDownSpeed;
         if(overShooting < 0)
         {
@@ -524,13 +524,13 @@ void PlayerObject::PlayerMovement(const float elapsedTimes, const Vector2f& move
     // DeAcceleration to help the player turn
     if(std::abs(moveInput.x) > 0.1f && moveInput.x > 0 != m_PhysicsCollider.GetVelocity().x > 0)
     {
-        const float slowDownSpeed = m_StopSpeed * elapsedTimes / 0.1f;
+        const float slowDownSpeed = STOP_SPEED * elapsedTimes / 0.1f;
         const float direction = m_PhysicsCollider.GetVelocity().x > 0 ? -1.f : 1.f;
         inputVelocity.x += direction * slowDownSpeed;
     }
         
     // Accelerating
-    inputVelocity += Vector2f{moveInput.x * m_MaxSpeed/0.2f * elapsedTimes, 0};
+    inputVelocity += Vector2f{moveInput.x * MAX_SPEED/0.2f * elapsedTimes, 0};
     m_PhysicsCollider.ApplyForce(inputVelocity);
 }
 
@@ -628,11 +628,11 @@ void PlayerObject::LimitSpeed()
     float currentMaxSpeed;
     if(m_IsCrouching)
     {
-        currentMaxSpeed = m_MaxCrouchingSpeed;
+        currentMaxSpeed = MAX_CROUCHING_SPEED;
     }
     else
     {
-        currentMaxSpeed = m_InputManager->IsHoldingSprint() ? m_MaxSprintSpeed : m_MaxSpeed;
+        currentMaxSpeed = m_InputManager->IsHoldingSprint() ? MAX_SPRINT_SPEED : MAX_SPEED;
     }
     if(std::abs(m_PhysicsCollider.GetVelocity().x) > currentMaxSpeed)
     {
@@ -671,10 +671,12 @@ void PlayerObject::CheckPickUp()
     }
 }
 
-void PlayerObject::CheckBomb() const
+void PlayerObject::CheckBomb()
 {
     if(m_InputManager->PressedBombThisFrame())
     {
+        if(m_BombLeftAmount <= 0) return;
+        --m_BombLeftAmount;
         Bomb* bomb = m_WorldManager->GetEntityManager()->CreateBomb();
         const Vector2f spawnLocation = GetCenter() + Vector2f{m_IsLookingToLeft ? -20.0f : 20.0f, -10};
         
@@ -801,4 +803,12 @@ EntityType PlayerObject::GetEntityType() const
 bool PlayerObject::CanPlayerLeave() const
 {
     return m_CanLeaveCave;
+}
+int PlayerObject::GetBombsAmount() const
+{
+    return m_BombLeftAmount;
+}
+int PlayerObject::GetRopeAmount() const
+{
+    return 0;
 }

@@ -18,6 +18,7 @@ public:
     virtual void Draw() const = 0;
     virtual void Update(float elapsedTime);
     virtual void YouGotHit(int damage, const Vector2f& force);
+    int GetHealth() const;
     bool IsDead() const;
     
     const Rectf& GetRect() const;

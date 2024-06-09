@@ -21,6 +21,10 @@ void Entity::YouGotHit(const int damage, const Vector2f& force)
 
     // Spawn Blood particle
 }
+int Entity::GetHealth() const
+{
+    return m_Health;
+}
 
 bool Entity::IsDead() const
 {

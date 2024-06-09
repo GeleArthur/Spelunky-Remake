@@ -66,7 +66,7 @@ This section gives a clear and detailed overview of which parts of the original 
 	- [x] 100% goal path (step 1 of book)
 	- [x] Individual rooms (step 2 of book)
 	- [x] Obstacles in rooms (step 3 of book)
-	- [ ] Items and enemy placement
+	- [x] Items and enemy placement
 - [ ] World
 	- [x] All "objects" need to have physics.
 	- [x] All "items/monsters" need to be able to be picked up.
@@ -99,12 +99,12 @@ This section gives a clear and detailed overview of which parts of the original 
 	- [x] Pickup objects / holding objects.
 	- [x] Throw object.
 	- [x] Put object back on floor.
-	- [ ] Whip (Can damage Objects)
+	- [x] Whip (Can damage Objects)
 	- [ ] Jump on top of monsters.
 	- [ ] Ropes that can be thrown up.
 	- [x] Climbing on ropes and ladders. 
 	- [x] Bombs.
-	- [ ] Player invisible frames if gets hit.
+	- [x] Player invisible frames if gets hit.
 - [ ] UI
 	- [ ] Money counter
 	- [ ] Health, bombs, rope.
@@ -116,7 +116,7 @@ This section gives a clear and detailed overview of which parts of the original 
 	- [x] AI system thats used by all monsters.
 	- [ ] Damsel (Can be picked up and will run around if not picked up). 
 	- [x] Snake (Moves left and right if found edge or wall)
-	- [ ] Bat (When its above the player and close enough it will fly towards the player)
+	- [x] Bat (When its above the player and close enough it will fly towards the player)
 	- [x] Some monsters damages the player if get hit.
 
 ### What I will probably make as well:

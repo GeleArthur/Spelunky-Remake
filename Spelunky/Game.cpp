@@ -20,6 +20,7 @@
 #include "RectPhysicsCollider.h"
 #include "SpriteSheetManager.h"
 #include "Texture.h"
+#include "UIManager.h"
 #include "WorldManager.h"
 
 Game::Game(const Window& window):
@@ -30,7 +31,8 @@ Game::Game(const Window& window):
     m_Cave(new Cave{m_WorldManager}),
     m_Player(new PlayerObject{m_WorldManager}),
     m_EntityManager(new EntityManager{m_WorldManager}),
-    m_CameraSystem(new CameraSystem{m_Player})
+    m_CameraSystem(new CameraSystem{m_Player}),
+    m_UIManager(new UiManager{m_WorldManager})
 {
     GizmosDrawer::SetTimePointer(&m_CurrentTime);
     m_CameraSystem->EnableDebugCamera(true);
@@ -51,6 +53,7 @@ void Game::Cleanup()
     delete m_WorldManager;
     delete m_CameraSystem;
     delete m_InputManager;
+    delete m_UIManager;
     GizmosDrawer::Shutdown();
 }
 
@@ -104,6 +107,8 @@ void Game::Draw() const
     
     GizmosDrawer::Draw();
     m_CameraSystem->PopCamera();
+
+    m_UIManager->Draw();
 }
 
 void Game::Reset() const
