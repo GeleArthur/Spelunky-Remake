@@ -1,8 +1,0 @@
-https://mermaid.live/edit#pako:eNqdVMGOmzAQ_RXLp6QNUUIgu6Aoh2YrtYeq0W63lSouDgyNG2Mj27Sl2ey318GwMpL3Ug7BM_P8nnkz8RnnogCc4iAIMq6pZpCihxpYw09txrtszohSd5T8kKTKODLPTjBGC5Bo8xQEBn4ECUPOh7iHXI_r-2OraK4-H36aEgqCLfomJCu-UAaqRzDSmv1B8LQdo_0Eb9BY4KOG6tXNd6RSwOzZdhKIbiTYynsOVesrDNGrnGMXDEz4UK4TPoxFdY47jpxt-vp8NTAhn6_pZ5u9uHusa-eBaFxzpRzKt2hH-DvY0_wExWM9maKDEMyt_6JSN4Shx7ogGnqeF5xHavhER2WzoVyDLEkO261Dfk_anCg9mTq53RHyU8ehqOCTF8OENh5P0QeqKS-FR3fcBEd9PC51H_3mw7iMWNwm_S9Hf0bXZtu6sESdEcpEe2GWPgQXsiJuC0omiEaMVIeCeNSu0-5I-TrSz69_NLqx95fsf8Wt2cX1jWe4AnNSWpgbpNPPsGlRBRlOzbIg8pThjF8MjjRaPLQ8x6mWDcxw041Sf6sMyZrw70KYsCRM2RinZ_wHp6s4mS_iJEzidRyFyTqZ4RanyzCex1GSLJfmZxGuougyw387hsX8ZrVe3UYGurxNbsKF2QEFNfZ-shded-9d_gFUqJY2
-
-### Different design
-Right now I am not quite happy with the design. As there is too much casting and if I change something I have to change in multiple places.
-
-So my new idea:
-There is an interface `PhysicsComponent`. Then there are classes `RectCollider`, `CircleCollider`.
-`PlayerObject` would implement `PhysicsComponent` which links the functions to 

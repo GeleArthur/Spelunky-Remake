@@ -10,7 +10,7 @@
     Spelunky is a cave exploration / treasure-hunting game inspired by classic platform games and roguelikes, where the goal is to grab as much treasure from the cave as possible. Every time you play the cave's layout will be different. Use your wits, your reflexes, and the items available to you to survive and go ever deeper! Perhaps at the end you may find what you're looking for...
     <br />
     <strong>Original game : </strong>
-    <a href="https://store.steampowered.com/app/239350/Spelunky/"><strong>General info »</strong></a>
+    <a href="https://store.steampowered.com/app/239350/Spelunky/"><strong>Steam Store »</strong></a>
     ·
     <a href="https://youtu.be/N1uiLR6luWo"><strong>Youtube video »<strong></a>
     <br />
@@ -61,7 +61,7 @@ Here's why:
 This section gives a clear and detailed overview of which parts of the original game I planned to make.
 
 ### The minimum I will most certainly develop:
-- [ ] Level generation
+- [x] Level generation
 	- [x] 4x4 rooms
 	- [x] 100% goal path (step 1 of book)
 	- [x] Individual rooms (step 2 of book)
@@ -156,17 +156,14 @@ This section gives a clear and detailed overview of which parts of the original 
 
 <!-- GETTING STARTED -->
 ## Getting Started
-Detailed instructions on how to run your game project are in this section.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
 * Visual Studio 2022
 
 ### How to run the project
 
-Explain which project (version) must be run.
-* any extra steps if required 
+Launch the Prog2Engine.sln in visual studio and build debug 64x.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -174,31 +171,49 @@ Explain which project (version) must be run.
 
 <!-- HOW TO PLAY -->
 ## How to play
-![spelunky game](.github/CheckPoint_02.png)
+![spelunky game](.github/ScreenShot1.png)
 
 ### Controls
-* R: generate new level + reset
 * ArrowKeys: move character
+* Shift: Sprint
 * Z: Jump
-* Shift: PickUp Item
-* E: Throw item
+* X: Use whip
+* A: Throw bomb
+* Down arrow: crouch
+* Crouch + X: Pickup item.
+* Holding item + X: Throw item
+* Q+W+E+R+T+Y: Use your mouse to move the camera
+
+You can pick up rocks and the dog
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
 <!-- CLASS STRUCTURE -->
-## Class structure 
-[Click here for UML](https://mermaid.live/edit#pako:eNqdVMGOmzAQ_RXLp6QNUUIgu6Aoh2YrtYeq0W63lSouDgyNG2Mj27Sl2ey318GwMpL3Ug7BM_P8nnkz8RnnogCc4iAIMq6pZpCihxpYw09txrtszohSd5T8kKTKODLPTjBGC5Bo8xQEBn4ECUPOh7iHXI_r-2OraK4-H36aEgqCLfomJCu-UAaqRzDSmv1B8LQdo_0Eb9BY4KOG6tXNd6RSwOzZdhKIbiTYynsOVesrDNGrnGMXDEz4UK4TPoxFdY47jpxt-vp8NTAhn6_pZ5u9uHusa-eBaFxzpRzKt2hH-DvY0_wExWM9maKDEMyt_6JSN4Shx7ogGnqeF5xHavhER2WzoVyDLEkO261Dfk_anCg9mTq53RHyU8ehqOCTF8OENh5P0QeqKS-FR3fcBEd9PC51H_3mw7iMWNwm_S9Hf0bXZtu6sESdEcpEe2GWPgQXsiJuC0omiEaMVIeCeNSu0-5I-TrSz69_NLqx95fsf8Wt2cX1jWe4AnNSWpgbpNPPsGlRBRlOzbIg8pThjF8MjjRaPLQ8x6mWDcxw041Sf6sMyZrw70KYsCRM2RinZ_wHp6s4mS_iJEzidRyFyTqZ4RanyzCex1GSLJfmZxGuougyw387hsX8ZrVe3UYGurxNbsKF2QEFNfZ-shded-9d_gFUqJY2)
-
+## Class structure
 
 ### Object composition 
-`PhysicsObject.h` uses a composition to get a collider*. This collder is an interface which can be a rect collider or circle collider.
+`Entity.h` uses composition with `RectPhysicsCollider.h`. Every entity has a rect physics collider.
+`Tile.h` Also uses composition with the `RectPhysicsCollider.h`
 
 
 
 ### Inheritance 
-PlayerObject and Rock inherit from PhysicsObject so they have physics and can interact with the world.
+Every entity inheritits from `Entity.h` This makes it so that every entity has a collider to collider against. 
+Derived classes will overwrite `GetEntityType()` To tell other classes what type of entity it is.
+
+Types are
+```
+player
+rock
+bomb
+snake
+bat
+damsel
+```
+
+
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -216,11 +231,11 @@ PlayerObject and Rock inherit from PhysicsObject so they have physics and can in
 - [x] week 03 topics applied
 - [x] week 04 topics applied
 - [x] week 05 topics applied
-- [ ] week 06 topics applied
-- [ ] week 07 topics applied
-- [ ] week 08 topics applied
+- [x] week 06 topics applied
+- [x] week 07 topics applied
+- [x] week 08 topics applied
 - [ ] week 09 topics applied (optional)
-- [ ] week 10 topics applied (optional)
+- [x] week 10 topics applied (optional)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -237,10 +252,6 @@ Project Link: [https://github.com/HowestDAE/dae16-ArthurvandenBarselaar](https:/
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
-
-Use this space to list resources you find helpful and would like to give credit to. 
-
-* [Example 1: cpp reference on std::vector](https://en.cppreference.com/w/cpp/container/vector)
 * [Spelunky by Derek Yu (book)](https://bossfightbooks.com/products/spelunky-by-derek-yu)
 * [One Lone Coder Rect vs Rect Collision](https://github.com/OneLoneCoder/Javidx9/blob/master/PixelGameEngine/SmallerProjects/OneLoneCoder_PGE_Rectangles.cpp)
 
