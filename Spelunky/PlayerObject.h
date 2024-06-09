@@ -110,7 +110,7 @@ private:
 
     bool m_CanLeaveCave{false};
     
-    EntityPickupRectCollider* m_PickupItem{};
+    Entity* m_PickupItem{};
 
     SpriteSheetManager* m_SpriteSheetManager;
     InputManager* m_InputManager;

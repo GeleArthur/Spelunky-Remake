@@ -115,7 +115,7 @@ void PlayerObject::Draw() const
 
     if(m_PickupItem != nullptr)
     {
-        m_PickupItem->DrawPickedUp();
+        m_PickupItem->Draw();
     }
 }
 void PlayerObject::Update(const float elapsedTimes)
@@ -302,8 +302,7 @@ void PlayerObject::EntitiesWeHitCheck(const std::vector<std::pair<RayVsRectInfo,
             {
                 if(m_IsCrouching && m_InputManager->PressedActionThisFrame() && m_PickupItem == nullptr)
                 {
-                    // TODO: Optimize this by looping over pickedup items
-                    Rock* rock = dynamic_cast<Rock*>(hitInfo[i].second);
+                    Entity* rock = hitInfo[i].second;
 
                     if(rock->TryToPickUp(this))
                     {

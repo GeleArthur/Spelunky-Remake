@@ -36,9 +36,8 @@ void EntityPickupRectCollider::Update(const float elapsedTime)
     {
         Entity::Update(elapsedTime);
 
-        TilesWeHitCheck(m_PhysicsCollider.GetEntitiesWeHit());
-        EntitiesWeHitCheck(m_PhysicsCollider.GetTilesWeHit());
-        
+        EntitiesWeHitCheck(m_PhysicsCollider.GetEntitiesWeHit());
+        TilesWeHitCheck(m_PhysicsCollider.GetTilesWeHit());
     }
 }
 
@@ -83,7 +82,7 @@ bool EntityPickupRectCollider::IsOnGround() const
     return m_IsOnGround;
 }
 
-void EntityPickupRectCollider::EntitiesWeHitCheck(const std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo)
+void EntityPickupRectCollider::TilesWeHitCheck(const std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo)
 {
     for (int i{}; i < hitInfo.size(); ++i)
     {
@@ -102,11 +101,10 @@ void EntityPickupRectCollider::EntitiesWeHitCheck(const std::vector<std::pair<co
     }
 }
 
-void EntityPickupRectCollider::TilesWeHitCheck(const std::vector<std::pair<RayVsRectInfo, Entity*>>& hitInfo)
+void EntityPickupRectCollider::EntitiesWeHitCheck(const std::vector<std::pair<RayVsRectInfo, Entity*>>& hitInfo)
 {
     if(!IsOnGround() && !IsPickedUp() )
     {
-
         if(m_PhysicsCollider.GetVelocity().SquaredLength() > 450*450)
         {
             std::vector<Entity*> entitiesHitNow{hitInfo.size()};

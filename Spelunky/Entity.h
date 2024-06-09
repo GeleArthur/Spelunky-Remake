@@ -24,6 +24,13 @@ public:
     const Rectf& GetRect() const;
     Vector2f GetCenter() const;
     const RectPhysicsCollider& GetCollider() const;
+
+    virtual void Throw(const Vector2f& force);
+    virtual bool TryToPickUp(Entity* pickedUpBy);
+    virtual void SetTargetPosition(const Vector2f& position, const Vector2f& goingTo);
+    virtual bool IsPickedUp() const;
+    virtual bool CanBePickedUp() const;
+    
     
 protected:
     int m_Health;

@@ -8,21 +8,22 @@ public:
     
     virtual EntityType GetEntityType() const override = 0;
     virtual void Draw() const override = 0;
-    virtual void DrawPickedUp() const = 0;
     virtual void Update(float elapsedTime) override;
 
-    virtual void Throw(const Vector2f& force);
-    virtual bool TryToPickUp(Entity* pickedUpBy);
-    virtual void SetTargetPosition(const Vector2f& position, const Vector2f& goingTo);
-    virtual bool IsPickedUp() const;
-    virtual bool CanBePickedUp() const;
-    bool IsOnGround() const;
+    virtual void Throw(const Vector2f& force) override;
+    virtual bool TryToPickUp(Entity* pickedUpBy) override;
+    virtual void SetTargetPosition(const Vector2f& position, const Vector2f& goingTo) override;
+    virtual bool IsPickedUp() const override;
+    virtual bool CanBePickedUp() const override;
 
 protected:
-    void EntitiesWeHitCheck(const std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo);
-    void TilesWeHitCheck(const std::vector<std::pair<RayVsRectInfo, Entity*>>& hitInfo);
+    void TilesWeHitCheck(const std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo);
+    void EntitiesWeHitCheck(const std::vector<std::pair<RayVsRectInfo, Entity*>>& hitInfo);
     
 private:
+    bool IsOnGround() const;
+
+    
     Vector2f m_GoingToPosition{};
     Vector2f m_CenterOfTarget{};
     float m_FrictionOnFloor;

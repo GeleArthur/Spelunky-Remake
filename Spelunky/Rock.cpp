@@ -21,16 +21,9 @@ EntityType Rock::GetEntityType() const
 
 void Rock::Draw() const
 {
-    if(IsPickedUp() == false)
-    {
-        DrawPickedUp();
-    }
-}
-
-void Rock::DrawPickedUp() const
-{
     m_SpriteSheetManager->GetItemsTexture()->Draw(
         GetCenter() - Vector2f{40, 40},
         Rectf{1360, 0, 80,80}
     );
 }
+

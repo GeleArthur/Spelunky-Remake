@@ -10,6 +10,7 @@ Entity::Entity(const Rectf& collider, const int health, const float mass, const 
 void Entity::Update(const float elapsedTime)
 {
     if(IsDead()) return;
+    
     m_PhysicsCollider.ApplyForce(Vector2f{0,1000} * elapsedTime);
     m_PhysicsCollider.UpdatePhysics(elapsedTime);
 }
@@ -41,5 +42,26 @@ Vector2f Entity::GetCenter() const
 const RectPhysicsCollider& Entity::GetCollider() const
 {
     return m_PhysicsCollider;
+}
+
+
+
+void Entity::Throw(const Vector2f& force)
+{
+}
+bool Entity::TryToPickUp(Entity* pickedUpBy)
+{
+    return false;
+}
+void Entity::SetTargetPosition(const Vector2f& position, const Vector2f& goingTo)
+{
+}
+bool Entity::IsPickedUp() const
+{
+    return false;
+}
+bool Entity::CanBePickedUp() const
+{
+    return false;
 }
 

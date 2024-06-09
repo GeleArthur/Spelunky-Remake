@@ -15,7 +15,8 @@ void EntityManager::DrawEntities() const
 {
     for (const Entity* entity : m_EntitiesWithoutPlayer)
     {
-        entity->Draw();
+        if(!entity->IsPickedUp())
+            entity->Draw();
     }
 }
 

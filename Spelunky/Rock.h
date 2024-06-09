@@ -16,7 +16,6 @@ public:
     
     virtual EntityType GetEntityType() const override;
     virtual void Draw() const override;
-    virtual void DrawPickedUp() const override;
 
 private:
     const SpriteSheetManager* m_SpriteSheetManager;
