@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "EntityTypes.h"
-#include "HitType.h"
 #include "RectPhysicsCollider.h"
 
 class SoundManager;

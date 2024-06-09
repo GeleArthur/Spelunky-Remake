@@ -2,21 +2,17 @@
 #include "PlayerObject.h"
 
 #include <complex>
-#include <iostream>
 #include <vector>
 #include <algorithm>
-#include <iomanip>
 
 #include "Bomb.h"
 #include "Cave.h"
 #include "EntityManager.h"
 
 #include "Game.h"
-#include "GizmosDrawer.h"
 
 #include "InputManager.h"
 #include "RectPhysicsCollider.h"
-#include "Rock.h"
 #include "SoundManager.h"
 #include "SpriteSheetManager.h"
 #include "Texture.h"
@@ -35,8 +31,6 @@ enum class PlayerAnimationState
     ragdoll,
 };
 
-
-
 PlayerObject::PlayerObject(WorldManager* worldManager):
     Entity(Rectf{0, 0, 40, 56}, 4, 60, 0.0f, false, worldManager),
     m_CurrentAnimation(PlayerAnimationState::idle),
@@ -46,7 +40,6 @@ PlayerObject::PlayerObject(WorldManager* worldManager):
 {
     worldManager->SetPlayer(this);
 }
-
 
 void PlayerObject::Draw() const
 {
@@ -805,8 +798,13 @@ void PlayerObject::HandleWallHanging(const float elapsedTimes)
 }
 void PlayerObject::Respawn(const Vector2f& spawnLocation)
 {
+    if(m_PlayerState == PlayerState::dead)
+    {
+        m_BombLeftAmount = 4;
+    }
+    
     m_PhysicsCollider.SetCenter(spawnLocation);
-    m_Health = 4; // TODO DIE
+    m_Health = 4;
     m_AnimationFrame = 0;
     m_AnimationTimer = 0;
     

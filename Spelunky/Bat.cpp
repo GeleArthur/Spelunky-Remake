@@ -3,14 +3,13 @@
 
 #include "Cave.h"
 #include "Game.h"
-#include "GizmosDrawer.h"
-
 #include "SpriteSheetManager.h"
 #include "Texture.h"
 #include "Tile.h"
-#include "utils.h"
+
+
 Bat::Bat(const Tile* attachedTile, WorldManager* worldManager):
-	EnemyEntity(Rectf{attachedTile->GetCenter().x - 25, attachedTile->GetCenter().y - 25 + Game::TILE_SIZE, 50, 50 }, 1, 1, 0, false, worldManager),
+	EnemyEntity(Rectf{ attachedTile->GetCenter().x - 25, attachedTile->GetCenter().y - 25 + Game::TILE_SIZE, 50, 50 }, 1, 1, 0, false, worldManager),
 	m_SpriteSheetManager(worldManager->GetSpriteSheet()),
 	m_AttachedTile(attachedTile)
 {
@@ -22,37 +21,38 @@ EntityType Bat::GetEntityType() const
 }
 void Bat::Draw() const
 {
-	if(IsDead()) return;
-	
+	if (IsDead()) return;
+
 	glPushMatrix();
 	glTranslatef(GetCenter().x, GetCenter().y, 0);
 
-	if(m_IsAttacking)
+	if (m_IsAttacking)
 	{
-		if(m_PhysicsCollider.GetVelocity().x < 0)
-			glScalef(-1,1,1);
-		
+		if (m_PhysicsCollider.GetVelocity().x < 0)
+			glScalef(-1, 1, 1);
+
 		m_SpriteSheetManager->GetMonsterTexture3()->Draw(
-			Vector2f{-40,-40},
-			Rectf{static_cast<float>(m_AnimationFrame)*80.0f, 6*80.0f, 80.0f, 80.0f});
+			Vector2f{ -40, -40 },
+			Rectf{ static_cast<float>(m_AnimationFrame) * 80.0f, 6 * 80.0f, 80.0f, 80.0f });
 	}
 	else
 	{
 		m_SpriteSheetManager->GetMonsterTexture3()->Draw(
-			Vector2f{-40,-40},
-			Rectf{0,5*80.0f,80.0f,80.0f});
+			Vector2f{ -40, -40 },
+			Rectf{ 0, 5 * 80.0f, 80.0f, 80.0f });
 	}
 	glPopMatrix();
 }
+
 void Bat::Update(const float elapsedTime)
 {
-	if(IsDead()) return;
-	
-	if(m_IsAttacking)
+	if (IsDead()) return;
+
+	if (m_IsAttacking)
 	{
 		m_AnimationTimer += elapsedTime;
-		
-		if(m_AnimationTimer > 0.05f)
+
+		if (m_AnimationTimer > 0.05f)
 		{
 			m_AnimationTimer = 0;
 			m_AnimationFrame = (++m_AnimationFrame) % 7;
@@ -62,29 +62,29 @@ void Bat::Update(const float elapsedTime)
 	}
 	else
 	{
-		if(m_AttachedTile != nullptr)
+		if (m_AttachedTile != nullptr)
 		{
-			if(m_AttachedTile->GetTileType() == TileTypes::air)
+			if (m_AttachedTile->GetTileType() == TileTypes::air)
 			{
 				m_IsAttacking = true;
 				m_AttachedTile = nullptr;
 			}
 		}
-		
+
 		const Vector2f distance = m_WorldManager->GetPlayer()->GetPosition() - GetCenter();
-		
-		if(distance.SquaredLength() < 10*Game::TILE_SIZE*10*Game::TILE_SIZE)
+
+		if (distance.SquaredLength() < 5 * Game::TILE_SIZE * 5 * Game::TILE_SIZE)
 		{
 			const std::vector<std::vector<Tile*>>& tiles = m_WorldManager->GetCave()->GetTiles();
 
-			bool canSeePlayer{true};
-			
+			bool canSeePlayer{ true };
+
 			for (int x{}; x < static_cast<int>(tiles.size()); ++x)
 			{
 				for (int y{}; y < static_cast<int>(tiles[x].size()); ++y)
 				{
 					const Tile* currentTile = tiles[x][y];
-					if(currentTile->GetTileType() == TileTypes::air) continue;
+					if (currentTile->GetTileType() == TileTypes::air) continue;
 
 					RayVsRectInfo rayResult;
 					if (RectPhysicsCollider::RayCastCollision(GetCenter(), distance, currentTile->GetRect(), rayResult))
@@ -93,32 +93,29 @@ void Bat::Update(const float elapsedTime)
 						break;
 					}
 				}
-				if(canSeePlayer == false) break;
+				if (canSeePlayer == false) break;
 			}
 
-			if(canSeePlayer)
+			if (canSeePlayer)
 			{
 				m_IsAttacking = true;
 			}
 		}
 	}
-	
-	
+
+
 	m_PhysicsCollider.UpdatePhysics(elapsedTime);
 	const std::vector<std::pair<const Tile*, RayVsRectInfo>>& tiles = m_PhysicsCollider.GetTilesWeHit();
 	for (const std::pair<const Tile*, RayVsRectInfo> tile : tiles)
 	{
-		if(tile.first->GetTileType() == TileTypes::spikes)
+		if (tile.first->GetTileType() == TileTypes::spikes)
 		{
-			if(m_PhysicsCollider.GetVelocity().y > 0)
+			if (m_PhysicsCollider.GetVelocity().y > 0)
 			{
 				m_Health -= 100;
 			}
 		}
 	}
-	
+
 	CheckToHurtPlayer();
-	
 }
-
-

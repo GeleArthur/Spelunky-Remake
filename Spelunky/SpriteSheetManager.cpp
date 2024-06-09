@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "SpriteSheetManager.h"
 #include "Texture.h"
-#include "TileTypes.h"
 #include "WorldManager.h"
 
 SpriteSheetManager::SpriteSheetManager(WorldManager* worldManager)

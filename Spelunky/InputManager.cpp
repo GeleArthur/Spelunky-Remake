@@ -40,6 +40,11 @@ bool InputManager::PressedInteractThisFrame() const
 {
     return m_PressedInteractThisFrame;
 }
+bool InputManager::PressingSecretCode() const
+{
+    const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
+    return pStates[SDL_SCANCODE_Q] && pStates[SDL_SCANCODE_W] && pStates[SDL_SCANCODE_E] && pStates[SDL_SCANCODE_R] && pStates[SDL_SCANCODE_T] && pStates[SDL_SCANCODE_Y];
+}
 
 void InputManager::Update()
 {

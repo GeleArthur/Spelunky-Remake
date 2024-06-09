@@ -14,6 +14,7 @@ public:
     bool PressedActionThisFrame() const;
     bool PressedBombThisFrame() const;
     bool PressedInteractThisFrame() const;
+    bool PressingSecretCode() const;
 
     void Update();
 

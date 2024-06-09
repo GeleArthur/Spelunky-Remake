@@ -3,7 +3,6 @@
 
 #include "Cave.h"
 #include "Game.h"
-#include "GizmosDrawer.h"
 #include "SpriteSheetManager.h"
 #include "Texture.h"
 #include "TileTypes.h"

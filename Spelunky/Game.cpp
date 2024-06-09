@@ -8,7 +8,6 @@
 #include <ostream>
 
 #include "Bat.h"
-#include "Bomb.h"
 #include "CameraSystem.h"
 #include "Cave.h"
 #include "EntityManager.h"
@@ -37,7 +36,6 @@ Game::Game(const Window& window):
     m_UiManager(new UiManager{m_WorldManager})
 {
     GizmosDrawer::SetTimePointer(&m_CurrentTime);
-    m_CameraSystem->EnableDebugCamera(true);
     Reset();
 }
 
@@ -75,9 +73,17 @@ void Game::Update(const float elapsedSec)
     }
     
     m_PrevDeltaTime = elapsedSec;
+
+    if(m_InputManager->PressingSecretCode())
+    {
+        m_CameraSystem->EnableDebugCamera(true);
+    }
     
-    GizmosDrawer::SetColor({0, 1.0f, 0});
-    GizmosDrawer::DrawQText(-m_CameraSystem->GetCameraPosition(), std::to_string((1 / m_PrevDeltaTime)));
+    // GizmosDrawer::SetColor({0, 1.0f, 0});
+    // GizmosDrawer::DrawQText(-m_CameraSystem->GetCameraPosition(), std::to_string((1 / m_PrevDeltaTime)));
+
+    
+    
 }
 
 void Game::Draw() const
@@ -130,10 +136,6 @@ void Game::Reset() const
 void Game::ProcessKeyDownEvent(const SDL_KeyboardEvent& e)
 {
     //std::cout << "KEYDOWN event: " << e.keysym.sym << std::endl;
-    if (e.keysym.sym == SDLK_r)
-    {
-        Reset();
-    }
 }
 
 void Game::ProcessKeyUpEvent(const SDL_KeyboardEvent& e)

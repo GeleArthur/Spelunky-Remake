@@ -7,7 +7,6 @@
 #include "Texture.h"
 #include "Vector2i.h"
 #include "WorldManager.h"
-#include <limits>
 
 #include "Game.h"
 
@@ -71,7 +70,7 @@ void Tile::Draw() const
         break;
     case TileTypes::pushBlock:
         // TODO: Replace with object
-        levelTexture->Draw(position, Rectf{0.0f, 0.0f, Game::TILE_SIZE, Game::TILE_SIZE});
+        // levelTexture->Draw(position, Rectf{0.0f, 0.0f, Game::TILE_SIZE, Game::TILE_SIZE});
         break;
     case TileTypes::entrance:
     case TileTypes::exit:

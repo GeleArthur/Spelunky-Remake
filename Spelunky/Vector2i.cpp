@@ -2,7 +2,6 @@
 #include "Vector2i.h"
 
 #include <iomanip>
-#include <ios>
 #include <sstream>
 
 //-----------------------------------------------------------------

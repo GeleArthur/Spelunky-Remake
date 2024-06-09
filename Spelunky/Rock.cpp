@@ -5,7 +5,6 @@
 #include "RectPhysicsCollider.h"
 #include "SpriteSheetManager.h"
 #include "Texture.h"
-#include "utils.h"
 #include "WorldManager.h"
 
 Rock::Rock(const Vector2f& position, WorldManager* worldManager):

@@ -17,8 +17,6 @@ void EntityPickupRectCollider::Update(const float elapsedTime)
     m_IsOnGround = false;
     if(m_PickedUpBy != nullptr)
     {
-        GizmosDrawer::DrawCircle(m_CenterOfTarget, 10);
-        GizmosDrawer::DrawCircle(m_GoingToPosition, 20);
         m_PhysicsCollider.SetCenter(m_CenterOfTarget);
         m_PhysicsCollider.SetVelocity((m_GoingToPosition - m_CenterOfTarget) / elapsedTime );
         m_PhysicsCollider.UpdatePhysics(elapsedTime);
