@@ -10,7 +10,7 @@
 #include "Tile.h"
 #include "utils.h"
 Bat::Bat(const Tile* attachedTile, WorldManager* worldManager):
-	EnemyEntity(Rectf{attachedTile->GetCenter().x - 25, attachedTile->GetCenter().y - 25 + Game::TILE_SIZE, 50, 50 }, 1, 1, 0, worldManager),
+	EnemyEntity(Rectf{attachedTile->GetCenter().x - 25, attachedTile->GetCenter().y - 25 + Game::TILE_SIZE, 50, 50 }, 1, 1, 0, false, worldManager),
 	m_SpriteSheetManager(worldManager->GetSpriteSheet()),
 	m_AttachedTile(attachedTile)
 {
@@ -105,7 +105,20 @@ void Bat::Update(const float elapsedTime)
 	
 	
 	m_PhysicsCollider.UpdatePhysics(elapsedTime);
+	const std::vector<std::pair<const Tile*, RayVsRectInfo>>& tiles = m_PhysicsCollider.GetTilesWeHit();
+	for (const std::pair<const Tile*, RayVsRectInfo> tile : tiles)
+	{
+		if(tile.first->GetTileType() == TileTypes::spikes)
+		{
+			if(m_PhysicsCollider.GetVelocity().y > 0)
+			{
+				m_Health -= 100;
+			}
+		}
+	}
+	
 	CheckToHurtPlayer();
+	
 }
 
 

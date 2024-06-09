@@ -4,7 +4,7 @@
 class EnemyEntity : public Entity
 {
 public:
-	EnemyEntity(const Rectf& collider, const int health, const float mass, const float bounciness, WorldManager* worldManager);
+	EnemyEntity(const Rectf& collider, int health, float mass, float bounciness, bool invisible, WorldManager* worldManager);
 
 	void CheckToHurtPlayer();
 

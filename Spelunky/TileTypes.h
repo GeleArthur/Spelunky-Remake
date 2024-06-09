@@ -11,7 +11,6 @@ enum class TileTypes
 
     entrance,
     exit,
-    arrowShooter,
 
     unknown,
 };

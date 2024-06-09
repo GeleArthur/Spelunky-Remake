@@ -11,7 +11,7 @@
 #include "WorldManager.h"
 
 Damsel::Damsel(const Vector2f& position, const bool facingLeft, WorldManager* worldManager):
-	EntityPickupRectCollider(Rectf{ position.x, position.y, 55, 49 }, 4, 1, 0, worldManager),
+	EntityPickupRectCollider(Rectf{ position.x, position.y, 55, 49 }, 4, 1, 0, false, worldManager),
 	m_MovingLeft(facingLeft),
 	m_Player(worldManager->GetPlayer()),
 	m_SpriteSheetManager(worldManager->GetSpriteSheet()),
@@ -137,7 +137,6 @@ void Damsel::Update(const float elapsedTime)
 		case TileTypes::spikes:
 		case TileTypes::pushBlock:
 		case TileTypes::entrance:
-		case TileTypes::arrowShooter:
 		case TileTypes::unknown:
 			break;
 		}

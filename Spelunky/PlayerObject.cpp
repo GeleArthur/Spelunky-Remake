@@ -38,7 +38,7 @@ enum class PlayerAnimationState
 
 
 PlayerObject::PlayerObject(WorldManager* worldManager):
-    Entity(Rectf{0, 0, 40, 56}, 4, 60, 0.0f, worldManager),
+    Entity(Rectf{0, 0, 40, 56}, 4, 60, 0.0f, false, worldManager),
     m_CurrentAnimation(PlayerAnimationState::idle),
     m_SpriteSheetManager(worldManager->GetSpriteSheet()),
     m_InputManager(worldManager->GetInputManager()),

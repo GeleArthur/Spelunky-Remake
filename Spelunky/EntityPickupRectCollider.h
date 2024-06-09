@@ -4,7 +4,7 @@
 class EntityPickupRectCollider: public Entity
 {
 public:
-    EntityPickupRectCollider(const Rectf& collider, int health, float mass, float bounciness, WorldManager* worldManager);
+    EntityPickupRectCollider(const Rectf& collider, int health, float mass, float bounciness, bool invisible, WorldManager* worldManager);
     
     virtual EntityType GetEntityType() const override = 0;
     virtual void Draw() const override = 0;

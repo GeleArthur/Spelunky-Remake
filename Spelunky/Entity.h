@@ -7,7 +7,7 @@ class SoundManager;
 class Entity
 {
 public:
-    explicit Entity(const Rectf& collider, const int health, float mass, float bounciness, WorldManager* worldManager);
+    explicit Entity(const Rectf& collider, int health, float mass, float bounciness, bool invisible, WorldManager* worldManager);
     
     virtual ~Entity() = default;
     Entity(const Entity& other) = delete;
@@ -37,4 +37,5 @@ protected:
     int m_Health;
     RectPhysicsCollider m_PhysicsCollider;
     SoundManager* m_SoundManager;
+    bool m_Invisable{false};
 };

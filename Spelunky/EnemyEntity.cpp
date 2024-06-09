@@ -2,8 +2,8 @@
 #include "EnemyEntity.h"
 #include "WorldManager.h"
 
-EnemyEntity::EnemyEntity(const Rectf& collider, const int health, const float mass, const float bounciness, WorldManager* worldManager):
-	Entity(collider, health, mass, bounciness, worldManager), m_WorldManager(worldManager)
+EnemyEntity::EnemyEntity(const Rectf& collider, const int health, const float mass, const float bounciness, bool invisible, WorldManager* worldManager):
+	Entity(collider, health, mass, bounciness, invisible, worldManager), m_WorldManager(worldManager)
 {
 }
 

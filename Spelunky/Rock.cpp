@@ -9,7 +9,7 @@
 #include "WorldManager.h"
 
 Rock::Rock(const Vector2f& position, WorldManager* worldManager):
-    EntityPickupRectCollider(Rectf{position.x, position.y, 34, 34}, 999, 3, 0.3f, worldManager),
+    EntityPickupRectCollider(Rectf{position.x, position.y, 34, 34}, 999, 3, 0.3f, true, worldManager),
     m_SpriteSheetManager(worldManager->GetSpriteSheet())
 {
 }
@@ -21,8 +21,6 @@ EntityType Rock::GetEntityType() const
 
 void Rock::Draw() const
 {
-    
-    
     m_SpriteSheetManager->GetItemsTexture()->Draw(
         GetCenter() - Vector2f{40, 40},
         Rectf{1360, 0, 80,80}
@@ -42,6 +40,8 @@ void Rock::Update(const float elapsedTime)
         
         m_PhysicsCollider.SetVelocity(newVelocity);
     }
+
+    if(IsDead()) return;
     
     EntityPickupRectCollider::Update(elapsedTime);
 }

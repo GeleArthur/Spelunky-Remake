@@ -14,7 +14,7 @@
 
 
 Bomb::Bomb(WorldManager* worldManager)
-    : Entity(Rectf{0, 0, 34, 34}, 0, 5, 0.3f, worldManager),
+    : Entity(Rectf{0, 0, 34, 34}, 0, 5, 0.3f, true, worldManager),
     m_SpriteSheetManager(worldManager->GetSpriteSheet()),
     m_WorldManager{worldManager}
 {

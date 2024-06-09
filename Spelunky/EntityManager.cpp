@@ -91,10 +91,14 @@ void EntityManager::GenerateEntities()
                    (tiles[x+1][y]->GetTileType() == TileTypes::ground || tiles[x-1][y]->GetTileType() == TileTypes::ground)
                 )
                 {
-                    AddEntity(new Damsel{
-                        Vector2f{static_cast<float>(x*Game::TILE_SIZE), static_cast<float>(y * Game::TILE_SIZE)},
-                        tiles[x-1][y]->GetTileType() == TileTypes::ground,
-                        m_WorldManager});
+                    if(rand() % 3 == 0)
+                    {
+                        DamsalGenerated = true;
+                        AddEntity(new Damsel{
+                            Vector2f{static_cast<float>(x*Game::TILE_SIZE), static_cast<float>(y * Game::TILE_SIZE)},
+                            tiles[x-1][y]->GetTileType() == TileTypes::ground,
+                            m_WorldManager});
+                    }
                 }
             }
 
