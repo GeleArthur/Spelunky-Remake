@@ -36,7 +36,7 @@ void PlayerObject::Draw() const
 {
     if(m_InvisibilityFrames)
     {
-        if(static_cast<int>(std::floor(static_cast<int>(m_InvisibilityTimer * 1.0f / 0.2f) % 2)) == 0)
+        if(static_cast<int>(std::floor(static_cast<int>(m_InvisibilityAnimationTimer * 1.0f / 0.2f) % 2)) == 0)
         {
             return;
         }
@@ -198,10 +198,14 @@ void PlayerObject::Update(const float elapsedTimes)
 
     if(m_InvisibilityFrames)
     {
-        m_InvisibilityTimer -= elapsedTimes;
-        if(m_InvisibilityTimer < 0)
+        m_InvisibilityAnimationTimer += elapsedTimes;
+        if(m_PlayerState != PlayerState::ragdoll)
         {
-            m_InvisibilityFrames = false;
+            m_InvisibilityTimer -= elapsedTimes;
+            if(m_InvisibilityTimer < 0)
+            {
+                m_InvisibilityFrames = false;
+            }
         }
     }
     
@@ -309,10 +313,14 @@ void PlayerObject::EntitiesWeHitCheck(const std::vector<std::pair<RayVsRectInfo,
                 }
             }
             break;
-        case EntityType::player:
-        case EntityType::arrow:
+
         case EntityType::snake:
         case EntityType::bat:
+            
+            
+        case EntityType::player:
+        case EntityType::arrow:
+
         case EntityType::bomb:
             break;
         }
@@ -708,6 +716,9 @@ void PlayerObject::PlayerInteract()
 void PlayerObject::YouGotHit(const int damage, const Vector2f& force)
 {
     if(m_InvisibilityFrames) return;
+    m_InvisibilityFrames = true;
+    m_InvisibilityTimer = 0.5f;
+    
     if(force.SquaredLength() > 100*100)
     {
         m_PlayerState = PlayerState::ragdoll;
@@ -725,10 +736,6 @@ void PlayerObject::YouGotHit(const int damage, const Vector2f& force)
     {
         m_PlayerState = PlayerState::dead;
     }
-
-    m_InvisibilityFrames = true;
-    m_InvisibilityTimer = 0.5f;
-    
 }
 void PlayerObject::HandleWallHanging(const float elapsedTimes)
 {

@@ -98,6 +98,7 @@ private:
 
     bool m_InvisibilityFrames{false};
     float m_InvisibilityTimer{0};
+    float m_InvisibilityAnimationTimer{};
     
     bool m_CanLeaveCave{false};
     
