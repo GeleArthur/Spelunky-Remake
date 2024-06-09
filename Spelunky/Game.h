@@ -2,6 +2,7 @@
 #include "BaseGame.h"
 #include "InputManager.h"
 #include "Matrix.h"
+class SoundManager;
 class UiManager;
 class CameraSystem;
 class EntityManager;
@@ -44,7 +45,8 @@ private:
 	PlayerObject* m_Player;
 	EntityManager* m_EntityManager;
 	CameraSystem* m_CameraSystem;
-	UiManager* m_UIManager;
+	UiManager* m_UiManager;
+	SoundManager* m_SoundManager;
 	
 
 	Matrix4X4 m_ZoomMatrix{Matrix4X4::IdentityMatrix()};

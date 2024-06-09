@@ -34,6 +34,12 @@ InputManager* WorldManager::GetInputManager() const
     return m_InputManager;
 }
 
+SoundManager* WorldManager::GetSoundManager() const
+{
+    assert(m_SoundManager != nullptr && "m_SoundManager doesn't exist yet but we are tring to access it");
+    return m_SoundManager;
+}
+
 void WorldManager::SetCave(Cave* cave)
 {
     m_Cave = cave;
@@ -59,3 +65,7 @@ void WorldManager::SetInputManager(InputManager* inputManager)
     m_InputManager = inputManager;
 }
 
+void WorldManager::SetSoundManager(SoundManager* soundManager)
+{
+    m_SoundManager = soundManager;
+}

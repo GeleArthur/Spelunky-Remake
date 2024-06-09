@@ -17,6 +17,7 @@
 #include "InputManager.h"
 #include "RectPhysicsCollider.h"
 #include "Rock.h"
+#include "SoundManager.h"
 #include "SpriteSheetManager.h"
 #include "Texture.h"
 #include "Tile.h"
@@ -306,6 +307,7 @@ void PlayerObject::EntitiesWeHitCheck(const std::vector<std::pair<RayVsRectInfo,
 
                     if(rock->TryToPickUp(this))
                     {
+                        m_WorldManager->GetSoundManager()->PlaySoundEffect(SoundEffectTypes::pickup);
                         rock->SetTargetPosition(GetCenter(), GetCenter() + Vector2f{m_IsLookingToLeft ? 20.0f : -20.0f, -10});
                         m_PickupItem = rock;
                         return;
@@ -560,6 +562,7 @@ void PlayerObject::PlayerWhipping(const float elapsedTimes)
     {
         if(m_IsWiping == false)
         {
+            m_WorldManager->GetSoundManager()->PlaySoundEffect(SoundEffectTypes::whip);
             m_IsWiping = true;
             m_WipHasHit = false;
             m_WipTimer = WIPING_AMOUNT_TIMER;

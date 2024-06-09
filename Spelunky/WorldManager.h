@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "PlayerObject.h"
 
+class SoundManager;
 class EntityManager;
 class SpriteSheetManager;
 class PlayerObject;
@@ -23,6 +24,9 @@ public:
 
     void SetInputManager(InputManager* inputManager);
     InputManager* GetInputManager() const;
+
+    void SetSoundManager(SoundManager* soundManager);
+    SoundManager* GetSoundManager() const;
     
 private:
     Cave* m_Cave{};
@@ -30,4 +34,5 @@ private:
     SpriteSheetManager* m_SpriteSheetManager{};
     EntityManager* m_EntityManager{};
     InputManager* m_InputManager{};
+    SoundManager* m_SoundManager{};
 };

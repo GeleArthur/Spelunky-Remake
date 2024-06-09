@@ -98,7 +98,7 @@ TileTypes Tile::GetTileType() const
 {
     return m_TileType;
 }
-const Vector2f& Tile::GetCenter() const
+Vector2f Tile::GetCenter() const
 {
     return m_PhysicsCollider.GetCenter();
 }

@@ -18,6 +18,7 @@
 #include "Matrix.h"
 #include "PlayerObject.h"
 #include "RectPhysicsCollider.h"
+#include "SoundManager.h"
 #include "SpriteSheetManager.h"
 #include "Texture.h"
 #include "UIManager.h"
@@ -32,7 +33,8 @@ Game::Game(const Window& window):
     m_Player(new PlayerObject{m_WorldManager}),
     m_EntityManager(new EntityManager{m_WorldManager}),
     m_CameraSystem(new CameraSystem{m_Player}),
-    m_UIManager(new UiManager{m_WorldManager})
+    m_UiManager(new UiManager{m_WorldManager}),
+    m_SoundManager(new SoundManager{m_WorldManager})
 {
     GizmosDrawer::SetTimePointer(&m_CurrentTime);
     m_CameraSystem->EnableDebugCamera(true);
@@ -53,7 +55,8 @@ void Game::Cleanup()
     delete m_WorldManager;
     delete m_CameraSystem;
     delete m_InputManager;
-    delete m_UIManager;
+    delete m_UiManager;
+    delete m_SoundManager;
     GizmosDrawer::Shutdown();
 }
 
@@ -108,7 +111,7 @@ void Game::Draw() const
     GizmosDrawer::Draw();
     m_CameraSystem->PopCamera();
 
-    m_UIManager->Draw();
+    m_UiManager->Draw();
 }
 
 void Game::Reset() const

@@ -4,13 +4,19 @@
 #include "Texture.h"
 #include "WorldManager.h"
 
-UiManager::UiManager(WorldManager* worldManager): m_WorldManager(worldManager)
+UiManager::UiManager(WorldManager* worldManager):
+	m_PlayerHudTexture(new Texture{"ANYLEVEL/playerhud.png"}),
+	m_WorldManager(worldManager)
 {
-	m_PlayerHudTexture = new Texture{"ANYLEVEL/playerhud.png"};
 }
 UiManager::~UiManager()
 {
 	delete m_PlayerHudTexture;
+	delete m_HealthText;
+	delete m_BombText;
+	delete m_BombOutLineText;
+	delete m_RopeOutLineText;
+	delete m_RopeText;
 }
 
 

@@ -15,7 +15,7 @@ public:
     void SetTileType(TileTypes newTileType);
     void SetVariantIndex(int index);
     TileTypes GetTileType() const;
-    const Vector2f& GetCenter() const;
+    Vector2f GetCenter() const;
     const Rectf& GetRect() const;
     const RectPhysicsCollider& GetCollider() const;
 
