@@ -5,6 +5,7 @@
 #include "Bat.h"
 #include "Bomb.h"
 #include "Cave.h"
+#include "Damsel.h"
 #include "Game.h"
 #include "GizmosDrawer.h"
 #include "Rock.h"
@@ -47,6 +48,9 @@ void EntityManager::ClearAllEntities()
 void EntityManager::GenerateEntities()
 {
     const std::vector<std::vector<Tile*>>& tiles = m_WorldManager->GetCave()->GetTiles();
+
+    bool DamsalGenerated{false};
+    
     for (int x = 0; x < tiles.size(); ++x)
     {
         for (int y = 0; y < tiles[x].size(); ++y)
@@ -77,6 +81,20 @@ void EntityManager::GenerateEntities()
                 else if(rand() % 15 == 0)
                 {
                     AddEntity(new Rock{Vector2f{static_cast<float>(x*Game::TILE_SIZE), static_cast<float>(y * Game::TILE_SIZE)}, m_WorldManager});
+                }
+            }
+
+            if(DamsalGenerated == false)
+            {
+                if(tiles[x][y+1]->GetTileType() == TileTypes::ground &&
+                   tiles[x][y-1]->GetTileType() == TileTypes::ground &&
+                   (tiles[x+1][y]->GetTileType() == TileTypes::ground || tiles[x-1][y]->GetTileType() == TileTypes::ground)
+                )
+                {
+                    AddEntity(new Damsel{
+                        Vector2f{static_cast<float>(x*Game::TILE_SIZE), static_cast<float>(y * Game::TILE_SIZE)},
+                        tiles[x-1][y]->GetTileType() == TileTypes::ground,
+                        m_WorldManager});
                 }
             }
 

@@ -15,8 +15,7 @@ public:
     virtual EntityType GetEntityType() const override;
 
 private:
-
-    bool m_MovingLeft{};
+    bool m_MovingLeft;
     SpriteSheetManager* m_SpriteSheetManager;
     Cave* m_Cave;
 };

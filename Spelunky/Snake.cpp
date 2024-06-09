@@ -12,6 +12,7 @@
 
 Snake::Snake(const Vector2f& position, WorldManager* worldManager) :
     EnemyEntity(Rectf{position.x, position.y, 52, 52}, 1, 1, 0, worldManager),
+    m_MovingLeft(rand() % 2 == 0),
     m_SpriteSheetManager(worldManager->GetSpriteSheet()),
     m_Cave(worldManager->GetCave())
 {

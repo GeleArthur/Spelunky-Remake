@@ -1,39 +1,16 @@
 ﻿#pragma once
 #include <vector>
-
-
 #include "Entity.h"
+#include "PlayerState.h"
 #include "RectPhysicsCollider.h"
 
+enum class PlayerAnimationState;
 class EntityPickupRectCollider;
 class InputManager;
 class WorldManager;
 class Entity;
 class Tile;
 class SpriteSheetManager;
-
-enum class PlayerAnimationState
-{
-    idle,
-    walk,
-    crouching,
-    inAir,
-    hanging,
-    ladderClimbing,
-    wiping,
-    ragdoll,
-};
-enum class PlayerState
-{
-    normal,
-    hanging,
-    ragdoll,
-    ladderClimbing,
-
-    dead,
-    enteringLeaving
-};
-
 
 class PlayerObject final : public Entity
 {
@@ -51,10 +28,9 @@ public:
 
     int GetBombsAmount() const;
     int GetRopeAmount() const;
+    void HealPlayer();
 
 protected:
-
-    // virtual void YouGotHit(int damage, Vector2f force, HitType hitType) override;
     virtual void YouGotHit(int damage, const Vector2f& force) override;
     
 private:
@@ -73,14 +49,14 @@ private:
 
     void TilesWeHitCheck(const std::vector<std::pair<const Tile*, RayVsRectInfo>>& hitInfo);
     void EntitiesWeHitCheck(const std::vector<std::pair<RayVsRectInfo, Entity*>>& hitInfo);
-
+    
     static constexpr float WIPING_AMOUNT_TIMER{0.45f};
     static constexpr float MAX_SPEED{256.0f};
     static constexpr float MAX_SPRINT_SPEED{512};
     static constexpr float STOP_SPEED{256.0f};
     static constexpr float MAX_CROUCHING_SPEED{64.0f};
     
-    PlayerAnimationState m_CurrentAnimation{PlayerAnimationState::idle};
+    PlayerAnimationState m_CurrentAnimation;
     PlayerState m_PlayerState{PlayerState::normal};
 
     int m_BombLeftAmount{4};

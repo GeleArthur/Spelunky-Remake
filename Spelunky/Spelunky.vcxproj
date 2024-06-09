@@ -177,6 +177,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="Bat.cpp" />
     <ClCompile Include="CameraSystem.cpp" />
     <ClCompile Include="Cave.cpp" />
+    <ClCompile Include="Damsel.cpp" />
     <ClCompile Include="EnemyEntity.cpp" />
     <ClCompile Include="EntityPickupRectCollider.cpp" />
     <ClCompile Include="Entity.cpp" />
@@ -204,6 +205,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="Bat.h" />
     <ClInclude Include="CameraSystem.h" />
     <ClInclude Include="Cave.h" />
+    <ClInclude Include="Damsel.h" />
     <ClInclude Include="EnemyEntity.h" />
     <ClInclude Include="EntityPickupRectCollider.h" />
     <ClInclude Include="Entity.h" />
@@ -218,6 +220,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="pch.h" />
     <ClInclude Include="PathTypes.h" />
     <ClInclude Include="PlayerObject.h" />
+    <ClInclude Include="PlayerState.h" />
     <ClInclude Include="RectPhysicsCollider.h" />
     <ClInclude Include="Rock.h" />
     <ClInclude Include="RoomTemplates.h" />

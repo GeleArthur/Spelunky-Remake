@@ -15,6 +15,7 @@ SpriteSheetManager::SpriteSheetManager(WorldManager* worldManager)
 	m_ItemsTexture = new Texture{"ITEMS/items.png"};
 	m_MonsterTexture = new Texture{"MONSTERS/monsters.png"};
 	m_MonsterTexture3 = new Texture{"MONSTERS/monsters3.png"};
+	m_MonsterBigTexture3 = new Texture{"MONSTERS/monstersbig3.png"};
 	m_HudElementTexture = new Texture{"ATSTART/hudelements.png"};
 	m_HudFont = TTF_OpenFont("Tekton-Bold.ttf", 28 );
 	m_SpaceText = new Texture{"Space", m_HudFont, {0,0,0}};
@@ -33,6 +34,7 @@ SpriteSheetManager::~SpriteSheetManager()
 	delete m_MonsterTexture3;
 	delete m_HudElementTexture;
 	delete m_SpaceText;
+	delete m_MonsterBigTexture3;
 	TTF_CloseFont(m_HudFont);
 }
 
@@ -68,6 +70,10 @@ const Texture* SpriteSheetManager::GetMonsterTexture() const
 const Texture* SpriteSheetManager::GetMonsterTexture3() const
 {
 	return m_MonsterTexture3;
+}
+const Texture* SpriteSheetManager::GetMonsterBigTexture3() const
+{
+	return m_MonsterBigTexture3;
 }
 const Texture* SpriteSheetManager::GetHudElementTexture() const
 {

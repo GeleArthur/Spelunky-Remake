@@ -22,6 +22,7 @@ public:
 	const Texture* GetItemsTexture() const;
 	const Texture* GetMonsterTexture() const; 
 	const Texture* GetMonsterTexture3() const; 
+	const Texture* GetMonsterBigTexture3() const; 
 	const Texture* GetHudElementTexture() const; 
 	const Texture* GetSpaceText() const; 
 
@@ -33,6 +34,7 @@ private:
 	Texture* m_ItemsTexture;
 	Texture* m_MonsterTexture;
 	Texture* m_MonsterTexture3;
+	Texture* m_MonsterBigTexture3;
 	Texture* m_HudElementTexture;
 	Texture* m_SpaceText;
 	TTF_Font* m_HudFont;

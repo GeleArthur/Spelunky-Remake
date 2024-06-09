@@ -16,7 +16,9 @@ public:
     
     virtual EntityType GetEntityType() const override;
     virtual void Draw() const override;
+    virtual void Update(float elapsedTime) override;
 
 private:
     const SpriteSheetManager* m_SpriteSheetManager;
+    float m_FrictionOnFloor{0.3f};
 };

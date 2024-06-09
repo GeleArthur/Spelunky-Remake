@@ -23,8 +23,23 @@
 #include "Tile.h"
 #include "WorldManager.h"
 
+enum class PlayerAnimationState
+{
+    idle,
+    walk,
+    crouching,
+    inAir,
+    hanging,
+    ladderClimbing,
+    wiping,
+    ragdoll,
+};
+
+
+
 PlayerObject::PlayerObject(WorldManager* worldManager):
     Entity(Rectf{0, 0, 40, 56}, 4, 60, 0.0f, worldManager),
+    m_CurrentAnimation(PlayerAnimationState::idle),
     m_SpriteSheetManager(worldManager->GetSpriteSheet()),
     m_InputManager(worldManager->GetInputManager()),
     m_WorldManager(worldManager)
@@ -228,13 +243,12 @@ void PlayerObject::Update(const float elapsedTimes)
     EntitiesWeHitCheck(m_PhysicsCollider.GetEntitiesWeHit());
     
     UpdateAnimationState(elapsedTimes);
-
+    
     if(m_PickupItem != nullptr)
     {
-        // m_PickupItem->SetTargetPosition(GetCenter() + Vector2f{m_IsLookingToLeft ? -20.0f : 20.0f, 10});
-        m_PickupItem->SetTargetPosition(GetCenter(), GetCenter() + Vector2f{m_IsLookingToLeft ? 20.0f : -20.0f, -10});
+        m_PickupItem->SetTargetPosition(GetCenter(), GetCenter() + Vector2f{m_IsLookingToLeft ? -m_PickupItem->GetRect().width/2.0f : m_PickupItem->GetRect().width/2.0f, -10});
     }
-
+    
     if(m_IsOnGround == true && m_PrevIsOnGround != m_IsOnGround)
     {
         
@@ -305,6 +319,7 @@ void PlayerObject::EntitiesWeHitCheck(const std::vector<std::pair<RayVsRectInfo,
     {
         switch (hitInfo[i].second->GetEntityType())
         {
+        case EntityType::damsel:
         case EntityType::rock:
             {
                 if(m_IsCrouching && m_InputManager->PressedActionThisFrame() && m_PickupItem == nullptr)
@@ -324,11 +339,8 @@ void PlayerObject::EntitiesWeHitCheck(const std::vector<std::pair<RayVsRectInfo,
 
         case EntityType::snake:
         case EntityType::bat:
-            
-            
         case EntityType::player:
         case EntityType::arrow:
-
         case EntityType::bomb:
             break;
         }
@@ -725,6 +737,10 @@ void PlayerObject::PlayerInteract()
             m_PlayerState = PlayerState::enteringLeaving;
         }
     }
+}
+void PlayerObject::HealPlayer()
+{
+    ++m_Health;
 }
 
 void PlayerObject::YouGotHit(const int damage, const Vector2f& force)

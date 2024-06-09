@@ -9,5 +9,7 @@ enum class EntityType
     bomb,
     
     snake,
-    bat
+    bat,
+
+    damsel
 };

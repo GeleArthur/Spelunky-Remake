@@ -107,14 +107,14 @@ This section gives a clear and detailed overview of which parts of the original 
 	- [x] Player invisible frames if gets hit.
 - [ ] UI
 	- [ ] Money counter
-	- [ ] Health, bombs, rope.
+	- [x] Health, bombs, rope.
 	- [ ] Death screen
 - [ ] Particles
 	- [ ] Blood particles when something gets hit.
 	- [ ] Explosion
-- [ ] Monsters:
+- [X] Monsters:
 	- [x] AI system thats used by all monsters.
-	- [ ] Damsel (Can be picked up and will run around if not picked up). 
+	- [X] Damsel (Can be picked up and will run around if not picked up). 
 	- [x] Snake (Moves left and right if found edge or wall)
 	- [x] Bat (When its above the player and close enough it will fly towards the player)
 	- [x] Some monsters damages the player if get hit.
