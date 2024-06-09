@@ -251,8 +251,11 @@ void PlayerObject::Update(const float elapsedTimes)
     
     if(m_IsOnGround == true && m_PrevIsOnGround != m_IsOnGround)
     {
+        if(m_PlayerState != PlayerState::ragdoll || m_PhysicsCollider.GetVelocity().y <= -25)
+        {
+            m_SoundManager->PlaySoundEffect(SoundEffectTypes::land);
+        }
         
-        m_SoundManager->PlaySoundEffect(SoundEffectTypes::land);
     }
     m_PrevIsOnGround = m_IsOnGround;
 }
