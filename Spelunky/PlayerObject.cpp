@@ -239,7 +239,7 @@ void PlayerObject::Update(const float elapsedTimes)
     
     if(m_PickupItem != nullptr)
     {
-        m_PickupItem->SetTargetPosition(GetCenter(), GetCenter() + Vector2f{m_IsLookingToLeft ? -m_PickupItem->GetRect().width/2.0f : m_PickupItem->GetRect().width/2.0f, 1});
+        m_PickupItem->SetTargetPosition(GetCenter(), GetCenter() + Vector2f{m_IsLookingToLeft ? -m_PickupItem->GetRect().width/2.0f : m_PickupItem->GetRect().width/2.0f, 0});
     }
     
     if(m_IsOnGround == true && m_PrevIsOnGround != m_IsOnGround)
