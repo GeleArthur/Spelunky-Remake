@@ -6,7 +6,7 @@
 #include <iomanip>
 #include "Vector2f.h"
 
-#include "../Spelunky/Vector2i.h"
+#include "../src/Vector2i.h"
 
 //-----------------------------------------------------------------
 // Vector2f Constructors

@@ -1,0 +1,103 @@
+cmake_minimum_required(VERSION 3.29)
+
+
+project(spelunky VERSION 1.0 LANGUAGES CXX C)
+add_subdirectory(Engine)
+
+
+
+add_executable(Spelunky 
+    src/Bat.h
+    src/Bat.cpp
+    src/Bomb.h
+    src/Bomb.cpp
+    src/CameraSystem.h
+    src/CameraSystem.cpp
+    src/Cave.h
+    src/Cave.cpp
+    src/Damsel.h
+    src/Damsel.cpp    
+    src/EnemyEntity.h
+    src/EnemyEntity.cpp
+    src/Entity.h
+    src/Entity.cpp
+    src/EntityManager.h
+    src/EntityManager.cpp
+    src/EntityPickupRectCollider.h
+    src/EntityPickupRectCollider.cpp
+    src/EntityTypes.h
+    src/Game.h
+    src/Game.cpp
+    src/GizmosDrawer.h
+    src/GizmosDrawer.cpp
+    src/HitType.h
+    src/InputManager.h
+    src/InputManager.cpp
+    src/magic_enum.hpp
+    src/main.cpp
+    src/Matrix.h
+    src/Matrix.cpp
+    src/PathTypes.h
+    src/pch.h
+    src/PlayerObject.h
+    src/PlayerObject.cpp
+    src/PlayerState.h
+    src/RectPhysicsCollider.h
+    src/RectPhysicsCollider.cpp
+    src/Rock.h
+    src/Rock.cpp
+    src/RoomTemplates.h
+    src/RoomTemplates.cpp
+    src/Snake.h
+    src/Snake.cpp
+    src/SoundEffectTypes.h
+    src/SoundManager.h
+    src/SoundManager.cpp
+    src/SpriteSheetManager.h
+    src/SpriteSheetManager.cpp
+    src/Tile.h
+    src/Tile.cpp
+    src/TileTypes.h
+    src/UIManager.h
+    src/UIManager.cpp
+    src/UIManager.cpp
+    src/Vector2i.h
+    src/Vector2i.cpp
+    src/WorldManager.h
+    src/WorldManager.cpp
+)
+
+target_compile_features(Spelunky PRIVATE cxx_std_17)
+
+target_link_libraries(Spelunky PUBLIC Engine)
+
+# This is ass
+add_custom_command(TARGET Spelunky POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                    "${PROJECT_SOURCE_DIR}/Libraries/SDLImage/SDL2_image-2.6.3/lib/x64/SDL2_image.dll"
+                    $<TARGET_FILE_DIR:Spelunky>
+)
+
+add_custom_command(TARGET Spelunky POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                    "${PROJECT_SOURCE_DIR}/Libraries/SDLMain/SDL2-2.26.3/lib/x64/SDL2.dll"
+                    $<TARGET_FILE_DIR:Spelunky>
+)
+
+add_custom_command(TARGET Spelunky POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                    "${PROJECT_SOURCE_DIR}/Libraries/SDLMixer/SDL2_mixer-2.6.3/lib/x64/SDL2_mixer.dll"
+                    $<TARGET_FILE_DIR:Spelunky>
+)
+
+add_custom_command(TARGET Spelunky POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                    "${PROJECT_SOURCE_DIR}/Libraries/SDLTtf/SDL2_ttf-2.20.2/lib/x64/SDL2_ttf.dll"
+                    $<TARGET_FILE_DIR:Spelunky>
+)
+
+add_custom_command(TARGET Spelunky POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy_directory
+                    "${PROJECT_SOURCE_DIR}/Resources"
+                    $<TARGET_FILE_DIR:Spelunky>
+)

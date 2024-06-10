@@ -79,8 +79,8 @@ void Game::Update(const float elapsedSec)
         m_CameraSystem->EnableDebugCamera(true);
     }
     
-    // GizmosDrawer::SetColor({0, 1.0f, 0});
-    // GizmosDrawer::DrawQText(-m_CameraSystem->GetCameraPosition(), std::to_string((1 / m_PrevDeltaTime)));
+    GizmosDrawer::SetColor({0, 1.0f, 0});
+    GizmosDrawer::DrawQText(-m_CameraSystem->GetCameraPosition(), std::to_string((1 / m_PrevDeltaTime)));
 
     
     

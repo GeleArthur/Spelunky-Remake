@@ -7,7 +7,7 @@ SpriteSheetManager::SpriteSheetManager(WorldManager* worldManager)
 {
 	// 512x512 for each tile stack
 	// 64x64 for each tile
-	m_LevelTexture = new Texture{"ALLTILES/alltiles.png"};
+	m_LevelTexture = new Texture{"ALLTILES\\alltiles.png"};
 	m_CurrentPlayerTexture = new Texture{"PLAYERS/char_orange.png"};
 	m_BackGroundTexture = new Texture{"MINE/minebg.jpg"};
 	m_ExitDoorsTexture = new Texture{"ANYLEVEL/TU_exitdoors.png"};
