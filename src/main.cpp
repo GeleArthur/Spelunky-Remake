@@ -2,9 +2,11 @@
 #include <ctime>
 #include "Game.h"
 
-
 void StartHeapControl();
 void DumpMemoryLeaks();
+
+#pragma comment (lib,"opengl32.lib")
+#pragma comment (lib,"Glu32.lib")
 
 int SDL_main(int argv, char** args)
 {

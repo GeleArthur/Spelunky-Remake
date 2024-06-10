@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.29)
 
-include(../Libraries/SDLMain/SDL2-2.26.3/cmake/sdl2-config.cmake)
-include(../Libraries/SDLImage/SDL2_image-2.6.3/cmake/sdl2_image-config.cmake)
-include(../Libraries/SDLTtf/SDL2_ttf-2.20.2/cmake/sdl2_ttf-config.cmake)
-include(../Libraries/SDLMixer/SDL2_mixer-2.6.3/cmake/sdl2_mixer-config.cmake)
+include("$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
 
 add_library(Engine STATIC 
     base.h
@@ -28,7 +25,16 @@ add_library(Engine STATIC
     Vector2f.cpp
 )
 
-target_link_libraries(Engine PUBLIC SDL2::SDL2 SDL2::SDL2main SDL2_image::SDL2_image SDL2_ttf::SDL2_ttf SDL2_mixer::SDL2_mixer)
-target_include_directories(Engine PUBLIC .)
+find_package(SDL2 CONFIG REQUIRED)
+find_package(SDL2_image CONFIG REQUIRED)
+find_package(SDL2_mixer CONFIG REQUIRED)
+find_package(SDL2_ttf CONFIG REQUIRED)
+find_package(OpenGL REQUIRED COMPONENTS OpenGL)
+
+target_link_libraries(Engine PUBLIC $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main> $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>)
+target_link_libraries(Engine PUBLIC $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>)
+target_link_libraries(Engine PUBLIC $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>)
+target_link_libraries(Engine PUBLIC $<IF:$<TARGET_EXISTS:SDL2_mixer::SDL2_mixer>,SDL2_mixer::SDL2_mixer,SDL2_mixer::SDL2_mixer-static>)
+target_link_libraries(Engine PUBLIC ${OPENGL_LIBRARIES})
 
 target_compile_features(Engine PRIVATE cxx_std_17)

@@ -1,10 +1,7 @@
-cmake_minimum_required(VERSION 3.29)
+cmake_minimum_required(VERSION 3.21)
+project(spelunky)
 
-
-project(spelunky VERSION 1.0 LANGUAGES CXX C)
 add_subdirectory(Engine)
-
-
 
 add_executable(Spelunky 
     src/Bat.h
@@ -68,33 +65,8 @@ add_executable(Spelunky
 )
 
 target_compile_features(Spelunky PRIVATE cxx_std_17)
-
-target_link_libraries(Spelunky PUBLIC Engine)
-
-# This is ass
-add_custom_command(TARGET Spelunky POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                    "${PROJECT_SOURCE_DIR}/Libraries/SDLImage/SDL2_image-2.6.3/lib/x64/SDL2_image.dll"
-                    $<TARGET_FILE_DIR:Spelunky>
-)
-
-add_custom_command(TARGET Spelunky POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                    "${PROJECT_SOURCE_DIR}/Libraries/SDLMain/SDL2-2.26.3/lib/x64/SDL2.dll"
-                    $<TARGET_FILE_DIR:Spelunky>
-)
-
-add_custom_command(TARGET Spelunky POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                    "${PROJECT_SOURCE_DIR}/Libraries/SDLMixer/SDL2_mixer-2.6.3/lib/x64/SDL2_mixer.dll"
-                    $<TARGET_FILE_DIR:Spelunky>
-)
-
-add_custom_command(TARGET Spelunky POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                    "${PROJECT_SOURCE_DIR}/Libraries/SDLTtf/SDL2_ttf-2.20.2/lib/x64/SDL2_ttf.dll"
-                    $<TARGET_FILE_DIR:Spelunky>
-)
+target_link_libraries(Spelunky PRIVATE Engine)
+target_include_directories(Spelunky PRIVATE Engine)
 
 add_custom_command(TARGET Spelunky POST_BUILD
                     COMMAND ${CMAKE_COMMAND} -E copy_directory
