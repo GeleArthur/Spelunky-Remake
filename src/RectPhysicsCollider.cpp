@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+﻿
 #include "RectPhysicsCollider.h"
 
 #include <algorithm>
@@ -8,7 +8,6 @@
 #include "Entity.h"
 #include "Game.h"
 #include "GizmosDrawer.h"
-#include "utils.h"
 #include "WorldManager.h"
 
 std::vector<std::pair<const Tile*, RayVsRectInfo>> RectPhysicsCollider::m_HitsCache{};

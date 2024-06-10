@@ -1,4 +1,4 @@
-#include "pch.h"
+
 #include "SpriteSheetManager.h"
 #include "Texture.h"
 #include "WorldManager.h"

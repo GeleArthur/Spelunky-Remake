@@ -1,4 +1,4 @@
-#include "pch.h"
+
 #include "Damsel.h"
 
 #include "Cave.h"

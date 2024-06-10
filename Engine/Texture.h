@@ -1,5 +1,9 @@
 #pragma once
-#include "base.h"
+#include <SDL_ttf.h>
+#include <SDL.h>
+#include <SDL_opengl.h>
+
+#include "structs.h"
 #include "Vector2f.h"
 
 class Texture final

@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <vector>
 #include "SDL_ttf.h"
+#include "structs.h"
 
 struct DrawHolder;
 

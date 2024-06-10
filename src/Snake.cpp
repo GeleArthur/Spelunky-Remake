@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+﻿
 #include "Snake.h"
 
 #include "Cave.h"

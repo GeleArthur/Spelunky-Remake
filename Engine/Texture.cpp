@@ -1,8 +1,10 @@
-#include "base.h"
 #include <iostream>
 #include <string>
 #include "Texture.h"
 
+#include <SDL_image.h>
+
+#include "structs.h"
 #include "Vector2f.h"
 
 

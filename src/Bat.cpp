@@ -1,4 +1,4 @@
-#include "pch.h"
+
 #include "Bat.h"
 
 #include "Cave.h"

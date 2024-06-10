@@ -1,5 +1,8 @@
-﻿#include "pch.h"
+﻿
 #include "InputManager.h"
+
+#include <SDL_keyboard.h>
+#include <SDL_stdinc.h>
 
 #include "WorldManager.h"
 

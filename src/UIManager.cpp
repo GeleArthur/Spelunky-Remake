@@ -1,4 +1,4 @@
-#include "pch.h"
+
 #include "UIManager.h"
 
 #include "Texture.h"

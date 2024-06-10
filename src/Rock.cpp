@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+﻿
 #include "Rock.h"
 
 #include "GizmosDrawer.h"

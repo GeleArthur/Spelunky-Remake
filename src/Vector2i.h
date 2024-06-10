@@ -1,6 +1,8 @@
 #pragma once
 #include <ostream>
 
+#include "Vector2f.h"
+
 struct Vector2i final
 {
 	// -------------------------

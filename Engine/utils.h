@@ -1,13 +1,9 @@
 #pragma once
 #include <vector>
-#include "Vector2f.h"
+#include "structs.h"
 
 namespace utils
 {
-	const float g_Pi{ 3.1415926535f };
-
-#pragma region OpenGLDrawFunctionality
-
 	void SetColor( const Color4f& color );
 	
 	void DrawPoint( float x, float y, float pointSize = 1.0f );
@@ -47,9 +43,7 @@ namespace utils
 	void DrawPolygon( const Vector2f* pVertices, size_t nrVertices, bool closed = true, float lineWidth = 1.0f );
 	void FillPolygon( const std::vector<Vector2f>& vertices);
 	void FillPolygon( const Vector2f* pVertices, size_t nrVertices);
-#pragma endregion OpenGLDrawFunctionality
 
-#pragma region CollisionFunctionality
 	struct HitInfo
 	{
 		float lambda;
@@ -81,7 +75,6 @@ namespace utils
 	bool IsPointOnLineSegment(const Vector2f& p, const Vector2f& a, const Vector2f& b);
 	bool IntersectRectLine(const Rectf& r, const Vector2f& p1, const Vector2f& p2, float& intersectMin, float& intersectMax);
 
-#pragma endregion CollisionFunctionality
 
 	int Random(int start, int stop);
 	float Random(float start = 0, float stop = 1);

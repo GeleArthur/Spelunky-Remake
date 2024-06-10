@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include <vector>
 
+#include "structs.h"
+#include "Vector2f.h"
+
 class WorldManager;
 class Entity;
 class Tile;
