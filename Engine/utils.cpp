@@ -1,16 +1,18 @@
-#include "base.h"
-//#define _USE_MATH_DEFINES
+#include <SDL.h>
+#include <SDL_opengl.h>
+#define _USE_MATH_DEFINES
 #include <cmath>
 #include <algorithm>
 #include <iostream>
 #include "utils.h"
 
 
+
 #pragma region OpenGLDrawFunctionality
 void utils::SetColor( const Color4f& color )
 {
 	glColor4f( color.r, color.g, color.b, color.a );
-}
+};
 
 void utils::DrawPoint( float x, float y, float pointSize )
 {
@@ -137,12 +139,12 @@ void utils::DrawEllipse( float centerX, float centerY, float radX, float radY, f
 	if (radX > 0 && radY > 0 && lineWidth > 0)
 	{
 
-		float dAngle{ radX > radY ? float(g_Pi / radX) : float(g_Pi / radY) };
+		float dAngle{ radX > radY ? float(M_PI / radX) : float(M_PI / radY) };
 
 		glLineWidth(lineWidth);
 		glBegin(GL_LINE_LOOP);
 		{
-			for (float angle = 0.0; angle < float(2 * g_Pi); angle += dAngle)
+			for (float angle = 0.0; angle < float(2 * M_PI); angle += dAngle)
 			{
 				glVertex2f(centerX + radX * cos(angle), centerY + radY * sin(angle));
 			}
@@ -166,11 +168,11 @@ void utils::FillEllipse( float centerX, float centerY, float radX, float radY )
 	if (radX > 0 && radY > 0)
 	{
 
-		float dAngle{ radX > radY ? float(g_Pi / radX) : float(g_Pi / radY) };
+		float dAngle{ radX > radY ? float(M_PI / radX) : float(M_PI / radY) };
 
 		glBegin(GL_POLYGON);
 		{
-			for (float angle = 0.0; angle < float(2 * g_Pi); angle += dAngle)
+			for (float angle = 0.0; angle < float(2 * M_PI); angle += dAngle)
 			{
 				glVertex2f(centerX + radX * cos(angle), centerY + radY * sin(angle));
 			}
@@ -196,7 +198,7 @@ void utils::DrawArc( float centerX, float centerY, float radX, float radY, float
 		return;
 	}
 
-	float dAngle{ radX > radY ? float( g_Pi / radX ) : float( g_Pi / radY ) };
+	float dAngle{ radX > radY ? float( M_PI / radX ) : float( M_PI / radY ) };
 
 	glLineWidth( lineWidth );
 	glBegin( GL_LINE_STRIP );
@@ -222,7 +224,7 @@ void utils::FillArc( float centerX, float centerY, float radX, float radY, float
 	{
 		return;
 	}
-	float dAngle{ radX > radY ? float( g_Pi / radX ) : float( g_Pi / radY ) };
+	float dAngle{ radX > radY ? float( M_PI / radX ) : float( M_PI / radY ) };
 
 	glBegin( GL_POLYGON );
 	{
@@ -617,7 +619,7 @@ bool  utils::IsPointOnLineSegment( const Vector2f& p, const Vector2f& a, const V
 	}
 
 	return true;
-}
+};
 
 float  utils::DistPointLineSegment( const Vector2f& p, const Vector2f& a, const Vector2f& b )
 {
@@ -643,7 +645,7 @@ float  utils::DistPointLineSegment( const Vector2f& p, const Vector2f& a, const 
 	// Closest point is between A and B, calc intersection point
 	Vector2f intersection{ abNorm.DotProduct(ap) * abNorm + Vector2f{ a } };
 	return Vector2f{ p - intersection }.Length( );
-}
+};
 
 bool utils::IntersectRectLine(const Rectf& r, const Vector2f& p1, const Vector2f& p2, float& intersectMin, float& intersectMax)
 {
@@ -682,7 +684,7 @@ bool utils::IntersectRectLine(const Rectf& r, const Vector2f& p1, const Vector2f
 	intersectMin = tMin;
 	intersectMax = tMax;
 	return true;
-}
+};
 
 int utils::Random(const int start, const int stop)
 {

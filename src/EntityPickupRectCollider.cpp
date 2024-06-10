@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+﻿
 #include "EntityPickupRectCollider.h"
 
 #include "GizmosDrawer.h"

@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+﻿
 #include "Entity.h"
 
 #include "SoundManager.h"

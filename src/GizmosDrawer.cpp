@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+﻿
 #include "GizmosDrawer.h"
 
 #include "Game.h"
@@ -37,7 +37,7 @@ struct DrawCircleHolder final : public DrawHolder
     float size;
     virtual void Draw() override
     {
-        utils::DrawEllipse(pos, size, size);
+        // utils::DrawEllipse(pos, size, size);
     }
     
 };
@@ -54,7 +54,7 @@ struct DrawRectHolder final : public DrawHolder
 
     virtual void Draw() override
     {
-        utils::DrawRect(rect);
+        // utils::DrawRect(rect);
     }
 };
 
@@ -69,7 +69,7 @@ struct DrawLineHolder final : public DrawHolder
     Vector2f endPos;
     virtual void Draw() override
     {
-        utils::DrawLine(startPos, endPos);
+        // utils::DrawLine(startPos, endPos);
     }
 };
 
@@ -101,7 +101,7 @@ void GizmosDrawer::Draw()
 {
     for (int i{}; i < static_cast<int>(m_Drawings.size()); ++i)
     {
-        utils::SetColor(m_Drawings[i]->color);
+        // utils::SetColor(m_Drawings[i]->color);
         m_Drawings[i]->Draw();
     }
     

@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+﻿
 #include "PlayerObject.h"
 
 #include <complex>

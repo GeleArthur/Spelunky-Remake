@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+﻿
 #include "WorldManager.h"
 #include <cassert>
 

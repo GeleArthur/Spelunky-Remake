@@ -35,7 +35,6 @@ add_executable(Spelunky
     src/Matrix.h
     src/Matrix.cpp
     src/PathTypes.h
-    src/pch.h
     src/PlayerObject.h
     src/PlayerObject.cpp
     src/PlayerState.h

@@ -1,5 +1,3 @@
-#include "base.h"
-#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include "SVGParser.h"

@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include <vector>
 #include "PathTypes.h"
+#include <string>
 
 //TODO: Move to CAVE
 class RoomTemplates final

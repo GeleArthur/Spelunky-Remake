@@ -1,4 +1,4 @@
-#include "pch.h"
+
 #include "Game.h"
 
 #include <assert.h>
