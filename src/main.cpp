@@ -2,11 +2,14 @@
 #include <ctime>
 #include "Game.h"
 
-void StartHeapControl();
-void DumpMemoryLeaks();
+#ifdef __EMSCRIPTEN__
+#include <emscripten/html5.h>
+#endif
 
 #pragma comment (lib,"opengl32.lib")
 #pragma comment (lib,"Glu32.lib")
+
+void StartHeapControl();
 
 int SDL_main(int argv, char** args)
 {
@@ -14,17 +17,33 @@ int SDL_main(int argv, char** args)
 	
 	StartHeapControl();
 
-	Game* pGame{ new Game{ Window{ "Spelunky - van den Barselaar, Arthur - 1DAE16", 1280.f , 720.f, false } } };
-	pGame->Run();
-	delete pGame;
+	Game game{ Game{ Window{ "Spelunky - van den Barselaar, Arthur - 1DAE16", 1280.f , 720.f, false } } };
+	game.Run();
+
+	#ifdef __EMSCRIPTEN__
+		emscripten_set_main_loop_arg(
+			[](void *userData) {
+				Game& app = *reinterpret_cast<Game*>(userData);
+				app.MainLoop();
+			},
+			(void*)&game,
+			0, true
+		);
+	#else
+		while (game.IsRunning()) { game.MainLoop(); }
+	#endif
 
 	return 0;
+}
+
+int main(){
+	return SDL_main(0, nullptr);
 }
 
 
 void StartHeapControl()
 {
-#if defined(DEBUG) | defined(_DEBUG)
+#if defined(DEBUG)
 	// Notify user if heap is corrupt
 	HeapSetInformation(NULL, HeapEnableTerminationOnCorruption, NULL, 0);
 
@@ -36,11 +55,3 @@ void StartHeapControl()
 #endif
 }
 
-// !!!!!!!! DONT THIS IS BAD AND REPORTS FALSE POSITIVES
-// void DumpMemoryLeaks()
-// {
-// 	
-// #if defined(DEBUG) | defined(_DEBUG)
-// 	_CrtDumpMemoryLeaks();
-// #endif
-// }

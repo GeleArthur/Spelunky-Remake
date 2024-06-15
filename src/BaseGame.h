@@ -1,7 +1,7 @@
 #pragma once
 #include "structs.h"
 #include "SDL.h"
-// https://BaseGameprogrammingpatterns.com/subclass-sandbox.html
+#include <chrono>
 
 
 class BaseGame
@@ -14,7 +14,9 @@ public:
 	BaseGame& operator=(BaseGame&& other) = delete;
 	virtual ~BaseGame( );
 
-	void Run( );
+	void Run();
+	void MainLoop();
+	bool IsRunning();
 
 	virtual void Update(float elapsedSec)
 	{
@@ -28,11 +30,9 @@ public:
 	// Event handling
 	virtual void ProcessKeyDownEvent(const SDL_KeyboardEvent& e)
 	{
-		
 	}
 	virtual void ProcessKeyUpEvent(const SDL_KeyboardEvent& e)
 	{
-		
 	}
 	virtual void ProcessMouseMotionEvent(const SDL_MouseMotionEvent& e)
 	{
@@ -70,6 +70,10 @@ private:
 	bool m_Initialized;
 	// Prevent timing jumps when debugging
 	const float m_MaxElapsedSeconds;
+
+	std::chrono::steady_clock::time_point t1;
+	bool quit{false};
+
 	
 	// FUNCTIONS
 	void InitializeGameEngine( );

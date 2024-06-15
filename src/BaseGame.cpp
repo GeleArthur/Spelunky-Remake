@@ -6,8 +6,9 @@
 
 #include <iostream>
 #include <algorithm>
-#include <chrono>
 #include "BaseGame.h"
+
+
 
 BaseGame::BaseGame(const Window& window)
 	: m_Window{ window }
@@ -139,69 +140,60 @@ void BaseGame::Run()
 		return;
 	}
 
-	// Main loop flag
-	bool quit{ false };
 
-	// Set start time
-	std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
+	t1 = std::chrono::steady_clock::now();
+}
 
-	//The event loop
+void BaseGame::MainLoop()
+{
 	SDL_Event e{};
-	while (!quit)
+
+	// Poll next event from queue
+	while (SDL_PollEvent(&e) != 0)
 	{
-		// Poll next event from queue
-		while (SDL_PollEvent(&e) != 0)
+		// Handle the polled event
+		switch (e.type)
 		{
-			// Handle the polled event
-			switch (e.type)
-			{
-			case SDL_QUIT:
-				quit = true;
-				break;
-			case SDL_KEYDOWN:
-				this->ProcessKeyDownEvent(e.key);
-				break;
-			case SDL_KEYUP:
-				this->ProcessKeyUpEvent(e.key);
-				break;
-			case SDL_MOUSEMOTION:
-				this->ProcessMouseMotionEvent(e.motion);
-				break;
-			case SDL_MOUSEWHEEL:
-				this->ProcessWheelEvent(e.wheel);
-			case SDL_MOUSEBUTTONDOWN:
-				this->ProcessMouseDownEvent(e.button);
-				break;
-			case SDL_MOUSEBUTTONUP:
-				this->ProcessMouseUpEvent(e.button);
-				break;
-			}
-		}
-
-		if (!quit)
-		{
-			// Get current time
-			std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
-
-			// Calculate elapsed time
-			float elapsedSeconds = std::chrono::duration<float>(t2 - t1).count();
-
-			// Update current time
-			t1 = t2;
-
-			// Prevent jumps in time caused by break points
-			elapsedSeconds = std::min(elapsedSeconds, m_MaxElapsedSeconds);
-
-			// Call the BaseGame object 's Update function, using time in seconds (!)
-			this->Update(elapsedSeconds);
-
-			// Draw in the back buffer
-			this->Draw();
-
-			// Update screen: swap back and front buffer
-			SDL_GL_SwapWindow(m_pWindow);
+		case SDL_QUIT:
+			quit = true;
+			break;
+		case SDL_KEYDOWN:
+			this->ProcessKeyDownEvent(e.key);
+			break;
+		case SDL_KEYUP:
+			this->ProcessKeyUpEvent(e.key);
+			break;
+		case SDL_MOUSEMOTION:
+			this->ProcessMouseMotionEvent(e.motion);
+			break;
+		case SDL_MOUSEWHEEL:
+			this->ProcessWheelEvent(e.wheel);
+		case SDL_MOUSEBUTTONDOWN:
+			this->ProcessMouseDownEvent(e.button);
+			break;
+		case SDL_MOUSEBUTTONUP:
+			this->ProcessMouseUpEvent(e.button);
+			break;
 		}
 	}
+
+	if (!quit)
+	{
+		std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
+		float elapsedSeconds = std::chrono::duration<float>(t2 - t1).count();
+
+		t1 = t2;
+		elapsedSeconds = std::min(elapsedSeconds, m_MaxElapsedSeconds);
+
+		this->Update(elapsedSeconds);
+		this->Draw();
+
+		SDL_GL_SwapWindow(m_pWindow);
+	}
+}
+bool BaseGame::IsRunning()
+{
+	return !quit;
 }
 
 void BaseGame::CleanupGameEngine()

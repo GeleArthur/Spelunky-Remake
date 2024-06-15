@@ -1,9 +1,31 @@
 cmake_minimum_required(VERSION 3.21)
 project(spelunky)
 
-add_subdirectory(Engine)
+include("$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
 
 add_executable(Spelunky 
+    src/BaseGame.cpp
+    src/BaseGame.h
+    src/Matrix2x3.cpp
+    src/Matrix2x3.h
+    src/SoundEffect.cpp
+    src/SoundEffect.h
+    src/SoundStream.cpp
+    src/SoundStream.h
+    src/structs.cpp
+    src/structs.h
+    src/SVGParser.cpp
+    src/SVGParser.h
+    src/Texture.cpp
+    src/Texture.h
+    src/Transform.h
+    src/utils.h
+    src/utils.cpp
+    src/Vector2f.h
+    src/Vector2f.cpp
+
+
+
     src/Bat.h
     src/Bat.cpp
     src/Bomb.h
@@ -63,9 +85,33 @@ add_executable(Spelunky
     src/WorldManager.cpp
 )
 
+find_package(SDL2 CONFIG REQUIRED)
+find_package(SDL2_image CONFIG REQUIRED)
+find_package(SDL2_mixer CONFIG REQUIRED)
+find_package(SDL2_ttf CONFIG REQUIRED)
+find_package(OpenGL REQUIRED COMPONENTS OpenGL)
+
+target_link_libraries(Spelunky PUBLIC $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main> $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>)
+target_link_libraries(Spelunky PUBLIC $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>)
+target_link_libraries(Spelunky PUBLIC $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>)
+target_link_libraries(Spelunky PUBLIC $<IF:$<TARGET_EXISTS:SDL2_mixer::SDL2_mixer>,SDL2_mixer::SDL2_mixer,SDL2_mixer::SDL2_mixer-static>)
+target_link_libraries(Spelunky PUBLIC ${OPENGL_LIBRARIES})
+
+
+if(EMSCRIPTEN)
+    set_target_properties(Spelunky PROPERTIES SUFFIX ".html")
+
+    target_compile_options(Spelunky PRIVATE -sUSE_SDL=2 -sLEGACY_GL_EMULATION )
+    target_link_options(Spelunky PRIVATE 
+    --preload-file "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
+    # -sALLOW_MEMORY_GROWTH
+    # -sASYNCIFY
+    -sUSE_SDL=2 -sLEGACY_GL_EMULATION 
+    )
+endif()
+
+
 target_compile_features(Spelunky PRIVATE cxx_std_17)
-target_link_libraries(Spelunky PRIVATE Engine)
-target_include_directories(Spelunky PRIVATE Engine)
 
 add_custom_command(TARGET Spelunky POST_BUILD
                     COMMAND ${CMAKE_COMMAND} -E copy_directory

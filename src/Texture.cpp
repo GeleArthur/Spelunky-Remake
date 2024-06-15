@@ -2,6 +2,8 @@
 #include <string>
 #include "Texture.h"
 
+#include <SDL.h>
+#include <SDL_opengl.h>
 #include <SDL_image.h>
 
 #include "structs.h"
@@ -72,7 +74,7 @@ void Texture::CreateFromImage( const std::string& path )
 	SDL_Surface* pLoadedSurface = IMG_Load(path.c_str());
 	if (pLoadedSurface == nullptr)
 	{
-		std::cerr << "Texture::CreateFromImage, error when calling IMG_Load: " << SDL_GetError() << std::endl;
+		std::cerr << "Texture::CreateFromImage, error when calling IMG_Load: " << SDL_GetError() << path << std::endl;
 		m_CreationOk = false;
 		return;
 	}
