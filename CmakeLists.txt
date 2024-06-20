@@ -101,12 +101,12 @@ target_link_libraries(Spelunky PUBLIC ${OPENGL_LIBRARIES})
 if(EMSCRIPTEN)
     set_target_properties(Spelunky PROPERTIES SUFFIX ".html")
 
-    target_compile_options(Spelunky PRIVATE -sUSE_SDL=2 -sLEGACY_GL_EMULATION )
+    target_compile_options(Spelunky PRIVATE -sUSE_SDL=2 -sLEGACY_GL_EMULATION -sGL_UNSAFE_OPTS=0 )
     target_link_options(Spelunky PRIVATE 
     --preload-file "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
     # -sALLOW_MEMORY_GROWTH
     # -sASYNCIFY
-    -sUSE_SDL=2 -sLEGACY_GL_EMULATION 
+    -sUSE_SDL=2 -sLEGACY_GL_EMULATION -sGL_UNSAFE_OPTS=0
     )
 endif()
 
