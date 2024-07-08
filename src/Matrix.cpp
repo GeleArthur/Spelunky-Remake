@@ -31,7 +31,8 @@ void Matrix4X4::GlMultiMatrix() const
 {
 	GLfloat glArray[16]{};
 	OpenGlArray(glArray);
-	glMultMatrixf(glArray);
+	//TODO: Make global matrix
+	// glMultMatrixf(glArray);
 }
 
 Matrix4X4 Matrix4X4::IdentityMatrix()

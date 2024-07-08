@@ -1,5 +1,5 @@
 #include <SDL.h>
-#include <SDL_opengl.h>
+#include <glad/glad.h>
 #include <SDL_ttf.h> 
 #include <SDL_mixer.h> 
 #include <SDL_image.h>
@@ -8,6 +8,15 @@
 #include <algorithm>
 #include "BaseGame.h"
 
+#if defined(_WIN32)
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN 1
+#endif
+#ifndef NOMINMAX   /* don't define min() and max(). */
+#define NOMINMAX
+#endif
+#include <windows.h>
+#endif
 
 
 BaseGame::BaseGame(const Window& window)
@@ -42,9 +51,9 @@ void BaseGame::InitializeGameEngine()
 		return;
 	}
 
-	// Use OpenGL 2.1
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
 
 	// Create window
 	m_pWindow = SDL_CreateWindow(

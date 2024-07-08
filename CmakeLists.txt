@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.21)
 project(spelunky)
 
-include("$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
+if(NOT EMSCRIPTEN)
+    include("$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
+endif()
 
-add_executable(Spelunky 
+add_executable(${PROJECT_NAME} 
     src/BaseGame.cpp
     src/BaseGame.h
     src/Matrix2x3.cpp
@@ -23,7 +25,6 @@ add_executable(Spelunky
     src/utils.cpp
     src/Vector2f.h
     src/Vector2f.cpp
-
 
 
     src/Bat.h
@@ -84,37 +85,48 @@ add_executable(Spelunky
     src/WorldManager.h
     src/WorldManager.cpp
 )
-
-find_package(SDL2 CONFIG REQUIRED)
-find_package(SDL2_image CONFIG REQUIRED)
-find_package(SDL2_mixer CONFIG REQUIRED)
-find_package(SDL2_ttf CONFIG REQUIRED)
-find_package(OpenGL REQUIRED COMPONENTS OpenGL)
-
-target_link_libraries(Spelunky PUBLIC $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main> $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>)
-target_link_libraries(Spelunky PUBLIC $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>)
-target_link_libraries(Spelunky PUBLIC $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>)
-target_link_libraries(Spelunky PUBLIC $<IF:$<TARGET_EXISTS:SDL2_mixer::SDL2_mixer>,SDL2_mixer::SDL2_mixer,SDL2_mixer::SDL2_mixer-static>)
-target_link_libraries(Spelunky PUBLIC ${OPENGL_LIBRARIES})
-
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 if(EMSCRIPTEN)
-    set_target_properties(Spelunky PROPERTIES SUFFIX ".html")
+    set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".html")
 
-    target_compile_options(Spelunky PRIVATE -sUSE_SDL=2 -sLEGACY_GL_EMULATION -sGL_UNSAFE_OPTS=0 )
-    target_link_options(Spelunky PRIVATE 
-    --preload-file "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
-    # -sALLOW_MEMORY_GROWTH
-    # -sASYNCIFY
-    -sUSE_SDL=2 -sLEGACY_GL_EMULATION -sGL_UNSAFE_OPTS=0
+    set(EmscriptenSettings 
+        -sUSE_SDL=2 
+        -sUSE_SDL_IMAGE=2 
+        --preload-file=../Resources/ 
+        -sSDL2_IMAGE_FORMATS=[\"png\"]
+    )
+
+    target_compile_options(${PROJECT_NAME} PRIVATE 
+        ${EmscriptenSettings}
+    )
+    target_link_options(${PROJECT_NAME} PRIVATE 
+        ${EmscriptenSettings}
+
+        -sFULL_ES3 
+        -sMIN_WEBGL_VERSION=2 
+        -sMAX_WEBGL_VERSION=2
+        # -sALLOW_MEMORY_GROWTH
+        # -sASYNCIFY
+    )
+else()
+    find_package(SDL2 CONFIG REQUIRED)
+    find_package(SDL2_image CONFIG REQUIRED)
+    find_package(SDL2_mixer CONFIG REQUIRED)
+    find_package(SDL2_ttf CONFIG REQUIRED)
+    find_package(glad CONFIG REQUIRED)
+    find_package(OpenGL REQUIRED)
+
+    target_link_libraries(${PROJECT_NAME} PUBLIC $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main> $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>)
+    target_link_libraries(${PROJECT_NAME} PUBLIC $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>)
+    target_link_libraries(${PROJECT_NAME} PUBLIC $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>)
+    target_link_libraries(${PROJECT_NAME} PUBLIC $<IF:$<TARGET_EXISTS:SDL2_mixer::SDL2_mixer>,SDL2_mixer::SDL2_mixer,SDL2_mixer::SDL2_mixer-static>)
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${OPENGL_LIBRARIES})
+    target_link_libraries(${PROJECT_NAME} PRIVATE glad::glad)
+
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E create_symlink
+                    "${PROJECT_SOURCE_DIR}/Resources"
+                    "$<TARGET_FILE_DIR:${PROJECT_NAME}>/Resources"
     )
 endif()
-
-
-target_compile_features(Spelunky PRIVATE cxx_std_17)
-
-add_custom_command(TARGET Spelunky POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E copy_directory
-                    "${PROJECT_SOURCE_DIR}/Resources"
-                    $<TARGET_FILE_DIR:Spelunky>
-)

@@ -1,7 +1,8 @@
 #pragma once
 #include <SDL_ttf.h>
 #include <SDL.h>
-#include <SDL_opengl.h>
+
+#include <glad/glad.h>
 
 #include "structs.h"
 #include "Vector2f.h"

@@ -3,11 +3,8 @@
 #include "Game.h"
 
 #ifdef __EMSCRIPTEN__
-#include <emscripten/html5.h>
+#include <emscripten.h>
 #endif
-
-// #pragma comment (lib,"opengl32.lib")
-// #pragma comment (lib,"Glu32.lib")
 
 void StartHeapControl();
 
