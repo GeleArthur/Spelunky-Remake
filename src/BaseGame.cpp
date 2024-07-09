@@ -77,6 +77,10 @@ void BaseGame::InitializeGameEngine()
 		return;
 	}
 
+    #ifndef __EMSCRIPTEN__
+    gladLoadGLES2Loader(SDL_GL_GetProcAddress); // 100% no documentation for this
+    #endif
+
 	// Set the swap interval for the current OpenGL context,
 	// synchronize it with the vertical retrace
 	if (m_Window.isVSyncOn)
@@ -93,19 +97,20 @@ void BaseGame::InitializeGameEngine()
 	}
 
 	// Set the Projection matrix to the identity matrix
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
+//	glMatrixMode(GL_PROJECTION);
+//	glLoadIdentity();
 
+    RendererHelper::SetProjectionMatrix(0, m_Window.width, m_Window.height, 0, -1, 1);
 	// Set up a two-dimensional orthographic viewing region.
-	glOrtho(0, m_Window.width, m_Window.height, 0, -1, 1); // y from bottom to top
+//	glOrtho(0, m_Window.width, m_Window.height, 0, -1, 1); // y from bottom to top
 
 	// Set the viewport to the client window area
 	// The viewport is the rectangular region of the window where the image is drawn.
 	glViewport(0, 0, int(m_Window.width), int(m_Window.height));
 
 	// Set the Modelview matrix to the identity matrix
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+//	glMatrixMode(GL_MODELVIEW);
+//	glLoadIdentity();
 
 	// Enable color blending and use alpha blending
 	glEnable(GL_BLEND);

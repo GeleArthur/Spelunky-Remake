@@ -27,8 +27,10 @@ EntityType Bomb::GetEntityType() const
 void Bomb::Draw() const
 {
     if(IsDead()) return;
-    glPushMatrix();
-    glTranslatef(GetCenter().x, GetCenter().y, 0);
+    RendererHelper::PushMatrix();
+//    glPushMatrix();
+//    glTranslatef(GetCenter().x, GetCenter().y, 0);
+    RendererHelper::TranslateMatrix(GetCenter());
 
     int bombImage;
     const float invertTimer = TIMER_START - m_Timer;
@@ -48,7 +50,8 @@ void Bomb::Draw() const
         Rectf{(5+bombImage)*80.0f, 3*80, 80,80}
     );
 
-    glPopMatrix();
+//    glPopMatrix();
+    RendererHelper::PopMatrix();
 }
 
 void Bomb::Update(const float elapsedTime)

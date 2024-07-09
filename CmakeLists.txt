@@ -84,6 +84,8 @@ add_executable(${PROJECT_NAME}
     src/Vector2i.cpp
     src/WorldManager.h
     src/WorldManager.cpp
+        src/RendererHelper.cpp
+        src/RendererHelper.h
 )
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 

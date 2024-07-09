@@ -1,5 +1,5 @@
 {
-  "name": "Spelunky-Remake",
+  "name": "spelunky-remake",
   "version": "1.0",
   "dependencies": [
     "sdl2",

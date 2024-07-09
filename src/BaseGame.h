@@ -1,6 +1,7 @@
 #pragma once
 #include "structs.h"
 #include "SDL.h"
+#include "RendererHelper.h"
 #include <chrono>
 
 
@@ -73,7 +74,6 @@ private:
 
 	std::chrono::steady_clock::time_point t1;
 	bool quit{false};
-
 	
 	// FUNCTIONS
 	void InitializeGameEngine( );

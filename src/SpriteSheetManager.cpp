@@ -7,16 +7,16 @@ SpriteSheetManager::SpriteSheetManager(WorldManager* worldManager)
 {
 	// 512x512 for each tile stack
 	// 64x64 for each tile
-	m_LevelTexture = new Texture{"ALLTILES/alltiles.png"};
-	m_CurrentPlayerTexture = new Texture{"PLAYERS/char_orange.png"};
-	m_BackGroundTexture = new Texture{"MINE/minebg.png"};
-	m_ExitDoorsTexture = new Texture{"ANYLEVEL/TU_exitdoors.png"};
-	m_ItemsTexture = new Texture{"ITEMS/items.png"};
-	m_MonsterTexture = new Texture{"MONSTERS/monsters.png"};
-	m_MonsterTexture3 = new Texture{"MONSTERS/monsters3.png"};
-	m_MonsterBigTexture3 = new Texture{"MONSTERS/monstersbig3.png"};
-	m_HudElementTexture = new Texture{"ATSTART/hudelements.png"};
-	m_HudFont = TTF_OpenFont("Tekton-Bold.ttf", 28 );
+	m_LevelTexture = new Texture{"Resources/ALLTILES/alltiles.png"};
+	m_CurrentPlayerTexture = new Texture{"Resources/PLAYERS/char_orange.png"};
+	m_BackGroundTexture = new Texture{"Resources/MINE/minebg.png"};
+	m_ExitDoorsTexture = new Texture{"Resources/ANYLEVEL/TU_exitdoors.png"};
+	m_ItemsTexture = new Texture{"Resources/ITEMS/items.png"};
+	m_MonsterTexture = new Texture{"Resources/MONSTERS/monsters.png"};
+	m_MonsterTexture3 = new Texture{"Resources/MONSTERS/monsters3.png"};
+	m_MonsterBigTexture3 = new Texture{"Resources/MONSTERS/monstersbig3.png"};
+	m_HudElementTexture = new Texture{"Resources/ATSTART/hudelements.png"};
+	m_HudFont = TTF_OpenFont("Resources/Tekton-Bold.ttf", 28 );
 	m_SpaceText = new Texture{"Space", m_HudFont, {0,0,0}};
 	
 	worldManager->SetSpriteSheetManager(this);

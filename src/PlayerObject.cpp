@@ -97,13 +97,15 @@ void PlayerObject::Draw() const
         break;
     }
     
-    
-    glPushMatrix();
+    RendererHelper::PushMatrix();
+//    glPushMatrix();
     const Vector2f position = GetCenter();
-    glTranslatef(position.x, position.y, 0);
+    RendererHelper::TranslateMatrix(position.x, position.y);
+//    glTranslatef(position.x, position.y, 0);
 
     if(m_IsLookingToLeft)
-        glScalef(-1,1,1);
+        RendererHelper::ScaleMatrix(-1,1);
+//        glScalef(-1,1,1);
     
     if(m_IsWiping && m_AnimationTimer < (WIPING_AMOUNT_TIMER/11.0f)*5.0f)
     {
@@ -119,7 +121,7 @@ void PlayerObject::Draw() const
         m_SpriteSheetManager->GetItemsTexture()->Draw(Vector2f{-40 + 45,-35}, Rectf{80*3 + animationFrame*80.0f, 80*5, 80, 80});
     }
     
-    glPopMatrix();
+    RendererHelper::PopMatrix();
 
     if(m_PickupItem != nullptr)
     {

@@ -7,6 +7,7 @@
 
 #include "structs.h"
 #include "Vector2f.h"
+#include "RendererHelper.h"
 
 
 Texture::Texture( const std::string& imagePath )
@@ -154,7 +155,7 @@ void Texture::CreateFromSurface(const SDL_Surface* pSurface )
 		}
 		else
 		{
-			pixelFormat = GL_BGR;
+			pixelFormat = GL_RGB;
 		}
 		break;
 	case 4:
@@ -164,7 +165,7 @@ void Texture::CreateFromSurface(const SDL_Surface* pSurface )
 		}
 		else
 		{
-			pixelFormat = GL_BGRA;
+			pixelFormat = GL_RGBA;
 		}
 		break;
 	default:
@@ -221,112 +222,116 @@ void Texture::CreateFromSurface(const SDL_Surface* pSurface )
 
 void Texture::Draw( const Vector2f& dstTopLeft, const Rectf& srcRect ) const
 {
-	const float epsilon{ 0.001f };
-	if ( !m_CreationOk )
-	{
-		if (!(srcRect.width > epsilon && srcRect.height > epsilon)) // No srcRect specified
-		{
-			DrawFilledRect(Rectf{ dstTopLeft.x, dstTopLeft.y, m_Width, m_Height });
-		}
-		else
-		{
-			DrawFilledRect(Rectf{ dstTopLeft.x, dstTopLeft.y, srcRect.width, srcRect.height });
-		}
-	}
-	else
-	{
-		Rectf dstRect{ dstTopLeft.x, dstTopLeft.y, srcRect.width, srcRect.height };
-		Rectf srcRect2{ srcRect };
-		if (!(srcRect.width > epsilon && srcRect.height > epsilon)) // No srcRect specified
-		{
-			srcRect2.width = m_Width;
-			srcRect2.height = m_Height;
-		}
-		Draw( dstRect, srcRect2 );
-	}
+    Rectf dstRect{ dstTopLeft.x, dstTopLeft.y, srcRect.width, srcRect.height };
+    Draw( dstRect, srcRect );
+
+//	const float epsilon{ 0.001f };
+//	if ( !m_CreationOk )
+//	{
+//		if (!(srcRect.width > epsilon && srcRect.height > epsilon)) // No srcRect specified
+//		{
+//			DrawFilledRect(Rectf{ dstTopLeft.x, dstTopLeft.y, m_Width, m_Height });
+//		}
+//		else
+//		{
+//			DrawFilledRect(Rectf{ dstTopLeft.x, dstTopLeft.y, srcRect.width, srcRect.height });
+//		}
+//	}
+//	else
+//	{
+//
+//		if (!(srcRect.width > epsilon && srcRect.height > epsilon)) // No srcRect specified
+//		{
+//			srcRect2.width = m_Width;
+//			srcRect2.height = m_Height;
+//		}
+//    Draw( dstRect, srcRect );
+//
+//	}
 }
 
 void Texture::Draw( const Rectf& dstRect, const Rectf& srcRect ) const
 {
-	const float epsilon{ 0.001f };
-	if ( !m_CreationOk )
-	{
-		DrawFilledRect( dstRect );
-		return;
-	}
-
-	// Determine texture coordinates using srcRect and default destination width and height
-	float textLeft{};
-	float textRight{};
-	float textTop{};
-	float textBottom{};
-
-	float defaultDestWidth{};
-	float defaultDestHeight{};
-	if ( !( srcRect.width > epsilon && srcRect.height > epsilon) ) // No srcRect specified
-	{
-		// Use complete texture
-		textLeft = 0.0f;
-		textRight = 1.0f;
-		textTop = 0.0f;
-		textBottom = 1.0f;
-
-		defaultDestHeight = m_Height;
-		defaultDestWidth = m_Width;
-	}
-	else // srcRect specified
-	{
-		// Convert to the range [0.0, 1.0]
-		textLeft = srcRect.left / m_Width;
-		textRight = ( srcRect.left + srcRect.width ) / m_Width;
-		textTop = ( srcRect.top + srcRect.height ) / m_Height;
-		textBottom = srcRect.top / m_Height;
-
-		defaultDestHeight = srcRect.height;
-		defaultDestWidth = srcRect.width;
-	}
-
-	// Determine vertex coordinates
-	float vertexLeft{ dstRect.left };
-	float vertexBottom{ dstRect.top };
-	float vertexRight{};
-	float vertexTop{};
-	if ( !( dstRect.width > 0.001f && dstRect.height > 0.001f ) ) // If no size specified use default size
-	{
-		vertexRight = vertexLeft + defaultDestWidth;
-		vertexTop = vertexBottom + defaultDestHeight;
-	}
-	else
-	{
-		vertexRight = vertexLeft + dstRect.width;
-		vertexTop = vertexBottom + dstRect.height;
-
-	}
+//	const float epsilon{ 0.001f };
+//	if ( !m_CreationOk )
+//	{
+//		DrawFilledRect( dstRect );
+//		return;
+//	}
+//
+//	// Determine texture coordinates using srcRect and default destination width and height
+//	float textLeft{};
+//	float textRight{};
+//	float textTop{};
+//	float textBottom{};
+//
+//	float defaultDestWidth{};
+//	float defaultDestHeight{};
+//	if ( !( srcRect.width > epsilon && srcRect.height > epsilon) ) // No srcRect specified
+//	{
+//		// Use complete texture
+//		textLeft = 0.0f;
+//		textRight = 1.0f;
+//		textTop = 0.0f;
+//		textBottom = 1.0f;
+//
+//		defaultDestHeight = m_Height;
+//		defaultDestWidth = m_Width;
+//	}
+//	else // srcRect specified
+//	{
+//		// Convert to the range [0.0, 1.0]
+//		textLeft = srcRect.left / m_Width;
+//		textRight = ( srcRect.left + srcRect.width ) / m_Width;
+//		textTop = ( srcRect.top + srcRect.height ) / m_Height;
+//		textBottom = srcRect.top / m_Height;
+//
+//		defaultDestHeight = srcRect.height;
+//		defaultDestWidth = srcRect.width;
+//	}
+//
+//	// Determine vertex coordinates
+//	float vertexLeft{ dstRect.left };
+//	float vertexBottom{ dstRect.top };
+//	float vertexRight{};
+//	float vertexTop{};
+//	if ( !( dstRect.width > 0.001f && dstRect.height > 0.001f ) ) // If no size specified use default size
+//	{
+//		vertexRight = vertexLeft + defaultDestWidth;
+//		vertexTop = vertexBottom + defaultDestHeight;
+//	}
+//	else
+//	{
+//		vertexRight = vertexLeft + dstRect.width;
+//		vertexTop = vertexBottom + dstRect.height;
+//
+//	}
 
 	// Tell opengl which texture we will use
 	glBindTexture( GL_TEXTURE_2D, m_Id );
-	glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
+    RendererHelper::DrawTexture(dstRect, srcRect);
+//	glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 
-	// Draw
-	glEnable( GL_TEXTURE_2D );
-	{
-		glBegin( GL_QUADS );
-		{
-			glTexCoord2f( textLeft, textTop );
-			glVertex2f( vertexLeft, vertexTop );
-
-			glTexCoord2f( textRight, textTop );
-			glVertex2f( vertexRight, vertexTop );
-
-			glTexCoord2f( textRight, textBottom );
-			glVertex2f( vertexRight, vertexBottom );
-
-			glTexCoord2f( textLeft, textBottom );
-			glVertex2f( vertexLeft, vertexBottom );
-		}
-		glEnd( );
-	}
-	glDisable( GL_TEXTURE_2D );
+//	// Draw
+//	glEnable( GL_TEXTURE_2D );
+//	{
+//		glBegin( GL_QUADS );
+//		{
+//			glTexCoord2f( textLeft, textTop );
+//			glVertex2f( vertexLeft, vertexTop );
+//
+//			glTexCoord2f( textRight, textTop );
+//			glVertex2f( vertexRight, vertexTop );
+//
+//			glTexCoord2f( textRight, textBottom );
+//			glVertex2f( vertexRight, vertexBottom );
+//
+//			glTexCoord2f( textLeft, textBottom );
+//			glVertex2f( vertexLeft, vertexBottom );
+//		}
+//		glEnd( );
+//	}
+//	glDisable( GL_TEXTURE_2D );
 }
 
 float Texture::GetWidth() const
@@ -344,16 +349,16 @@ bool Texture::IsCreationOk( ) const
 	return m_CreationOk;
 }
 
-void Texture::DrawFilledRect(const Rectf& rect) const
-{
-	glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
-	glBegin(GL_POLYGON);
-	{
-		glVertex2f(rect.left, rect.top);
-		glVertex2f(rect.left , rect.top + rect.height);
-		glVertex2f(rect.left + rect.width, rect.top + rect.height);
-		glVertex2f(rect.left + rect.width, rect.top);
-	}
-	glEnd();
-
-}
+//void Texture::DrawFilledRect(const Rectf& rect) const
+//{
+//	glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
+//	glBegin(GL_POLYGON);
+//	{
+//		glVertex2f(rect.left, rect.top);
+//		glVertex2f(rect.left , rect.top + rect.height);
+//		glVertex2f(rect.left + rect.width, rect.top + rect.height);
+//		glVertex2f(rect.left + rect.width, rect.top);
+//	}
+//	glEnd();
+//
+//}

@@ -26,12 +26,14 @@ EntityType Damsel::GetEntityType() const
 void Damsel::Draw() const
 {
 	if(IsDead()) return;
-	
-	glPushMatrix();
-	glTranslatef(GetCenter().x, GetCenter().y, 0);
-	
+
+    RendererHelper::PushMatrix();
+//	glTranslatef(GetCenter().x, GetCenter().y, 0);
+    RendererHelper::TranslateMatrix(GetCenter().x, GetCenter().y);
+
 	if(!m_MovingLeft)
-		glScalef(-1,1,1);
+        RendererHelper::ScaleMatrix(-1,1);
+//		glScalef(-1,1,1);
 
 	if(!m_IsWalkingAround)
 	{
@@ -67,9 +69,9 @@ void Damsel::Draw() const
 			Vector2f{-41,-47},
 			Rectf{80*3 + (int(m_AnimationTimer*1/0.1f)%8)*80.0f, 0, 80.0f, 80.0f});
 	}
-	
 
-	glPopMatrix();
+
+    RendererHelper::PopMatrix();
 }
 
 void Damsel::Update(const float elapsedTime)

@@ -20,17 +20,21 @@ Snake::Snake(const Vector2f& position, WorldManager* worldManager) :
 void Snake::Draw() const
 {
     if(IsDead()) return;
-    glPushMatrix();
-    glTranslatef(GetCenter().x, GetCenter().y, 0);
+    RendererHelper::PushMatrix();
+//    glPushMatrix();
+//    glTranslatef(GetCenter().x, GetCenter().y, 0);
+    RendererHelper::TranslateMatrix(GetCenter());
     if(!m_MovingLeft)
     {
-        glScalef(-1, 1, 1);
+        RendererHelper::ScaleMatrix(-1,1);
+//        glScalef(-1, 1, 1);
     }
     
     m_SpriteSheetManager->GetMonsterTexture()->Draw(
         Vector2f{-40, -40},
         Rectf{0, 0, 80, 80});
-    glPopMatrix();
+//    glPopMatrix();
+    RendererHelper::PopMatrix();
 }
 
 void Snake::Update(const float elapsedTime)

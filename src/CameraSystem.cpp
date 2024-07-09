@@ -39,7 +39,8 @@ void CameraSystem::UpdateCamera(float elapsedTime)
 
 void CameraSystem::PushCamera() const
 {
-    glPushMatrix();
+    RendererHelper::PushMatrix();
+//    glPushMatrix();
     if(m_IsDebugCamera)
     {
         m_DebugTranslateMatrix.GlMultiMatrix();
@@ -53,7 +54,7 @@ void CameraSystem::PushCamera() const
 
 void CameraSystem::PopCamera()
 {
-    glPopMatrix();
+    RendererHelper::PopMatrix();
 }
 
 Vector2f CameraSystem::GetCameraPosition() const

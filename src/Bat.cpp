@@ -23,13 +23,16 @@ void Bat::Draw() const
 {
 	if (IsDead()) return;
 
-	glPushMatrix();
-	glTranslatef(GetCenter().x, GetCenter().y, 0);
+    RendererHelper::PushMatrix();
+    RendererHelper::TranslateMatrix(GetCenter().x, GetCenter().y);
+
+//	glPushMatrix();
+//	glTranslatef(GetCenter().x, GetCenter().y, 0);
 
 	if (m_IsAttacking)
 	{
 		if (m_PhysicsCollider.GetVelocity().x < 0)
-			glScalef(-1, 1, 1);
+            RendererHelper::ScaleMatrix(-1, 1);
 
 		m_SpriteSheetManager->GetMonsterTexture3()->Draw(
 			Vector2f{ -40, -40 },
@@ -41,7 +44,7 @@ void Bat::Draw() const
 			Vector2f{ -40, -40 },
 			Rectf{ 0, 5 * 80.0f, 80.0f, 80.0f });
 	}
-	glPopMatrix();
+    RendererHelper::PopMatrix();
 }
 
 void Bat::Update(const float elapsedTime)

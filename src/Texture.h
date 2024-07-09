@@ -38,5 +38,5 @@ private:
 	void CreateFromString( const std::string& text, TTF_Font *pFont, const Color4f& textColor );
 	void CreateFromString( const std::string& text, const std::string& fontPath, int ptSize, const Color4f& textColor );
 	void CreateFromSurface(const SDL_Surface *pSurface );
-	void DrawFilledRect(const Rectf& dstRect) const;
+//	void DrawFilledRect(const Rectf& dstRect) const;
 };
