@@ -5,7 +5,7 @@
 #include "WorldManager.h"
 
 UiManager::UiManager(WorldManager* worldManager):
-	m_PlayerHudTexture(new Texture{"ANYLEVEL/playerhud.png"}),
+	m_PlayerHudTexture(new Texture{"Resources/ANYLEVEL/playerhud.png"}),
 	m_WorldManager(worldManager)
 {
 }
@@ -28,7 +28,7 @@ void UiManager::Draw()
 		m_PrevPlayerHealth = m_WorldManager->GetPlayer()->GetHealth();
 
 		delete m_HealthText;
-		m_HealthText = new Texture{std::to_string(m_PrevPlayerHealth), "Life-Is-Okay.ttf", 40, {1,0.9f,0.9f}};
+		m_HealthText = new Texture{std::to_string(m_PrevPlayerHealth), "Resources/Life-Is-Okay.ttf", 40, {1,0.9f,0.9f}};
 	}
 
 	if(m_PrevPlayerBombs != m_WorldManager->GetPlayer()->GetBombsAmount())
@@ -37,8 +37,8 @@ void UiManager::Draw()
 
 		delete m_BombText;
 		delete m_BombOutLineText;
-		m_BombText = new Texture{std::to_string(m_PrevPlayerBombs), "Life-Is-Okay.ttf", 40, {1,1,1}};
-		m_BombOutLineText = new Texture{std::to_string(m_PrevPlayerBombs), "Life-Is-Okay.ttf", 45, {0,0,0}};
+		m_BombText = new Texture{std::to_string(m_PrevPlayerBombs), "Resources/Life-Is-Okay.ttf", 40, {1,1,1}};
+		m_BombOutLineText = new Texture{std::to_string(m_PrevPlayerBombs), "Resources/Life-Is-Okay.ttf", 45, {0,0,0}};
 	}
 	
 	if(m_PrevPlayerRopes != m_WorldManager->GetPlayer()->GetRopeAmount())
@@ -47,8 +47,8 @@ void UiManager::Draw()
 
 		delete m_RopeText;
 		delete m_RopeOutLineText;
-		m_RopeText = new Texture{std::to_string(m_PrevPlayerRopes), "Life-Is-Okay.ttf", 40, {1,1,1}};
-		m_RopeOutLineText = new Texture{std::to_string(m_PrevPlayerRopes), "Life-Is-Okay.ttf", 45, {0,0,0}};
+		m_RopeText = new Texture{std::to_string(m_PrevPlayerRopes), "Resources/Life-Is-Okay.ttf", 40, {1,1,1}};
+		m_RopeOutLineText = new Texture{std::to_string(m_PrevPlayerRopes), "Resources/Life-Is-Okay.ttf", 45, {0,0,0}};
 	}
 
 	m_HealthText->Draw(Vector2f{78, 40});
