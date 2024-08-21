@@ -100,7 +100,9 @@ void BaseGame::InitializeGameEngine()
 //	glMatrixMode(GL_PROJECTION);
 //	glLoadIdentity();
 
-    RendererHelper::SetProjectionMatrix(0, m_Window.width, -m_Window.height, 0, -1, 1);
+    // RendererHelper::SetProjectionMatrix(0, m_Window.width, -m_Window.height, 0, -1, 1);
+	RendererHelper::Setup();
+    RendererHelper::SetProjectionMatrix(0, -m_Window.width, 0, m_Window.height, -1, 1);
 	// Set up a two-dimensional orthographic viewing region.
 //	glOrtho(0, m_Window.width, m_Window.height, 0, -1, 1); // y from bottom to top
 

@@ -18,14 +18,14 @@ void RendererHelper::SetProjectionMatrix(float left, float right, float top, flo
 {
     m_ProjectionMatrix = Matrix4X4{
        2.0f/(left-right), 0, 0, -((right+left)/(right-left)),
-       0, 2.0f/(top-bottom), 0, (top+bottom)/(top-bottom),
-       0, 0, -2.0f/(far-near), (far+near)/(far-near),
+       0, 2.0f/(top-bottom), 0, -((top+bottom)/(top-bottom)),
+       0, 0, -2.0f/(far-near), -((far+near)/(far-near)),
        0, 0, 0, 1
    };
 
     for (int i = 0; i < 32; ++i)
     {
-        m_UserMatrix[i] = Matrix4X4{};
+        m_UserMatrix[i] = Matrix4X4::IdentityMatrix();
     }
 }
 
@@ -66,18 +66,26 @@ void RendererHelper::ScaleMatrix(float x, float y)
     m_UserMatrix[m_UserMatrixIndex] = m_UserMatrix[m_UserMatrixIndex] * Matrix4X4::ScaleMatrix(x, y, 1);
 }
 
+void RendererHelper::MultiMatrix(const Matrix4X4& matrixToMulti)
+{
+    m_UserMatrix[m_UserMatrixIndex] = m_UserMatrix[m_UserMatrixIndex] * matrixToMulti;
+}
+
 void RendererHelper::Setup()
 {
     m_Program = CreateShader();
     glUseProgram(m_Program);
-    m_matrixLocation = glGetUniformLocation(m_Program, "u_ProjectionMatrix");
-    GLint posAttrib = glGetAttribLocation(m_Program, "VertexPosition");
-    GLint uvAttrib = glGetAttribLocation(m_Program, "UvCoords");
-    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, false, 2, nullptr);
-    glVertexAttribPointer(uvAttrib, 2, GL_FLOAT, false, 2, reinterpret_cast<GLvoid*>(sizeof(GLfloat) * 2));
-
+    
     glGenBuffers(1, &m_vertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+    
+    m_matrixLocation = glGetUniformLocation(m_Program, "u_ProjectionMatrix");
+    GLint posAttrib = glGetAttribLocation(m_Program, "VertexPosition");
+    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), nullptr);
+    glEnableVertexAttribArray(posAttrib);
+    GLint uvAttrib = glGetAttribLocation(m_Program, "UvCoords");
+    glVertexAttribPointer(uvAttrib, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(uvAttrib);
 }
 
 void CheckShaderErrors(unsigned int shader)
@@ -154,7 +162,7 @@ GLuint RendererHelper::CreateShader()
     return ID;
 }
 
-void RendererHelper::DrawTexture(const Rectf &dstRect, const Rectf &srcRect)
+void RendererHelper::DrawTexture(const Rectf &positionCoords, const Rectf &uvCoords)
 {
     Matrix4X4 newMatrix = m_ProjectionMatrix;
     for (int i = 0; i < m_UserMatrixIndex+1; ++i)
@@ -163,13 +171,13 @@ void RendererHelper::DrawTexture(const Rectf &dstRect, const Rectf &srcRect)
     }
     GLfloat array[16];
     newMatrix.OpenGlArray(array);
-    glUniformMatrix4fv(m_matrixLocation, 1, false, array);
+    glUniformMatrix4fv(m_matrixLocation, 1, true, array);
 
-    float meshUv[] = {
-        dstRect.left, dstRect.top, 0,0,
-        dstRect.left, dstRect.top+dstRect.height, 0,1,
-        dstRect.left+ dstRect.width, dstRect.top+dstRect.height, 1,1,
-        dstRect.left + dstRect.width, dstRect.top, 1,0
+    const GLfloat meshUv[] = {
+        positionCoords.left, positionCoords.top, uvCoords.left, uvCoords.top,
+        positionCoords.left, positionCoords.height, uvCoords.left, uvCoords.height,
+        positionCoords.width, positionCoords.height, uvCoords.width,uvCoords.height,
+        positionCoords.width, positionCoords.top, uvCoords.width,uvCoords.top
     };
 
     glBufferData(GL_ARRAY_BUFFER, sizeof(meshUv), &meshUv, GL_DYNAMIC_DRAW);
