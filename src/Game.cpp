@@ -125,7 +125,7 @@ void Game::Reset() const
     const std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
     m_Cave->GenerateLevel();
     const float elapsedSeconds = std::chrono::duration<float>(std::chrono::steady_clock::now() - t2).count();
-    std::cout << "Took: " << elapsedSeconds << " sec. To generate level";
+    std::cout << "Took: " << elapsedSeconds << " sec. To generate level\n";
 
     m_EntityManager->ClearAllEntities();
     m_EntityManager->AddEntity(m_Player);

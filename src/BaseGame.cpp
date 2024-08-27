@@ -1,5 +1,9 @@
 #include <SDL.h>
+#ifdef __EMSCRIPTEN__
+#include <SDL_opengles2.h>
+#else
 #include <glad/glad.h>
+#endif
 #include <SDL_ttf.h> 
 #include <SDL_mixer.h> 
 #include <SDL_image.h>

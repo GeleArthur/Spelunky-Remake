@@ -7,6 +7,6 @@ out vec2 v_GenertingUV;
 uniform mat4x4 u_ProjectionMatrix;
 
 void main() {
-    gl_Position = VertexPosition * u_ProjectionMatrix;
+    gl_Position = u_ProjectionMatrix * VertexPosition;
     v_GenertingUV = UvCoords;
 }

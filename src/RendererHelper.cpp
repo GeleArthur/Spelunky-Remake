@@ -22,11 +22,7 @@ void RendererHelper::SetProjectionMatrix(float left, float right, float top, flo
        0, 0, -2.0f/(far-near), -((far+near)/(far-near)),
        0, 0, 0, 1
    };
-
-    for (int i = 0; i < 32; ++i)
-    {
-        m_UserMatrix[i] = Matrix4X4::IdentityMatrix();
-    }
+    
 }
 
 void RendererHelper::PopMatrix()
@@ -44,6 +40,7 @@ void RendererHelper::PushMatrix()
         throw "Use more the 32 matrix";
     }
     ++m_UserMatrixIndex;
+    IdentityMatrix();
 }
 
 void RendererHelper::IdentityMatrix()
@@ -86,6 +83,11 @@ void RendererHelper::Setup()
     GLint uvAttrib = glGetAttribLocation(m_Program, "UvCoords");
     glVertexAttribPointer(uvAttrib, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2 * sizeof(GLfloat)));
     glEnableVertexAttribArray(uvAttrib);
+
+    for (int i = 0; i < 32; ++i)
+    {
+        m_UserMatrix[i] = Matrix4X4::IdentityMatrix();
+    }
 }
 
 void CheckShaderErrors(unsigned int shader)
@@ -164,15 +166,16 @@ GLuint RendererHelper::CreateShader()
 
 void RendererHelper::DrawTexture(const Rectf &positionCoords, const Rectf &uvCoords)
 {
-    Matrix4X4 newMatrix = m_ProjectionMatrix;
-    for (int i = 0; i < m_UserMatrixIndex+1; ++i)
+    Matrix4X4 newMatrix = Matrix4X4::IdentityMatrix();
+    for (int i = m_UserMatrixIndex+1 - 1; i >= 0; --i)
     {
         newMatrix = newMatrix * m_UserMatrix[i];
     }
-    GLfloat array[16];
-    newMatrix.OpenGlArray(array);
-    glUniformMatrix4fv(m_matrixLocation, 1, true, array);
-
+    newMatrix = newMatrix * m_ProjectionMatrix;
+    
+    float arrayWithMatrixData[16];
+    newMatrix.OpenGlArray(arrayWithMatrixData);
+    
     const GLfloat meshUv[] = {
         positionCoords.left, positionCoords.top, uvCoords.left, uvCoords.top,
         positionCoords.left, positionCoords.height, uvCoords.left, uvCoords.height,
@@ -181,6 +184,7 @@ void RendererHelper::DrawTexture(const Rectf &positionCoords, const Rectf &uvCoo
     };
 
     glBufferData(GL_ARRAY_BUFFER, sizeof(meshUv), &meshUv, GL_DYNAMIC_DRAW);
+    glUniformMatrix4fv(m_matrixLocation, 1, GL_FALSE, &arrayWithMatrixData[0]);
 
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 }

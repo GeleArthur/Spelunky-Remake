@@ -2,7 +2,11 @@
 #include <SDL_ttf.h>
 #include <SDL.h>
 
+#ifdef __EMSCRIPTEN__
+#include <SDL_opengles2.h>
+#else
 #include <glad/glad.h>
+#endif
 
 #include "structs.h"
 #include "Vector2f.h"

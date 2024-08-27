@@ -95,6 +95,9 @@ if(EMSCRIPTEN)
     set(EmscriptenSettings 
         -sUSE_SDL=2 
         -sUSE_SDL_IMAGE=2 
+        -sUSE_SDL_TTF=2
+        -sUSE_SDL_MIXER=2
+
         --preload-file=../Resources/ 
         -sSDL2_IMAGE_FORMATS=[\"png\"]
     )
@@ -108,7 +111,7 @@ if(EMSCRIPTEN)
         -sFULL_ES3 
         -sMIN_WEBGL_VERSION=2 
         -sMAX_WEBGL_VERSION=2
-        # -sALLOW_MEMORY_GROWTH
+        -sALLOW_MEMORY_GROWTH
         # -sASYNCIFY
     )
 else()

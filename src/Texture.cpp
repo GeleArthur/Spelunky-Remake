@@ -181,7 +181,7 @@ void Texture::CreateFromSurface(const SDL_Surface* pSurface )
 	//Select (bind) the texture we just generated as the current 2D texture OpenGL is using/modifying.
 	//All subsequent changes to OpenGL's texturing state for 2D textures will affect this texture.
 	glBindTexture(GL_TEXTURE_2D, m_Id);
-	glPixelStorei(GL_UNPACK_ROW_LENGTH, pSurface->pitch / pSurface->format->BytesPerPixel);
+	// glPixelStorei(GL_UNPACK_ROW_LENGTH, pSurface->pitch / pSurface->format->BytesPerPixel);
 	// check for errors. Can happen if a texture is created while a static pointer is being initialized, even before the call to the main function.
 	GLenum e = glGetError();
 	if (e != GL_NO_ERROR)

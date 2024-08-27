@@ -1,5 +1,9 @@
 #pragma once
+#ifdef __EMSCRIPTEN__
+#include <SDL_opengles2.h>
+#else
 #include <glad/glad.h>
+#endif
 #include "Vector2f.h"
 
 // Row major matrix

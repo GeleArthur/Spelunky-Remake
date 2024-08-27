@@ -27,6 +27,7 @@ void CameraSystem::UpdateCamera(float elapsedTime)
     
     m_TranslateMatrix.m30 = -m_CameraPosition.x;
     m_TranslateMatrix.m31 = -m_CameraPosition.y;
+    // m_TranslateMatrix.m30 = 1;
 
     if(m_IsDebugCamera)
     {
