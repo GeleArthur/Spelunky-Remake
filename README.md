@@ -159,11 +159,20 @@ This section gives a clear and detailed overview of which parts of the original 
 
 ### Prerequisites
 
-* Visual Studio 2022
+* Cmake
+* vcpkg
+* Make sure that the environment variable VCPKG_ROOT is set to vcpkg folder for example VCPKG_ROOT="C:\vcpkg"
+
 
 ### How to run the project
+```
+mkdir build 
+cd build
+cmake ..
+cmake --build .
+```
 
-Launch the Prog2Engine.sln in visual studio and build debug 64x.
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
