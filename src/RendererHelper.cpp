@@ -60,7 +60,8 @@ void RendererHelper::TranslateMatrix(Vector2f translate)
 
 void RendererHelper::ScaleMatrix(float x, float y)
 {
-    m_UserMatrix[m_UserMatrixIndex] = m_UserMatrix[m_UserMatrixIndex] * Matrix4X4::ScaleMatrix(x, y, 1);
+    // TODO Horrible fix but will work for now
+    m_UserMatrix[m_UserMatrixIndex] = Matrix4X4::ScaleMatrix(x, y, 1) * m_UserMatrix[m_UserMatrixIndex];
 }
 
 void RendererHelper::MultiMatrix(const Matrix4X4& matrixToMulti)
