@@ -81,9 +81,8 @@ void BaseGame::InitializeGameEngine()
 		return;
 	}
 
-    #ifndef __EMSCRIPTEN__
-    gladLoadGLES2Loader(SDL_GL_GetProcAddress); // 100% no documentation for this
-    #endif
+	#ifndef __EMSCRIPTEN__
+	gladLoadGLES2Loader(SDL_GL_GetProcAddress); // 100% no documentation for this
 
 	// Set the swap interval for the current OpenGL context,
 	// synchronize it with the vertical retrace
@@ -99,6 +98,8 @@ void BaseGame::InitializeGameEngine()
 	{
 		SDL_GL_SetSwapInterval(0);
 	}
+	#endif
+
 
 	// Set the Projection matrix to the identity matrix
 //	glMatrixMode(GL_PROJECTION);
@@ -106,7 +107,7 @@ void BaseGame::InitializeGameEngine()
 
     // RendererHelper::SetProjectionMatrix(0, m_Window.width, -m_Window.height, 0, -1, 1);
 	RendererHelper::Setup();
-    RendererHelper::SetProjectionMatrix(0, -m_Window.width, 0, m_Window.height, -1, 1);
+	RendererHelper::SetProjectionMatrix(0, -m_Window.width, 0, m_Window.height, -1, 1);
 	// Set up a two-dimensional orthographic viewing region.
 //	glOrtho(0, m_Window.width, m_Window.height, 0, -1, 1); // y from bottom to top
 

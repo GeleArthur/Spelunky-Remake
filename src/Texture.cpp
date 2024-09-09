@@ -129,11 +129,21 @@ void Texture::CreateFromString( const std::string& text, TTF_Font *pFont, const 
 		return;
 	}
 
+	SDL_Surface* pConvertedSurface = SDL_ConvertSurfaceFormat(pLoadedSurface, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, 0);
+
+	if(pConvertedSurface == nullptr)
+	{
+		std::cerr << "Texture::CreateFromString, error when calling SDL_ConvertSurfaceFormat: " << TTF_GetError( ) << std::endl;
+		m_CreationOk = false;
+		return;
+	}
+	
 	// Copy to video memory
-	CreateFromSurface( pLoadedSurface );
+	CreateFromSurface( pConvertedSurface );
 
 	// Free loaded surface
 	SDL_FreeSurface( pLoadedSurface );
+	SDL_FreeSurface( pConvertedSurface );
 }
 
 void Texture::CreateFromSurface(const SDL_Surface* pSurface )

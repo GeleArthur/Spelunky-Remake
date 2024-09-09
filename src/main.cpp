@@ -26,6 +26,8 @@ int SDL_main(int argv, char** args)
 			(void*)&game,
 			0, true
 		);
+
+		SDL_GL_SetSwapInterval(0);
 	#else
 		while (game.IsRunning()) { game.MainLoop(); }
 	#endif

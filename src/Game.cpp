@@ -117,7 +117,7 @@ void Game::Draw() const
     GizmosDrawer::Draw();
     m_CameraSystem->PopCamera();
 
-    //m_UiManager->Draw();
+    m_UiManager->Draw();
 }
 
 void Game::Reset() const

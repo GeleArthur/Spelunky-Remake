@@ -107,7 +107,7 @@ if(EMSCRIPTEN)
     )
     target_link_options(${PROJECT_NAME} PRIVATE 
         ${EmscriptenSettings}
-
+        -g
         -sFULL_ES3 
         -sMIN_WEBGL_VERSION=2 
         -sMAX_WEBGL_VERSION=2
