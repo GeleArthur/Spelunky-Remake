@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Spelunky - GeleArthur</title>
+    <style>
+      body{
+        margin: 0px;
+        background-color: black;
+      }
+      canvas.emscripten { background-color: black; }
+    </style>
+  </head>
+  <body>
+    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+
+    <script type='text/javascript'>
+
+      let totalDependencies = 0;
+
+      var Module = {
+        print: (...args) => {
+            var text = args.join(' ');
+            console.log(text);
+        },
+        canvas: (() => {
+          var canvas = document.getElementById('canvas');
+          return canvas;
+        })(),
+        monitorRunDependencies: (left) => {
+          totalDependencies = Math.max(left, totalDependencies);
+          console.log(totalDependencies - left);
+        }
+      };
+    </script>
+    {{{ SCRIPT }}}
+  </body>
+</html>
