@@ -103,6 +103,7 @@ if(EMSCRIPTEN)
 
         --preload-file=../Resources/
         -sSDL2_IMAGE_FORMATS=[\"png\"]
+        -sSDL2_MIXER_FORMATS=[\"wav\"]
         --shell-file=${PROJECT_SOURCE_DIR}/src/spelunky.html
     )
 
