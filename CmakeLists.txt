@@ -1,11 +1,13 @@
 cmake_minimum_required(VERSION 3.21)
 project(spelunky)
 
-if(NOT EMSCRIPTEN)
-    include("$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
+set(CMAKE_EXPORT_COMPILE_COMMANDS true)
+
+if(APPLE)
+    set (CMAKE_OSX_ARCHITECTURES "x86_64")
 endif()
 
-add_executable(${PROJECT_NAME} 
+add_executable(${PROJECT_NAME}
     src/BaseGame.cpp
     src/BaseGame.h
     src/Matrix2x3.cpp
@@ -36,7 +38,7 @@ add_executable(${PROJECT_NAME}
     src/Cave.h
     src/Cave.cpp
     src/Damsel.h
-    src/Damsel.cpp    
+    src/Damsel.cpp
     src/EnemyEntity.h
     src/EnemyEntity.cpp
     src/Entity.h
@@ -84,38 +86,41 @@ add_executable(${PROJECT_NAME}
     src/Vector2i.cpp
     src/WorldManager.h
     src/WorldManager.cpp
-        src/RendererHelper.cpp
-        src/RendererHelper.h
+    src/RendererHelper.cpp
+    src/RendererHelper.h
 )
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 if(EMSCRIPTEN)
     set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".html")
 
-    set(EmscriptenSettings 
-        -sUSE_SDL=2 
-        -sUSE_SDL_IMAGE=2 
+    set(EmscriptenSettings
+        -sUSE_SDL=2
+        -sUSE_SDL_IMAGE=2
         -sUSE_SDL_TTF=2
         -sUSE_SDL_MIXER=2
 
-        --preload-file=../Resources/ 
+        --preload-file=../Resources/
         -sSDL2_IMAGE_FORMATS=[\"png\"]
         --shell-file=${PROJECT_SOURCE_DIR}/src/spelunky.html
     )
 
-    target_compile_options(${PROJECT_NAME} PRIVATE 
+    target_compile_options(${PROJECT_NAME} PRIVATE
         ${EmscriptenSettings}
     )
-    target_link_options(${PROJECT_NAME} PRIVATE 
+    target_link_options(${PROJECT_NAME} PRIVATE
         ${EmscriptenSettings}
         -g
-        -sFULL_ES3 
-        -sMIN_WEBGL_VERSION=2 
+        -sFULL_ES3
+        -sMIN_WEBGL_VERSION=2
         -sMAX_WEBGL_VERSION=2
         -sALLOW_MEMORY_GROWTH
         # -sASYNCIFY
     )
 else()
+    set(CMAKE_SUPPRESS_REGENERATION true)
+    include("$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
+
     find_package(SDL2 CONFIG REQUIRED)
     find_package(SDL2_image CONFIG REQUIRED)
     find_package(SDL2_mixer CONFIG REQUIRED)
@@ -123,11 +128,11 @@ else()
     find_package(glad CONFIG REQUIRED)
     find_package(OpenGL REQUIRED)
 
-    target_link_libraries(${PROJECT_NAME} PUBLIC $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main> $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>)
-    target_link_libraries(${PROJECT_NAME} PUBLIC $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>)
-    target_link_libraries(${PROJECT_NAME} PUBLIC $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>)
-    target_link_libraries(${PROJECT_NAME} PUBLIC $<IF:$<TARGET_EXISTS:SDL2_mixer::SDL2_mixer>,SDL2_mixer::SDL2_mixer,SDL2_mixer::SDL2_mixer-static>)
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${OPENGL_LIBRARIES})
+    target_link_libraries(${PROJECT_NAME} PRIVATE $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main> $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>)
+    target_link_libraries(${PROJECT_NAME} PRIVATE $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>)
+    target_link_libraries(${PROJECT_NAME} PRIVATE $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>)
+    target_link_libraries(${PROJECT_NAME} PRIVATE $<IF:$<TARGET_EXISTS:SDL2_mixer::SDL2_mixer>,SDL2_mixer::SDL2_mixer,SDL2_mixer::SDL2_mixer-static>)
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENGL_LIBRARIES})
     target_link_libraries(${PROJECT_NAME} PRIVATE glad::glad)
 
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
