@@ -2,40 +2,83 @@
 
 <!doctype html>
 <html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Spelunky - GeleArthur</title>
-    <style>
-      body{
-        margin: 0px;
-        background-color: black;
-      }
-      canvas.emscripten { background-color: black; }
-    </style>
-  </head>
-  <body>
-    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Spelunky - GeleArthur</title>
+        <style>
+            body {
+                margin: 0px;
+                padding: 0px;
+                background-color: black;
+            }
+            canvas.emscripten {
+                background-color: black;
+                border: 0px none;
+                width: 100%;
+                height: 100%;
+            }
+            #status {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                font-family: Arial, sans-serif;
+                font-size: 24px;
+                color: white;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas
+            class="emscripten"
+            id="canvas"
+            oncontextmenu="event.preventDefault()"
+            tabindex="-1"
+        ></canvas>
 
-    <script type='text/javascript'>
+        <div id="status"></div>
 
-      let totalDependencies = 0;
+        <script type="text/javascript">
+            let totalDependencies = 0;
+            let statusElement = document.getElementById("status");
 
-      var Module = {
-        print: (...args) => {
-            var text = args.join(' ');
-            console.log(text);
-        },
-        canvas: (() => {
-          var canvas = document.getElementById('canvas');
-          return canvas;
-        })(),
-        monitorRunDependencies: (left) => {
-          totalDependencies = Math.max(left, totalDependencies);
-          console.log(totalDependencies - left);
-        }
-      };
-    </script>
-    {{{ SCRIPT }}}
-  </body>
+            function interacte(event) {
+                document.body.removeEventListener("click", interacte);
+                Module["removeRunDependency"]("spelunky_start");
+            }
+            document.body.addEventListener("click", interacte);
+
+            var Module = {
+                print: (...args) => {
+                    var text = args.join(" ");
+                    console.log(text);
+                },
+                canvas: (() => {
+                    var canvas = document.getElementById("canvas");
+                    return canvas;
+                })(),
+                preRun: [
+                    function () {
+                        Module["addRunDependency"]("spelunky_start");
+                    },
+                ],
+                monitorRunDependencies: (left) => {
+                    totalDependencies = Math.max(left, totalDependencies);
+
+                    statusElement.innerHTML =
+                        "Loading... " +
+                        (totalDependencies - left) +
+                        "/" +
+                        totalDependencies;
+
+                    // if (totalDependencies) {
+                    //     statusElement.style.display = "none";
+                    // }
+                },
+            };
+        </script>
+        {{{ SCRIPT }}}
+    </body>
 </html>
