@@ -3,13 +3,13 @@
 
 #include "WorldManager.h"
 SoundManager::SoundManager(WorldManager* worldManager):
-	m_Music(Mix_LoadMUS("ALLSOUNDS/A01_A.wav")),
-	m_WhipEffect(Mix_LoadWAV("ALLSOUNDS/whip.wav")),
-	m_PickUpEffect(Mix_LoadWAV("ALLSOUNDS/pickup.wav")),
-	m_ThrowItemEffect(Mix_LoadWAV("ALLSOUNDS/throw_item.wav")),
-	m_DropItemEffect(Mix_LoadWAV("ALLSOUNDS/item_drop.wav")),
-	m_HitEffect(Mix_LoadWAV("ALLSOUNDS/hit.wav")),
-	m_LandEffect(Mix_LoadWAV("ALLSOUNDS/land.wav"))
+	m_Music(Mix_LoadMUS("Resources/ALLSOUNDS/A01_A.wav")),
+	m_WhipEffect(Mix_LoadWAV("Resources/ALLSOUNDS/whip.wav")),
+	m_PickUpEffect(Mix_LoadWAV("Resources/ALLSOUNDS/pickup.wav")),
+	m_ThrowItemEffect(Mix_LoadWAV("Resources/ALLSOUNDS/throw_item.wav")),
+	m_DropItemEffect(Mix_LoadWAV("Resources/ALLSOUNDS/item_drop.wav")),
+	m_HitEffect(Mix_LoadWAV("Resources/ALLSOUNDS/hit.wav")),
+	m_LandEffect(Mix_LoadWAV("Resources/ALLSOUNDS/land.wav"))
 {
 	Mix_MasterVolume(32);
 	Mix_PlayMusic(m_Music, -1);

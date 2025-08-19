@@ -51,13 +51,8 @@
             document.body.addEventListener("click", interacte);
 
             var Module = {
-                print: (...args) => {
-                    var text = args.join(" ");
-                    console.log(text);
-                },
                 canvas: (() => {
-                    var canvas = document.getElementById("canvas");
-                    return canvas;
+                    return document.getElementById("canvas");
                 })(),
                 preRun: [
                     function () {
@@ -73,9 +68,9 @@
                         "/" +
                         totalDependencies;
 
-                    // if (totalDependencies) {
-                    //     statusElement.style.display = "none";
-                    // }
+                    if (totalDependencies) {
+                        statusElement.style.display = "none";
+                    }
                 },
             };
         </script>
